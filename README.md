@@ -46,25 +46,24 @@
 </p>
 
 ## Community Updates 🌟
-[+ More dashboard pages and commands by Hotsuop](https://github.com/hotsu0p/Serenia)
+[+ More dashboard pages and commands by Hotsuop](https://github.com/hotsu0p/MEE8)
 
-[+ Slash commands by eYuM](https://github.com/Serenia-Bot/Serenia/tree/eyum-contributions)
 ## Latest commit!
 ✨added commands lock and unlock
-*https://394wkx-3000.csb.app/changelog*
+*https://serenia.eyum.dev/changelog*
 ## Docs 📚
-https://394wkx-3000.csb.app/docs
+https://serenia.eyum.dev/docs
 *these are pretty old for now*
 *will update later*
 ## About 🤔
 
-is a discord bot that we made exactly 2 years ago, the code was broken, so we decided to fix the bugs and make it a multipurpose discord.js v13 bot! You can click [this](https://394wkx-3000.csb.app//invite) link to invite the official Bot! Also, you can join the official [Serenia's Support Server](https://394wkx-3000.csb.app//support) for assistance.
+is a discord bot that we made exactly 2 years ago, the code was broken, so we decided to fix the bugs and make it a multipurpose discord.js v13 bot! You can click [this](https://serenia.eyum.dev/invite) link to invite the official Bot! Also, you can join the official [Serenia's Support Server](https://serenia.eyum.dev/support) for assistance.
 
 If you liked this repository, feel free to leave a star ⭐
 
 ## Features 🚀
 
-**147** commands and **11** different categories! 🎉
+**557** total commands (**206** prefix commands, **138** slash commands, **213** aliases) and **14** different categories! 🎉
 
 - **alt detector:** Blocks alts from the guild
 - **applications:** Manage applications from the website
@@ -106,9 +105,9 @@ With You can even log everything using webhooks directly from the config file!
 
 First clone the repo:
 
-`git clone https://github.com/Serenia-Bot/Serenia.git`
+`git clone https://github.com/eYuM-coder/Serenia.git`
 
-Then run `Npm i` or `Npm install`
+Then run `npm i` or `npm install`
 ## Setting Up ⚙️
 
 Your `config.json` should follow
@@ -155,7 +154,7 @@ THE ONES NEEDED
 - TOKEN=YOUR BOT TOKEN
 - MONGO=YOUR MONGO DATABASE URL
 - SESSION_SECRET=A RANDOM STRING FOR SESSION SECURITY (Ex. 6B4E8&G#%Z&##bqcyEL5)
-- AUTH_DOMAIN=Your Auth Domain (Ex. https://394wkx-3000.csb.app/ or http://localhost:3000) no slash at the end.
+- AUTH_DOMAIN=Your Auth Domain (Ex. https://serenia.eyum.dev/ or http://localhost:3000) no slash at the end.
 - MAIN_CLIENT_ID=the client id of your main application
 - AUTH_CLIENT_ID=the client id of your auth application
 - AUTH_CLIENT_SECRET= the client secret of your auth application
@@ -175,11 +174,11 @@ OPTIONAL
 This will have 2 parts, callback for the main client ID, and the other for the auth client ID. I did this so that the main client doesn't get ratelimited. You can use the same Id for main_client_id and auth_client_id and put the 3 callbacks in the same application.
 
 MAIN CLIENT ID
-yourdomain/thanks example https://394wkx-3000.csb.app//thanks or http://localhost:3000/thanks
-yourdomain/window example https://394wkx-3000.csb.app//window or http://localhost:3000/window
+yourdomain/thanks example https://serenia.eyum.dev/thanks or http://localhost:3000/thanks
+yourdomain/window example https://serenia.eyum.dev/window or http://localhost:3000/window
 
 AUTH CLIENT ID
-yourdomain/callback example https://394wkx-3000.csb.app//callback or http://localhost:3000/callback
+yourdomain/callback example https://serenia.eyum.dev/callback or http://localhost:3000/callback
 
 
 **TOP.gg**
@@ -212,7 +211,7 @@ You can launch the bot with `npm start`
 Released under the [MIT License]() license.
 
 ## Support 🤝
-[Click here for the support server](https://serenia.eyum.org/support)
+[Click here for the support server](https://serenia.eyum.dev/support)
 
 ## Donate 💸
 
