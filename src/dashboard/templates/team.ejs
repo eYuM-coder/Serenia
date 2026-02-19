@@ -1,0 +1,186 @@
+<%- include("partials/head", { bot, user, path, description, title: "Serenia - Team" , url, image }) %>
+
+  <style>
+    body {
+      background: linear-gradient(to right, #0a0a0a, #0d1b2a);
+      font-family: "Poppins", Arial, sans-serif;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .team-container {
+      max-width: 1200px;
+      margin: 100px auto;
+      padding: 0 80px;
+    }
+
+    .team-header {
+      margin-bottom: 60px;
+      text-align: center;
+    }
+
+    .team-header h1 {
+      font-weight: 900;
+      font-size: 42px;
+      letter-spacing: 1px;
+      margin: 0 0 15px;
+      background: linear-gradient(90deg, #7289da, #00E5FF);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+
+    .team-header p {
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.8;
+      color: #d1d1d1;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 40px;
+      justify-content: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .team-member {
+      background: rgba(13, 17, 23, 0.4);
+      border-radius: 12px;
+      padding: 40px 30px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .member-avatar {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 25px;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .member-name {
+      font-weight: 600;
+      font-size: 20px;
+      margin: 0 0 8px;
+    }
+
+    .member-name a {
+      color: #7289da;
+      text-decoration: none;
+    }
+
+    .member-role {
+      font-weight: 300;
+      font-size: 14px;
+      color: #d1d1d1;
+      margin: 0 0 10px;
+    }
+
+    .member-description {
+      font-weight: 300;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #b0b0b0;
+      margin: 0 0 20px;
+      padding: 0 10px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .member-social {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .member-social a {
+      color: #d1d1d1;
+      font-size: 18px;
+    }
+
+    /* Media queries */
+    @media (max-width: 1024px) {
+      .team-container {
+        padding: 0 40px;
+        margin: 60px auto;
+      }
+
+      .team-header h1 {
+        font-size: 32px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .team-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .team-container {
+        padding: 0 20px;
+        margin: 40px auto;
+      }
+
+      .team-header h1 {
+        font-size: 28px;
+      }
+
+      .team-member {
+        padding: 30px 20px;
+      }
+
+      .member-avatar {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  </style>
+
+  <div class="team-container">
+    <div class="team-header">
+      <h1>Meet the Team</h1>
+      <p>The talented people behind Serenia who make everything possible</p>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-member">
+        <img src="https://cdn.eyum.dev/img/pfp.png" alt="theeyum" class="member-avatar">
+        <h2 class="member-name"><a href="https://www.eyum.dev" target="_blank" rel="noopener">theeyum</a></h2>
+        <p class="member-role">Main Developer</p>
+        <p class="member-description">Works on core development of the bot, creating new features, revising
+          existing ones, and managing the support server.</p>
+        <div class="member-social">
+          <a href="https://github.com/eyum-coder" aria-label="GitHub"><i class="fab fa-github"></i></a>
+        </div>
+      </div>
+
+      <div class="team-member">
+        <img src="https://cdn.discordapp.com/avatars/1145211422767337572/4f3400e1fae51cbcc3ebbbdfc2728a0d.png?size=2048"
+          alt="mioli360" class="member-avatar">
+        <h2 class="member-name">mioli360</h2>
+        <p class="member-role">Designer</p>
+        <p class="member-description">Created the logo, helps maintain the bot, designs and revises the website, and
+          manages some of the CDN hosting.</p>
+        <div class="member-social">
+          <a href="https://discord.com/users/1145211422767337572" aria-label="Discord"><i
+              class="fab fa-discord"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <%- include("partials/mainfooter") %>
+    <%- include("partials/footer") %>

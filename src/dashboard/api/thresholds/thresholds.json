@@ -1,0 +1,7 @@
+{
+  "thresholds": {
+    "STANDBY": 71.76,
+    "ACTIVE": 143.52,
+    "EMERGENCY": 287.04
+  }
+}

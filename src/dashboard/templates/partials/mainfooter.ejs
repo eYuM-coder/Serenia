@@ -1,0 +1,445 @@
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<button id="return-to-top">
+  <i class="fas fa-chevron-up"></i>
+</button>
+
+<link
+  href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+/>
+
+<div id="mobileScreen">
+  <footer>
+    <nav class="footer-inner">
+      <section class="footer-item">
+        <h1>Serenia</h1>
+        <h2>
+          Serenia is a multi-purpose discord bot<br />
+          ready to skill up and boost up<br />
+          your Discord server!
+        </h2>
+        <br />
+        <a href="https://www.patreon.com/sereniabot" class="patreon-button">
+          <img
+            alt="become a patron"
+            src="https://c5.patreon.com/external/logo/become_a_patron_button.png"
+          />
+        </a>
+      </section>
+
+      <section class="footer-item">
+        <h3>Useful links</h3>
+        <ul class="footer-links">
+          <li><a href="/policy">Policy</a></li>
+          <li><a href="/faq">FAQ</a></li>
+          <li><a href="/premium">Premium</a></li>
+        </ul>
+      </section>
+
+      <section class="footer-item">
+        <h3>Resources</h3>
+        <ul class="footer-links">
+          <li><a href="/report">Report</a></li>
+          <li><a href="/team">Team</a></li>
+          <li><a href="/manage">Manage</a></li>
+          <li><a href="/support">Support</a></li>
+          <li><a href="/Embeds">Embeds</a></li>
+        </ul>
+      </section>
+
+      <section class="footer-item"></section>
+
+      <section class="footer-item">
+        <h3>Contact</h3>
+        <p class="contact-info">
+          <a href="https://www.eyum.dev/" target="_blank">eYuM.dev</a><br />
+          <a href="/contact">Contact us</a>
+        </p>
+      </section>
+
+      <section class="footer-item">
+        <h3>Legal</h3>
+        <ul class="footer-links">
+          <li><a href="/terms">Terms</a></li>
+          <li><a href="/policy">Privacy</a></li>
+        </ul>
+      </section>
+
+      <section class="footer-item">
+        <div class="hover"></div>
+      </section>
+    </nav>
+  </footer>
+
+  <div class="ready">
+    <button
+      class="invite-button"
+      onclick="PopupCenter('<%=
+      `${https}discordapp.com/oauth2/authorize?client_id=${clientID}&scope=bot%20applications.commands&response_type=code&redirect_uri=${encodeURIComponent(`${domain}/thanks`)}` %>',
+      'Add Serenia to your server.', 500, 666)"
+    >
+      <i class="fab fa-discord"></i> Invite Me
+    </button>
+
+    <p class="ready-text">
+      <b>Ready to Boost Your Discord Server?</b><br />
+      Serenia is the best discord bot to grow your discord server.
+    </p>
+  </div>
+</div>
+
+<style>
+  body {
+    background: linear-gradient(to right, #0a0a0a, #0d1b2a);
+    font-family: "Poppins", Arial, sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+  }
+
+  .glow {
+    width: 100vw;
+    height: 60px;
+    background: linear-gradient(90deg, #dd4949, #5e40e4);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-radius: 50%;
+    transform: translateY(-20%);
+    filter: blur(160px);
+    z-index: -1;
+  }
+
+  #return-to-top {
+    border: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    width: 50px;
+    height: 50px;
+    border-radius: 35px;
+    display: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  #return-to-top i {
+    color: #fff;
+    position: relative;
+    left: 1px;
+    top: 1px;
+    font-size: 19px;
+    transition: all 0.3s ease;
+  }
+
+  #return-to-top:hover {
+    background: rgba(0, 0, 0, 0.9);
+  }
+
+  #return-to-top:hover i {
+    top: 5px;
+  }
+
+  .invite-button {
+    background-color: #7289da;
+    border: none;
+    color: #fff;
+    font-family: "Poppins", Whitney, "Open Sans", Helvetica, sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    height: 48px;
+    width: 250px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: absolute;
+    right: 0;
+    margin-right: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .invite-button i {
+    margin-right: 8px;
+  }
+
+  .invite-button:hover {
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.3);
+    background-color: #5e78d5;
+  }
+
+  .invite-button:active {
+    transform: translateY(1px);
+  }
+
+  .ready {
+    margin: 100px 150px 100px 120px;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+
+  .ready-text {
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  .ready-text b {
+    font-size: 22px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  footer {
+    background: linear-gradient(to right, #0a0a0a, #0d1b2a);
+    font-family: "Lato", "Poppins", sans-serif;
+    padding: 85px 0 285px;
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    margin: 0 80px;
+  }
+
+  .footer-inner {
+    width: 90%;
+    max-width: 1170px;
+    margin: 0 auto 120px;
+    position: relative;
+  }
+
+  .footer-item {
+    float: left;
+    margin-right: 7.2%;
+  }
+
+  .footer-item:nth-of-type(4) {
+    display: none;
+  }
+
+  .footer-item:nth-of-type(7) {
+    float: right;
+    margin-right: 0;
+  }
+
+  .footer-button {
+    color: white;
+    position: relative;
+    font-weight: 400;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    padding: 14px;
+    border-radius: 8px;
+  }
+
+  h1 {
+    font-weight: 900;
+    color: white;
+    font-size: 28px;
+    letter-spacing: 1px;
+    margin: 0 0 10px;
+  }
+
+  h2 {
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #d1d1d1;
+    letter-spacing: 0.03em;
+    margin: 0;
+    padding-top: 15px;
+  }
+
+  .color {
+    color: white;
+    font-weight: 400;
+  }
+
+  h3 {
+    font-weight: 600;
+    font-size: 16px;
+    color: white;
+    letter-spacing: 0.03em;
+    margin: 0 0 12px;
+  }
+
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    line-height: 2;
+  }
+
+  .footer-links li {
+    margin-bottom: 8px;
+  }
+
+  li {
+    font-weight: 300;
+    font-size: 14px;
+    color: #d1d1d1;
+    letter-spacing: 0.03em;
+  }
+
+  p {
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 1.8;
+    letter-spacing: 0.03em;
+    margin: 0;
+    padding: 0;
+  }
+
+  .contact-info i {
+    margin-right: 8px;
+    color: #7289da;
+  }
+
+  a {
+    text-decoration: none;
+    color: #d1d1d1;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  a:hover {
+    color: white;
+  }
+
+  .footer-links a:hover {
+    color: #7289da;
+    padding-left: 3px;
+  }
+
+  .patreon-button {
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+
+  .patreon-button:hover {
+    opacity: 0.9;
+  }
+
+  .desktop {
+    display: auto;
+  }
+
+  .footer-inner:after {
+    content: "© 2024-2025 eYuM.dev, All rights reserved";
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    font-size: 13px;
+    color: #d1d1d1;
+    position: absolute;
+    top: 260px;
+    clear: both;
+    display: block;
+  }
+
+  @media (max-width: 1024px) {
+    footer {
+      padding: 50px 0 70px !important;
+    }
+
+    .footer-inner {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 490px;
+      margin-bottom: 50px;
+    }
+
+    .footer-item {
+      float: none;
+      width: 50%;
+      margin: 0 0 42px;
+    }
+
+    .footer-item:nth-of-type(1) {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 32px;
+      width: 100%;
+    }
+
+    .footer-item:nth-of-type(2),
+    .footer-item:nth-of-type(4),
+    .footer-item:nth-of-type(6) {
+      clear: both;
+    }
+
+    .footer-item:nth-of-type(4) {
+      display: block;
+    }
+
+    .footer-item:nth-of-type(7) {
+      float: left;
+      margin: 20px 0 0 -13px;
+    }
+
+    .desktop {
+      display: none;
+    }
+
+    .footer-inner:after {
+      top: 730px;
+    }
+  }
+
+  .hover {
+    width: 200px;
+    height: 200px;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+    background-image: url("<%= domain %>/logo.png");
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+  }
+
+  #mobileScreen {
+    display: block;
+  }
+
+  @media only screen and (max-width: 1024px) {
+    #mobileScreen {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  function PopupCenter(url, title, w, h) {
+    const dualScreenLeft = window.screenLeft ?? screen.left;
+    const dualScreenTop = window.screenTop ?? screen.top;
+    const width =
+      window.innerWidth || document.documentElement.clientWidth || screen.width;
+    const height =
+      window.innerHeight ||
+      document.documentElement.clientHeight ||
+      screen.height;
+    const left = width / 2 - w / 2 + dualScreenLeft;
+    const top = height / 2 - h / 2 + dualScreenTop;
+    const newWindow = window.open(
+      url,
+      title,
+      `scrollbars=yes, width=${w}, height=${h}, top=${top}, left=${left}`
+    );
+    newWindow?.focus();
+  }
+
+  $(window).scroll(function () {
+    if ($(this).scrollTop() >= 50) {
+      $("#return-to-top").fadeIn(200);
+    } else {
+      $("#return-to-top").fadeOut(200);
+    }
+  });
+
+  $("#return-to-top").click(function () {
+    $("body,html").animate({ scrollTop: 0 }, 500);
+  });
+</script>
