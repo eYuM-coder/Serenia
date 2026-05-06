@@ -1,0 +1,445 @@
+<%- include("partials/head", {bot, user, path, title: `${botName} - Dashboard` }) %>
+
+<%
+  const ICON_PALETTE = [
+    '#5865f2', '#4752c4', '#eb459e', '#ed4245',
+    '#faa61a', '#23a559', '#3ba55d', '#1abc9c'
+  ];
+
+  function resolveGuildIcon(guild) {
+    if (guild.icon) {
+      return 'https://cdn.discordapp.com/icons/' + guild.id + '/' + guild.icon + '.png?size=512';
+    }
+    const words = guild.name.replace(/\s+/g, ' ').trim().split(' ');
+    const initials = words.slice(0, 2).map(function(w) { return w[0]; }).join('').toUpperCase();
+    const colorIndex = Number(BigInt(guild.id) % BigInt(ICON_PALETTE.length));
+    const bg = ICON_PALETTE[colorIndex];
+    const svg = [
+      '<svg xmlns="http://www.w3.org/2000/svg" width="92" height="92" viewBox="0 0 92 92">',
+        '<rect width="92" height="92" rx="46" fill="' + bg + '"/>',
+        '<text',
+          ' x="46"',
+          ' y="46"',
+          ' dominant-baseline="central"',
+          ' text-anchor="middle"',
+          ' font-family="Poppins,Arial,sans-serif"',
+          ' font-size="30"',
+          ' font-weight="700"',
+          ' fill="#ffffff"',
+        '>',
+        initials,
+        '</text>',
+      '</svg>'
+    ].join('');
+    return 'data:image/svg+xml;base64,' + Buffer.from(svg).toString('base64');
+  }
+
+  function buildInviteUrl(guild) {
+    return https + 'discordapp.com/oauth2/authorize?client_id=' + clientID +
+      '&scope=bot%20applications.commands&guild_id=' + guild.id +
+      '&response_type=code&redirect_uri=' + encodeURIComponent(domain + '/window') +
+      '&permissions=1642761419863';
+  }
+%>
+
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+  @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&display=swap");
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --bg: #07080c;
+    --surface: #0e1018;
+    --surface-2: #13161f;
+    --surface-3: #181c28;
+    --border: rgba(255, 255, 255, 0.055);
+    --border-hover: rgba(255, 255, 255, 0.11);
+    --accent: #5865f2;
+    --accent-dim: rgba(88, 101, 242, 0.12);
+    --accent-hover: #4752c4;
+    --green: #23a559;
+    --green-dim: rgba(35, 165, 89, 0.1);
+    --text-primary: #f2f3f5;
+    --text-secondary: #8e9297;
+    --text-muted: #4e5058;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+  }
+
+  html,
+  body {
+    min-height: 100vh;
+    background-color: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Open Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .page-wrapper {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 72px 32px 100px;
+  }
+
+  .page-header {
+    margin-bottom: 52px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .page-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .page-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(26px, 3.5vw, 36px);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .page-subtitle {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+
+  .notice-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 14px 17px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(88, 101, 242, 0.2);
+    border-radius: var(--radius-md);
+    margin-bottom: 40px;
+  }
+
+  .notice-banner svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--accent);
+  }
+
+  .notice-banner-body {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  .notice-banner-body strong {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+
+  .notice-banner-body a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .notice-banner-body a:hover {
+    text-decoration: underline;
+  }
+
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    margin-top: 40px;
+  }
+
+  .section-label:first-of-type {
+    margin-top: 0;
+  }
+
+  .section-label-text {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .section-label-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-label-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 99px;
+    padding: 1px 9px;
+  }
+
+  .servers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 8px;
+  }
+
+  .server-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 13px 15px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .server-card:hover {
+    background: var(--surface-2);
+    border-color: var(--border-hover);
+  }
+
+  .server-card.is-active:hover {
+    border-color: rgba(88, 101, 242, 0.25);
+    background: var(--surface-3);
+  }
+
+  .icon-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+  }
+
+  .server-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .online-dot {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+    border: 2px solid var(--surface);
+    z-index: 1;
+  }
+
+  .server-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .server-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+  }
+
+  .server-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 5px;
+    font-size: 11.5px;
+    color: var(--text-secondary);
+  }
+
+  .server-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .server-badge-dot.green {
+    background: var(--green);
+  }
+
+  .server-badge-dot.muted {
+    background: var(--text-muted);
+    opacity: 0.5;
+  }
+
+  .btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 15px;
+    border-radius: var(--radius-sm);
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.13s, border-color 0.13s;
+    border: 1px solid transparent;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    border-color: var(--accent-hover);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--accent);
+    border-color: rgba(88, 101, 242, 0.3);
+  }
+
+  .btn-ghost:hover {
+    background: var(--accent-dim);
+    border-color: rgba(88, 101, 242, 0.55);
+  }
+
+  .empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 36px 24px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+  }
+</style>
+
+<div class="page-wrapper">
+
+  <div class="page-header">
+    <p class="page-eyebrow">Server Manager</p>
+    <h1 class="page-title">Your Servers</h1>
+    <p class="page-subtitle">Select a server to manage, or add <%= botName %> to a new one.</p>
+  </div>
+
+  <% if (!userExists) { %>
+  <div class="notice-banner">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="8" x2="12" y2="12" />
+      <line x1="12" y1="16" x2="12.01" y2="16" />
+    </svg>
+    <div class="notice-banner-body">
+      <strong>Hey <%= user.username %>!</strong>
+      You're not in <%= botName %>'s support server yet. <a href="/support">Join here</a> to get help and stay updated.
+    </div>
+  </div>
+  <% } %>
+
+  <%
+    const activeGuilds = user.guilds.filter(function(guild) {
+      const p = new perms(BigInt(guild.permissions));
+      return p.has("MANAGE_GUILD") && bot.guilds.cache.get(guild.id);
+    });
+    const inactiveGuilds = user.guilds.filter(function(guild) {
+      const p = new perms(BigInt(guild.permissions));
+      return p.has("MANAGE_GUILD") && !bot.guilds.cache.get(guild.id);
+    });
+  %>
+
+  <div class="section-label">
+    <span class="section-label-text">Active</span>
+    <span class="section-label-line"></span>
+    <span class="section-label-count"><%= activeGuilds.length %></span>
+  </div>
+
+  <div class="servers-grid">
+    <% if (activeGuilds.length === 0) { %>
+    <div class="empty-state">No servers with <%= botName %> installed</div>
+    <% } %>
+    <% activeGuilds.forEach(function(guild) { %>
+    <div class="server-card is-active">
+      <div class="icon-wrap">
+        <img class="server-icon" src="<%= resolveGuildIcon(guild) %>" alt="<%= guild.name %>" width="44" height="44" />
+        <span class="online-dot"></span>
+      </div>
+      <div class="server-info">
+        <div class="server-name"><%= guild.name %></div>
+        <div class="server-badge">
+          <span class="server-badge-dot green"></span>
+          <%= botName %> is here
+        </div>
+      </div>
+      <a class="btn btn-primary" href="/dashboard/<%= guild.id %>">Manage</a>
+    </div>
+    <% }); %>
+  </div>
+
+  <div class="section-label">
+    <span class="section-label-text">Not added</span>
+    <span class="section-label-line"></span>
+    <span class="section-label-count"><%= inactiveGuilds.length %></span>
+  </div>
+
+  <div class="servers-grid">
+    <% if (inactiveGuilds.length === 0) { %>
+    <div class="empty-state">All your servers already have the bot</div>
+    <% } %>
+    <% inactiveGuilds.forEach(function(guild) { %>
+    <div class="server-card">
+      <div class="icon-wrap">
+        <img class="server-icon" src="<%= resolveGuildIcon(guild) %>" alt="<%= guild.name %>" width="44" height="44" />
+      </div>
+      <div class="server-info">
+        <div class="server-name"><%= guild.name %></div>
+        <div class="server-badge">
+          <span class="server-badge-dot muted"></span>
+          Not added yet
+        </div>
+      </div>
+      <a class="btn btn-ghost" href="<%= buildInviteUrl(guild) %>">Add</a>
+    </div>
+    <% }); %>
+  </div>
+
+</div>
+
+<%- include("partials/footer") %>

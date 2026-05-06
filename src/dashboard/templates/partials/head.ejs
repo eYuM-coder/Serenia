@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="https://serenia.eyum.dev/logo.png" />
+  <title>
+    <%= title %>
+  </title>
+  <link rel="stylesheet" type="text/css" href="<%=domain%>/css/style.css" />
+  <% if (analytics) { %> <%- include('./analytics.ejs') %>
+  <% } %> <%- include("./seo", {bot, user, path, description, title, url, image:`${domain}/logo.png`}) %>
+</head>
+
+<body>
+  <script type="text/javascript">
+    var preload = document.createElement("div");
+    preload.className = "preloader";
+    preload.innerHTML = '</div><div class="spinner"></div>';
+    document.body.appendChild(preload);
+    window.addEventListener("load", function() {
+      preload.className += " fade";
+      setTimeout(function() {
+        preload.style.display = "none";
+      }, 600);
+    });
+  </script>
+
+  <noscript>
+    <style>
+      #ns {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        overflow-y: auto;
+        padding: 4rem 2rem;
+        background: rgba(9, 7, 12, 0.97);
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+        color: #ead9e8;
+        font-family: "SN Pro", system-ui, -apple-system, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      #ns-inner {
+        max-width: 600px;
+      }
+
+      #ns h1 {
+        font-size: clamp(1.8rem, 5vw, 2.8rem);
+        font-weight: 900;
+        letter-spacing: -0.035em;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+      }
+
+      #ns p {
+        font-size: 0.95rem;
+        color: #9a849a;
+        line-height: 1.7;
+        font-weight: 500;
+        max-width: 480px;
+        margin-bottom: 3rem;
+      }
+
+      #ns p strong {
+        color: #ccb8c8;
+        font-weight: 700;
+      }
+
+      #ns-note {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #9a849a;
+        margin-bottom: 2rem;
+      }
+
+      #ns h2 {
+        font-size: 0.72rem;
+        font-weight: 900;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #cf8ea3;
+        margin-bottom: 1.5rem;
+      }
+
+      .ns-browsers {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1px;
+        background: #4a3847;
+        border: 1px solid #4a3847;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 2rem;
+      }
+
+      .ns-b {
+        background: #0e0a0d;
+        padding: 1.25rem 1.5rem;
+      }
+
+      .ns-b-name {
+        font-size: 0.85rem;
+        font-weight: 800;
+        color: #ead9e8;
+        margin-bottom: 0.6rem;
+      }
+
+      .ns-b ol {
+        padding-left: 1.1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+
+      .ns-b li {
+        font-size: 0.8rem;
+        color: #9a849a;
+        line-height: 1.5;
+        font-weight: 500;
+      }
+
+      .ns-b li strong {
+        color: #ccb8c8;
+        font-weight: 700;
+      }
+
+      .ns-b code {
+        background: #231a21;
+        color: #f2c4d5;
+        border-radius: 3px;
+        padding: 0.05em 0.3em;
+        font-size: 0.85em;
+        font-weight: 700;
+      }
+
+      #ns-footer {
+        font-size: 0.78rem;
+        color: #4a3847;
+        font-weight: 600;
+      }
+
+      #ns-footer a {
+        color: #9a849a;
+      }
+    </style>
+    <div id="ns" role="alertdialog" aria-modal="true">
+      <div id="ns-inner">
+        <h1>JavaScript is Required</h1>
+        <p>
+          This site needs JavaScript to run. Your browser has it
+          <strong>disabled or blocked</strong>. Enable it and reload &mdash;
+          this overlay is not dismissable.
+        </p>
+        <span id="ns-note">Find your browser below</span>
+        <h2>How to enable JavaScript</h2>
+        <div class="ns-browsers">
+          <div class="ns-b">
+            <div class="ns-b-name">Chrome / Edge / Brave</div>
+            <ol>
+              <li><code>&#8942;</code> menu &rarr; Settings</li>
+              <li>Privacy and security &rarr; Site settings &rarr; JavaScript</li>
+              <li>Set to <strong>Sites can use JavaScript</strong></li>
+              <li>Reload</li>
+            </ol>
+          </div>
+          <div class="ns-b">
+            <div class="ns-b-name">Firefox</div>
+            <ol>
+              <li>Address bar &rarr; type <code>about:config</code> &rarr; Enter</li>
+              <li>Accept the warning</li>
+              <li>Search <code>javascript.enabled</code></li>
+              <li>Double-click to set to <code>true</code> &rarr; reload</li>
+            </ol>
+          </div>
+          <div class="ns-b">
+            <div class="ns-b-name">Safari (macOS)</div>
+            <ol>
+              <li>Menu bar &rarr; Safari &rarr; Preferences</li>
+              <li>Security tab</li>
+              <li>Tick <strong>Enable JavaScript</strong></li>
+              <li>Reload</li>
+            </ol>
+          </div>
+          <div class="ns-b">
+            <div class="ns-b-name">Safari (iOS / iPadOS)</div>
+            <ol>
+              <li>iOS Settings app</li>
+              <li>Apps &rarr; Safari &rarr; Advanced</li>
+              <li>Toggle <strong>JavaScript</strong> on</li>
+              <li>Reload</li>
+            </ol>
+          </div>
+          <div class="ns-b">
+            <div class="ns-b-name">Extensions (uBlock, NoScript)</div>
+            <ol>
+              <li>Click the extension icon in your toolbar</li>
+              <li>Find the JS toggle or per-site whitelist</li>
+              <li>Allow scripts for <code>serenia.eyum.dev</code></li>
+              <li>Reload</li>
+            </ol>
+          </div>
+        </div>
+        <div id="ns-footer">
+          Still stuck? <a href="mailto:eyum@eyum.dev">eyum@eyum.dev</a>
+        </div>
+      </div>
+    </div>
+  </noscript>
+  <%- include("./nav", { bot, user, path, url, image, }) %>
+  <div class="blur" id="body-blur"></div>
+  <%- title==="Dashboard" ? "" : "" %>
+</body>
+
+</html>
