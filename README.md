@@ -4,7 +4,7 @@
 
 <p align="center">
   <br>
-  <a href="https://github.com/peterhanania"><img src="https://serenia.eyum.dev/favicon.ico"></a>
+  <a href="https://github.com/eYuM-coder"><img src="https://serenia.eyum.dev/favicon.ico"></a>
   <br>
   Serenia, a fully customizable bot built with 147 commands, 11 categories, and a dashboard using discord.js v13 🚀
   <br>
