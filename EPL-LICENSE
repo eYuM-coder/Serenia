@@ -1,0 +1,226 @@
+THIS IS A TEMPORARY LICENSE FILE. THIS FILE IS NOT THE ACTUAL LICENSE.
+
+eYuM Public License
+Version 1 (EPL-1)
+
+Copyright (c) 2026 eYuM. All rights reserved.
+
+PREAMBLE
+
+This License governs the use, reproduction, modification, and distribution of all materials produced or published by eYuM, including but not limited to source code, markup, stylesheets, compiled artifacts, visual assets, graphics, icons, written content, interface design, documentation, and any derivative thereof (collectively, "Licensed Material"). This License applies to all eYuM products by default unless a specific project is explicitly and individually designated under a separate license in its own license file.
+
+The intent of this License is to make eYuM's work freely available to individuals, students, educators, non-profit organizations, and the open community, while expressly prohibiting its use by for-profit entities and commercial ventures. This License is designed to be comprehensive. It is intended to close the gaps that permissive licenses leave open and to prevent the patterns of exploitation that have been documented across the software industry, including internal commercial use, SaaS deployment without attribution, acquisition by commercial entities of projects initially built under non-commercial terms, and structural circumvention through subsidiaries or intermediar arrangements.
+
+If you are a for-profit entity, this License does not grant You any rights. No reading of its terms, no matter how creative, changes that.
+
+SECTION 1. DEFINITIONS
+
+1.1. "Licensed Material" means that any and all work produced or published by eYuM, in any form, including all source code, stylesheets, markup, compiled artifacts, visual assets, graphics, icons, badges, written content, interface design, documentation, and any portion thereof, whether publicy distributed or privately held.
+
+1.2. "eYuM" means the organization operating under that name, including its current and future projects, contributors acting under its direction, and any successor entity.
+
+1.3. "You" or "Licensee" means any individual, organization, or entity that accesses, uses, reproduces, modifies, or distributes any Licensed Material.
+
+1.4. "Commercial Entity" means any of the following:
+
+    (a) Any corporation, limited liability company, partnership, sole proprietorship, or other legal business entity organized or operated with the primary purpose of generating profit or financial return for its owners, shareholders, members, or investors, regardless of size,
+    revenue, or stage of operation;
+
+    (b) Any individual or group using the Licensed Material, directly or indirectly, to generate revenue, including but not limited to: charging subscription fees or tiered access fees; selling products or services that incorporate or depend on the Licensed Material; generating advertising, sponsorship, or affiliate revenue from a platform or property that incorporates the Licensed Material; providing paid client services, contract development, or consulting work in which the Licensed Material is used; or building or operating any product or service intended for commercial sale, revenue generation, or commercial competitive advantage;
+
+    (c) Any entity that has received external investment, including venture capital, angel investment, or other equity or debt financing with a reasonable expectation of financial return, regardless of whether that entity has generated any revenue at the time of use;
+
+    (d) Any entity that, at any point following the date of first use of Licensed Material, transitions from a non-commercial operation to a for-profit or commercial operation, regardless of its classification at the time of initial use;
+
+    (e) Any entity operating as a front, subsidiary, affiliate, shell, or intermediary, whether or not separately incorporated, whose use of Licensed Material would, in whole or in majority part, benefit a Commercial Entity as defined in this Section.
+
+    For the avoidance of doubt: a two-person studio, an independent freelancer doing paid client work, a pre-revenue startup with a commercial purpose, and a company of any size operating a subscription-based product are all Commercial Entities within the meaning of this License
+
+1.5. "Non-Commercial Entity" means any individual or organization that does not meet any part of the definition of Commercial Entity under Section 1.4, including:
+
+    (a) Individuals using Licensed Material for personal, non-revenue-generating projects, including personal websites and portfolios displayed without associated commercial services, hobby and passion projects, and non-commercial personal tools;
+
+    (b) Accredited educational institutions, including universities, colleges, and schools, and associated academic departments and programs;
+
+    (c) Students using Licensed Material for academic coursework, academic projects, or personal learning, where no commercial use is made of the result;
+
+    (d) Non-profit organizations recognized under applicable law as tax-exempt, provided that such organizations derivev more than fifty percent (50%) of their total annual operating revenue from voluntary donations, grants, or public funding, rather than from subscription charges, service fees, or product sales; do not charge end users for access to any product or service that incorporates the Licensed Material; and do not distribute financial surplus to any owner, officer, or controller. An organization that derives the majority of its revenue from charges for services or access, even if organized as a non-profit under appplicable law, does not qualify under this subsection.
+
+    (e) Open-source projects that: do not charge subscription or access fees; do not sell products or services incorporating the Licensed Material; are not owned by, operated for the benefit of, or affiliated with a Commercial Entity; and operate on a voluntary donation model or have no revenue model. An open-source project in which a for-profit company holds majority ownership interest, majority voting rights, or exercises effective day-to-day operational control does not qualify under this subsection, regardless of the project's own license terms;
+
+    (f) Charitable and volunteer-based projects without a commercial revenue stream.
+
+1.6. "eYuM Brand" means the name "eYuM," all logos, icons, visual marks, and badges associated with eYuM or its published projects, and all project names that include "eYuM" as a component or are uniquely and distinctively associated with eYuM's published work rather than being generic terms common in the broadcer developer or technical community.
+
+1.7. "Derivative Work" means any work that incorporates, modifies, is based upon, or is derived from any portion of the Licensed Material, regardless of the volume or proportion of Licensed Material incorporated.
+
+1.8. "Distribution" means making Licensed Material or a Derivative Work availabble to any third party by any means, including but not limited to publication on the internet, inclusion in a software package, deployment as a service accessible to others, or provision as part of any product.
+
+SECTION 2. GRANT OF LICENSE
+
+Subject to full compliance with the terms and conditions of this License, eYuM grants to Non-Commercial Entities a non-exclusive, worldwide- royalty-free, non-transferable, non-sublicenseable license to:
+
+2.1. Use, access, and reproduce the Licensed Material for permitted purposes as defined in Section 3;
+
+2.2. Modify the Licensed Material and create Derivative Works;
+
+2.3. Distribute the Licensed Material or Derivative Works, subject to the conditions in Sections 4 and 5.
+
+No rights of any kind are granted to Commercial Entities under this Section or any other Section of this License. Any use of Licensed Material by a Commercial Entity, including access, reproduction, modification, deployment, or distribution, requires a separate written commercial agreement executed with eYuM. Absent such a written agreement, all such use is unauthorized and constitues copyright infringement.
+
+
+SECTION 3. PERMITTED USE
+
+Use of the Licensed Material is permitted exclusively by Non-Commercial Entities, subject to all conditions of this License, for the following purposes:
+
+3.1. Personal and portfolio use by individuals, including personal websites and non-revenue-generating tools and applications;
+
+3.2. Educational use by accredited institutions and individual students;
+
+3.3. Non-profit organizational use, where the organization qualifies as a Non-Commercial Entity under Section 1.5(d) of this License;
+
+3.4. Community open-source projects that qualify as Non-Commercial Entities under Section 1.5(e) of this License;
+
+3.5. Charitable and volunteer-based purposes;
+
+3.6. Research and academic study.
+
+
+SECTION 4. CONDITIONS OF USE
+
+All permitted use of the Licensed Material is subject to the following conditions, each of which is a material term of this License:
+
+4.1. Attribution. You must provide attribution to eYuM in each of the following locations that apply to Your project: (i) for source code or markup, as a comment in any file that incorporates Licensed Material, or in a root-level file named ATTRIBUTION, CREDITS, or NOTICE that ships with the project; (ii) for compiled, deployed, minified, or otherwise non-source-visible works, in any publicly accessible credits section, documentation, about page, readme, or equivalent; (iii) for private or closed-source projects with no public-facing documentation, in an internal attribution or credits file maintained with the project. Attribution must identify eYuM by name as the source of the incorporated material. Attribution is required regardless of whether Licensed Material is incorporated into a public or private project.
+
+4.2. Closed-Source Attribution. If License Material is incorporated into a closed-source or private project, in whole or in part, including any single line of code not independently and widely known from publicly available documentation unaffiliated with eYuM, You must include at minimum a notation identifying that the project incorporates material licensed under the eYuM Public License and crediting eYuM as the source. Code that is independently and ubiquitously documented in general public developer resources, and that does not originate distinctively from eYuM's work, is exempt from this requirement.
+
+4.3. Modification Notice. If You distribute a Derivative Work, You must include a conspicuous notice stating that the material was originally produced by eYuM and that modifications have been made. You are not required to describe the content or nature of the modifications. A statement that changes were made from the original is sufficient.
+
+4.4. License Continuity. Any Distribution of Licensed Material or a Derivative Work must be accompanied by a full copy of this License. You may not impose addition restrictions on recipients beyond those stated in this License, and You may not grant recipients rights that exceed those granted to You under this License. Recipients of Distributed copies or Derivative Works are subject to the same terms as the original Licensee.
+
+4.5. No Commercial Relicensing. You may not relicense, sublicense, or distribute the Licensed Material or any Derivative Work under terms that purport to grant Commercial Entities any rights not granted by this License. Any attempmt to do so is void and constitutes a breach of this License.
+
+
+SECTION 5. RESTRICTIONS
+
+5.1. Commercial Use Prohibited. Commercial Entites are expressly and absolutely prohibited from accessing, using, reproducing, modifying, deploying, or distributing the Licensed Material or any Derivative Work, in whole or in part, in any form, for any purpose. This prohibition is not subject to any exception within this License. It applies regardless of whether the commercial use is described as internal, incidental, minimal, temporary, or preliminary. Specifically and without limitation, this prohibition includes:
+
+    (a) Any use of Licensed Material within a for-profit company's internal tooling, infrastructure, systems, or operations, even if no distribution occurs and no customer ever interacts with the Licensed Material directly;
+
+    (b) Any incorporation of Licensed Material into a product or service that generates revenue or is designed or intended to generate revenue at any point in the future;
+
+    (c) Any use of Licensed Material in providing services for compensation, including contract development, client project work, consulting, and agency work;
+
+    (d) Any use by an individual who is, at the time of use, operating as a freelancer, contractor, or self-employed person in connection with any income-generating activity or client engagement that involves the Licensed Material;
+
+    (e) Any use by an entity that has not yet generated revenue but has a stated commercial purpose, has received investment, or intends to seek revenue in the future from a product or service incorporating the Licensed Material;
+
+    (f) Any deployment of Licensed Material as part of a hosted service, whether or not the service is publicly accessible, where that service is operated by or for the benefit of a Commercial Entity.
+
+5.2. Transition to Commercial Status. If a Licensee that initially qualifies as a Non-Commercial Entity subsequently becomes or transitions to a Commercial Entity at any time after the date of first use of the Licensed Material, that Licensee's rights under tthis License terminate automatically and immediately upon the date of such transition, without any notice required from eYuM. The Licensee must immediately cease all use, reproduction, modification, deployment, and distribution of the Licensed Material and any Derivative Works, and must remove the Licensed Material from all publicly accessible systems, repositories, products, and services within thirty (30) days of the transition date.
+
+5.3. Non-Transferability. This License is personal to the Licensee and is not assignable, transferable, or delegable. You may not assign or transfer Your rights under this License to any third party for any reason.
+
+5.4. No Endorsement. You may not use the eYuM name, the eYuM Brand, or any associated marks in a manner that implies affiliation with, endorsement by, or sponsorship by eYuM, except as required for factual attribution under Section 4.1. Descriptive statements of fact, such as "incorporates code originally produced by eYuM" or "based on work by eYuM," are permissible in Non-Commercial contexts for attribution purposes. Such statements are prohibited when used by a Commercial Entity or in any commercial context.
+
+5.5. No Circumvention. You may not structure Your use of the Licensed Material through any subsidiary, affiliate, shell entity, contractor arrangement, intermediary, or other structural mechanism designed or intended to circumvent the commercial prohibition of this License. The substance and practical effect of the use, and not its legal or corporate structure, determines whether use is permissible under this License. Use that is structured to benefit a Commercial Entity is use by a Commercial Entity for the purposes of this License.
+
+5.6. No Reverse Engineering Circumvention. You may not use the Licensed Material as a basis for the development of a substantially equivalent competing implementation designed to avoid the terms of this License while repliccating the function, design, or purpose of the Licensed Material.
+
+5.7. No Silent Incorporation. You may not incorporate the Licensed Material into any project, codebase, product, or service in a manner that conceals or omits attribution to eYuM. Silent incorporation is a breach of this License regardless of the scale of incorporation.
+
+
+SECTION 6. BRAND AND IDENTITY PROTECTION
+
+6.1. eYuM Name. The name "eYuM" is the exclusive property of eYuM. You may not use the name "eYuM" as part of the name, branding, domain name, or public identity of any product, service, organization, project, or entity, whether commercial or non-commercial, except as required for accurate attribution under Section 4.
+
+6.2. Confusingly Similar Names. You may not adopt any name, mark, domain name, handle, or public identity that is confusingly similar to "eYuM" in sound, spelling, appearancec, or meaning in a manner that could cause confusion as to origin, association, or affiliation with eYuM. Names that are phonetically or orthographically similar to "eYuM" in a way an ordinary person would recognize as similar are covered by this restriction.
+
+6.3. Project Names. Projeect names published by eYuM that incorporate the word "eYuM" as a component of the project name may not be directly reproduced or adopted as the name or title of any third-party project, produt, organization, or service. Names that are common generic terms in the broader developer community, and that happen to appear in an eYuM project but do not derive their identity from eYuM, are not restricted by this Section.
+
+6.4. Visual Assets. All logos, icons, badges, and distinctive graphic elements produced by or for eYuM and associated with eYuM project are the exclusive property of eYuM. You may not reproduce, adapt, extract, or incorporate these elements into any other project, product, service, or publication withouth express prior written consent from eYuM.
+
+6.5. Trade Dress and Visual Similarity. The overall visual appearance and design of eYuM's published works, including interface layouts, color palettes, typographic choices, compositional structure, and distinctive design patterns, constitutes protectable trade dress to the exten such elements are distinctive. The following rules apply to visual similarity between third-party works and eYuM's published works:
+
+    (a) Direct visual reproduction of the appearance of an eYuM-published work, achieved through codebase copying or deliberate design replication, is prohibited without express prior written consent from eYuM. This applies to both Commercial and Non-Commercial parties.
+
+    (b) A third-party work crosses into prohibited visual similarity for Commercial Entities when it reproducecs three or more of the following distincivev visual elements from a single eYuM-published work in combination: the specific color palette; the typographic style and font choices; the compositional layout and element positioning; the navigation or interface structure; and any distinctive graphic, badge, or iconographic elements. A Commercial Entity may not produce or distribute any work meeting this threshold of similarity, regardless of whether the underlying code is independently written.
+
+    (c) A third-party work is considered loosely inspired rather than visually similar where it shares a general aesthetic direction with an eYuM-published work but does not reproduce two or more of the distinctive visual elements listed in subsection (b) in combination. Such works are permissible for both Commercial and Non-Commercial parties, subject to all other terms of this License.
+
+    (d) The element-based assessment in subsections (b) and (c) is a floor, not a ceiling. A work may still constitute prohibited visual reproduction under subsection (a) if the overall result is a clear and deliberate replication of an eYuM-published work's appearance, even if it cannot be shown to reproduce any single enumerated element in isolation.
+
+
+SECTION 7. TERMINATION AND ENFORCEMENT
+
+7.1 Automatic Termination. Your rights under this License terminate automatically and without notice upon any material breach of its terms, including without limitation: use of the Licensed Material by or for the benefit of a Commercial Entity; failure to provide required attribution; failure to remove Licensed Material following a transition to commercial status under Section 5.2; violation of the brand restrictions in Section 6; attempted transfer of rights under Section 5.3; or any act of circumvention under Section 5.5.
+
+7.2. Notice and Cure. Where a breach is not willful or egregious, eYuM may, in its sole and exclusive discretion, issue written notice of the breach to the breaching party prior to pursuing legal action. Upon receipt of such notice, the breaching party shall have thirty (30) calendary days to fully cure the identified breach and provide eYuM with written confirmation of the cure and the specific steps taken. If eYuM is satisfied that the breach has been fully remedied, eYuM may, in its sole discretion, reinstate the License. eYuM is under no obligation to issue a cure notice and may proceed directly to legal action without prior notice, particularly in cases of willful, knowing, or commercially motivated violation.
+
+7.3. Post-Cure Review. Where a breach has been cured and the License reinstated by eYuM, eYuM reserves the right to conduct periodic review of publicly accessible materials, repositories, and deployments associated with the formerly breaching party to confirm continued compliance. For closed-source or private projects, eYuM may request written confirmation of compliance no more than once every ninety (90) days following reinstatement. Refusal to respond to such a request within thirty (30) days of receipt following prior breachc is grounds for permanent revocation.
+
+7.4. Legal Remedies. If a breach is not cured within the applicable period, if eYuM elects not to issue a notice, or following revocation, eYuM may pursue any and all legal remedies available under applicable law, including claims sfor copyright infringement, injunctive relief, disgorgement of profits, and recovery of damages and attorneys' fees. This License constitutes both a copyright license and a binding contract. Either theory may be pursued independently or in combination at eYuM's election.
+
+7.5. Reinstatement Discretion. Cure of a breach does not guarantee reinstatement of the License. Reinstatement is at eYuM's sole and exclusive discretion. Cure does not waive eYuM's right to seek damages for the period of violation or any other remedies for the breach.
+
+7.6. Survival. Sections, 6, 7, 8, 9, 10, and 11 survivev termination of this License for any reason.
+
+
+SECTION 8. DISCLAIMER OF WARRANTIES
+
+THE LICENSED MATERIAL IS PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, ACCURACY, TITLE, AND NON-INFRINGEMENT. EYUM DOES NOT WARRANT THAT THE LICENSED MATERIAL WILL BE ERROR-FREE, UNINTERRUPTED, SECURE, OR SUITABLE FOR ANY PARTICULAR PURPOSE. YOU ASSUME ALL RISK ASSOCIATED WITH YOUR USE OF THE LICENSED MATERIAL. EYUM MAKES NO REPRESENTATIONS ABOUT THE SUITABILITY OF THIS LICENSED MATERIAL FOR ANY USE AND EXPRESSLY DISCLAIMS ALL WARRANTIES TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW.
+
+
+SECTION 0. LIMITATION OF LIABILITY
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL EYUM OR ANY OF ITS CONTRIBUTORS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTAL, EXEMPLARY, OR PUNITIVE DAMAGES OF ANY NATURE, INCLUDING BUT NOT LIMITED TO LASS OF DATA, LOSS OF REVENUE, LOSS OF PROFITS, LOSS OF BUSINESS, BUSINESS INTERRUPTION, OR COST OF SUBSTITUTE GOODS OR SERVICES, ARISING OUT OF OR IN ANY WAY RELATED TO YOUR USE OF OR INABILITY TO USE THE LICENSED MATERIAL, HOWEVER CAUSED AND UNDER ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, TORT, NEGLIGENCE, OR OTHERWISE, EVEN IF ADVISED OF THE POSSIBILLITY OF SUCH DAMAGES. EYUM'S TOTAL CUMULATIVE LIABILITY TO YOU FOR ALL CLAIMS ARISING UNDER OR RELATED TO THIS LICENSE, REGARDLESS OF THE FORM OF ACTION, SHALL NOT EXCEED TEN UNITED STATES DOLLARS (USD $10.00). THE LIMITATIONS IN THIS SECTION APPLY TO THE FULLEST EXTENT PERMITTED BY LAW IN THE APPLICABLE JURISDICTION. SOME JURISDICTIONS DO NOT ALLOW CERTAIN EXCLUSIONS OR LIMITATIONS; IN SUCH JURISDICTIONS, THE LIMITATIONS ABOVE APPLY TO THE MAXIMUM EXTENT PERMITTED BY LAW.
+
+
+SECTION 10. PATENT RIGHTS
+
+This License does not grant any rights under any patent, patent application, or other patent right held, owned, or claimed by eYuM or any contributor to the Licensed Material. No patent license is granted, implied, or conveyed by this License, whether by estoppel, implication, or otherwise. If You, or any entity You control or act on behalf of, initiates or threatens any patent claim or proceeding against eYuM or any contributor to the Licensed Material, alleging that any Licensed Material or any portion thereof infringes any patent claim, Your rights under this License terminate automatically as of the date such assertion, claim, or proceeding is first filed, threatened, or initiated.
+
+
+SECTION 11. GOVERNING LAW AND JURISDICTION
+
+11.1 This License and all disputes arising from or relating to it, including disputes regarding its formation, interpretation, performance, breach, termination, or enforceability, shall be governed by and construed in accordance with the laws of the State of New Mexico, United States of America, without regard to its conflict of law provisions or rules that would require application of the law of any other jurisdiction.
+
+11.2. Any legal proceeding arising under or related to this License shall be
+brought exclusively in the state or federal courts located in the State of
+New Mexico. Each party irrevocably submits to the exclusive personal
+jurisdiction and venue of such courts and waives any objection to venue or
+jurisdiction in such courts.
+
+11.3. eYuM reserves the right to update the governing jurisdiction in a
+future version of this License to reflect changes in eYuM's operational
+base. Any such update applies only to future versions of this License issued
+after the effective date of the change and does not retroactively alter
+projects designated under prior versions.
+
+
+SECTION 12. SEVERABILITY
+
+If any provision of this License is held by a court of competent jurisdiction to be invalid, illegal, or unenforceable under applicable law, that provision shall be modified to the minimum extent necessary to make it valid and enforceable. If modification is not possible, the invalid provision shall be severed from this License. The modificatiion or severance of any provision shall not affect the validity or enforceability of the reemainging provisions, which shall continue in full force and effect as if the invalid provision had never been included.
+
+
+SECTION 13. ENTIRE AGREEMENT
+
+This License constitutes the entire agreement between eYuM and You with respect to the Licensed Material and supersedes all prior representations, understandings, communications, and agreements regarding the same subject matter. No modification to this License is effective unless made in writing and designated by eYuM as a formal amendment to the applicable version of this License.
+
+
+SECTION 14. VERSIONING
+
+14.1. This document is version 1 of the eYuM Public License, designated EPL-1. eYuM may publish updated or revised versions of this License from time to time under incremented version numbers.
+
+14.2. If Licensed Material in a given eYuM project specifies a version number of this License, You must comply with the terms of that specific version as applied to that project.
+
+14.3. If Licensed Material does not specify a version number, the most recently published version of the eYuM Public License at the time of Your first use of the Licensed Material applies. You may not elect an earlier version of this License in order to obtain terms more permissive than those in effect at the time of use.
+
+14.4. eYuM reserves the right to apply updated versions of this License to newly published or updated projects. Projects that carry an explicit version designation remain under that version unless eYuM expressly updates the designation for that project.
+
+SECTION 15. USE OF THIS LICENSE TEXT
+
+You may reproduce and distribute this License document verbatim, provided it is not modified in any respect and is not used to govern any project or materials not produced by eYuM or not expressly designated by eYuM as covered by this License. Use of this License text to govern third-party projects or materials without prior written authorization from eYuM is not permitted.
+
+
+End of eYuM Public License, Version 1 (EPL-1).
