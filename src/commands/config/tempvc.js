@@ -74,7 +74,7 @@ module.exports = class extends Command {
                   name: `${message.author.tag}`,
                   iconURL: message.author.displayAvatarURL({ dynamic: true }),
                 })
-                .setTitle(`${fail} ${language.missingUser} `)
+                .setTitle(`${fail} ${language.missingUser}`)
                 .setDescription(`${language.tempvc2}`)
                 .setTimestamp()
                 .setFooter({ text: `${process.env.AUTH_DOMAIN}` }),
@@ -93,7 +93,7 @@ module.exports = class extends Command {
             new MessageEmbed()
               .setColor(message.guild.members.me.displayHexColor)
               .setDescription(
-                `${message.client.emoji.fail} ${language.tempvc3}`,
+                `${message.client.emoji.fail} | ${language.tempvc3}`,
               )
               .setFooter({ text: `${process.env.AUTH_DOMAIN}` }),
           ],
@@ -144,21 +144,19 @@ module.exports = class extends Command {
       return;
     } else if (args.includes("enable") || args.includes("on")) {
       if (!message.member.permissions.has("MANAGE_CHANNELS"))
-        return message.channel
-          .sendCustom({
-            embeds: [
-              new MessageEmbed()
-                .setAuthor({
-                  name: `${message.author.tag}`,
-                  iconURL: message.author.displayAvatarURL({ dynamic: true }),
-                })
-                .setTitle(`${fail} ${language.missingUser} `)
-                .setDescription(`${language.tempvc2}`)
-                .setTimestamp()
-                .setFooter({ text: `${process.env.AUTH_DOMAIN}` }),
-            ],
-          })
-          .setColor(message.guild.members.me.displayHexColor);
+        return message.channel.sendCustom({
+          embeds: [
+            new MessageEmbed()
+              .setAuthor({
+                name: `${message.author.tag}`,
+                iconURL: message.author.displayAvatarURL({ dynamic: true }),
+              })
+              .setTitle(`${fail} ${language.missingUser}`)
+              .setDescription(`${language.tempvc2}`)
+              .setTimestamp()
+              .setFooter({ text: `${process.env.AUTH_DOMAIN}` }),
+          ],
+        });
 
       try {
         const embed = new MessageEmbed()
@@ -168,168 +166,181 @@ module.exports = class extends Command {
           })
           .setDescription(`\`${language.tempvc6}\``)
           .setColor(message.guild.members.me.displayHexColor);
-        const msg = await message.channel.sendCustom({ embeds: [embed] });
 
+        const msg = await message.channel.sendCustom({
+          embeds: [embed],
+        });
+
+        // CATEGORY
         let category = message.guild.channels.cache.find(
           (c) =>
             c.name.toLowerCase() == "join to create" &&
             c.type == "GUILD_CATEGORY",
         );
-        setTimeout(async () => {
-          if (!category) {
-            await embed
-              .setDescription(`**${language.tempvc7}**`)
-              .setFooter({ text: `${message.client.config.botName} v3.0` })
-              .setTimestamp();
-            msg.edit({ embeds: [embed] }) +
-              message.guild.channels.create(`Join to Create`, {
-                type: "GUILD_CATEGORY",
-                permissionOverwrites: [
-                  {
-                    id: message.guild.id,
-                    allow: ["VIEW_CHANNEL"],
-                  },
-                  {
-                    id: message.author.id,
-                    allow: ["VIEW_CHANNEL"],
-                  },
-                ],
-              });
-            return;
-          } else {
-            embed
-              .setDescription(`**${language.tempvc8}**\n\nID: ${category.id}`)
-              .setFooter({ text: `{message.client.config.botName} v3.0` })
-              .setTimestamp();
-            msg.edit({ embeds: [embed] });
-          }
-        }, 2000);
 
+        if (!category) {
+          embed
+            .setDescription(`**${language.tempvc7}**`)
+            .setFooter({ text: `${message.client.config.botName} v3.0` })
+            .setTimestamp();
+
+          await msg.edit({ embeds: [embed] });
+
+          category = await message.guild.channels.create("Join to Create", {
+            type: "GUILD_CATEGORY",
+            permissionOverwrites: [
+              {
+                id: message.guild.id,
+                allow: ["VIEW_CHANNEL"],
+              },
+              {
+                id: message.author.id,
+                allow: ["VIEW_CHANNEL"],
+              },
+            ],
+          });
+        } else {
+          embed
+            .setDescription(`**${language.tempvc8}**\n\nID: ${category.id}`)
+            .setFooter({ text: `${message.client.config.botName} v3.0` })
+            .setTimestamp();
+
+          await msg.edit({ embeds: [embed] });
+        }
+
+        // VOICE CHANNEL
         let voice = message.guild.channels.cache.find(
           (c) =>
             c.name.toLowerCase() == "join to create" && c.type == "GUILD_VOICE",
         );
 
-        setTimeout(async () => {
-          if (!voice) {
-            await embed
-              .setDescription(`**${language.tempvc9}**`)
-              .setFooter({ text: `{message.client.config.botName} v3.0` })
-              .setTimestamp();
-            msg.edit({ embeds: [embed] });
-            +message.guild.channels
-              .create("Join to create", {
-                type: "GUILD_VOICE",
-                permissionOverwrites: [
-                  {
-                    id: message.guild.id,
-                    deny: ["VIEW_CHANNEL"],
-                  },
-                  {
-                    id: message.author.id,
-                    allow: ["VIEW_CHANNEL"],
-                  },
-                ],
-              })
-              .then((s) => {
-                if (!category) return;
-                s.setParent(category.id).catch(() => {});
-              });
+        if (!voice) {
+          embed
+            .setDescription(`**${language.tempvc9}**`)
+            .setFooter({ text: `${message.client.config.botName} v3.0` })
+            .setTimestamp();
 
-            return;
-          } else {
-            embed
-              .setDescription(`**${language.tempvc10}**\n\nID: ${voice.id}`)
-              .setFooter({ text: `{message.client.config.botName} v3.0` })
-              .setTimestamp();
-            msg.edit({ embeds: [embed] });
-          }
-        }, 2000);
+          await msg.edit({ embeds: [embed] });
 
-        setTimeout(async () => {
-          if (!voice || !category) {
-            embed
-              .setAuthor({ name: `Setup Fail` })
-              .setDescription(
-                `${language.tempvc11.replace(/{prefix}/g, `${prefix}`)}`,
-              )
-              .setFooter({ text: `{message.client.config.botName} v3.0` })
-              .setTimestamp();
-            msg.edit({ embeds: [embed] });
-            await Vc.findOne(
+          voice = await message.guild.channels.create("Join to create", {
+            type: "GUILD_VOICE",
+            permissionOverwrites: [
               {
-                guildId: message.guild.id,
+                id: message.guild.id,
+                deny: ["VIEW_CHANNEL"],
               },
-              async (err, guild) => {
-                if (!guild) {
-                  Vc.create({
-                    guildId: message.guild.id,
+              {
+                id: message.author.id,
+                allow: ["VIEW_CHANNEL"],
+              },
+            ],
+          });
+
+          if (category) {
+            await voice.setParent(category.id).catch(() => {});
+          }
+        } else {
+          embed
+            .setDescription(`**${language.tempvc10}**\n\nID: ${voice.id}`)
+            .setFooter({ text: `${message.client.config.botName} v3.0` })
+            .setTimestamp();
+
+          await msg.edit({ embeds: [embed] });
+        }
+
+        // FINAL CHECK
+        if (!voice || !category) {
+          embed
+            .setAuthor({ name: `Setup Fail` })
+            .setDescription(
+              `${language.tempvc11.replace(/{prefix}/g, `${prefix}`)}`,
+            )
+            .setFooter({ text: `${message.client.config.botName} v3.0` })
+            .setTimestamp();
+
+          await msg.edit({ embeds: [embed] });
+
+          await Vc.findOne(
+            {
+              guildId: message.guild.id,
+            },
+            async (err, guild) => {
+              if (!guild) {
+                Vc.create({
+                  guildId: message.guild.id,
+                  channelId: null,
+                  categoryID: null,
+                });
+
+                return;
+              } else {
+                guild
+                  .updateOne({
                     channelId: null,
                     categoryID: null,
-                  });
+                  })
+                  .catch((err) => console.error(err));
+              }
+            },
+          );
 
-                  return;
-                } else {
-                  guild
-                    .updateOne({
-                      channelId: null,
-                      categoryID: null,
-                    })
-                    .catch((err) => console.error(err));
-                }
-              },
-            );
+          return;
+        }
 
-            return;
-          } else {
-            let channelVoice = message.client.channels.cache.get(voice.id);
-            let channelInv = await channelVoice
-              .createInvite({
-                maxAge: 0,
-                maxUses: 0,
-              })
-              .catch(() => {});
-            voice.setParent(category.id);
-            embed
-              .setAuthor({
-                name: `${language.tempvc12}`,
-                iconURL: `https://serenia.eyum.dev/logo.png`,
-                url: `${channelInv}`,
-              })
-              .setDescription(
-                `**${language.tempvc13}** ${category.name}\n**${language.tempvc13} ID:** ${category.id}\n\n**${language.tempvc14}** ${voice.name}\n**${language.tempvc14} ID:** ${voice.id}\n\n${language.tempvc15} \`${prefix}tempvc off\` `,
-              )
-              .setFooter({ text: `{message.client.config.botName} v3.0` })
-              .setTimestamp();
-            msg.edit({ embeds: [embed] });
-            if (channelInv && channelVoice)
-              message.channel.sendCustom(`${channelInv}`);
-            await Vc.findOne(
-              {
+        // INVITE
+        let channelVoice = message.client.channels.cache.get(voice.id);
+
+        let channelInv = await channelVoice
+          .createInvite({
+            maxAge: 0,
+            maxUses: 0,
+          })
+          .catch(() => {});
+
+        embed
+          .setAuthor({
+            name: `${language.tempvc12}`,
+            iconURL: `https://serenia.eyum.dev/logo.png`,
+            url: `${channelInv}`,
+          })
+          .setDescription(
+            `**${language.tempvc13}** ${category.name}\n**${language.tempvc13} ID:** ${category.id}\n\n**${language.tempvc14}** ${voice.name}\n**${language.tempvc14} ID:** ${voice.id}\n\n${language.tempvc15} \`${prefix}tempvc off\` `,
+          )
+          .setFooter({ text: `${message.client.config.botName} v3.0` })
+          .setTimestamp();
+
+        await msg.edit({ embeds: [embed] });
+
+        if (channelInv && channelVoice)
+          message.channel.sendCustom(`${channelInv}`);
+
+        // SAVE DATABASE
+        await Vc.findOne(
+          {
+            guildId: message.guild.id,
+          },
+          async (err, guild) => {
+            if (!guild) {
+              Vc.create({
                 guildId: message.guild.id,
-              },
-              async (err, guild) => {
-                if (!guild) {
-                  Vc.create({
-                    guildId: message.guild.id,
-                    channelId: voice.id,
-                    categoryID: category.id,
-                  });
+                channelId: voice.id,
+                categoryID: category.id,
+              });
 
-                  return;
-                } else {
-                  guild
-                    .updateOne({
-                      channelId: voice.id,
-                      categoryID: category.id,
-                    })
-                    .catch((err) => console.error(err));
-                }
-              },
-            );
-          }
-        }, 2000);
-      } catch {
+              return;
+            } else {
+              guild
+                .updateOne({
+                  channelId: voice.id,
+                  categoryID: category.id,
+                })
+                .catch((err) => console.error(err));
+            }
+          },
+        );
+      } catch (err) {
+        console.error(err);
+
         message.channel.sendCustom({
           embeds: [
             new MessageEmbed()
@@ -337,6 +348,7 @@ module.exports = class extends Command {
               .setColor(`RED`),
           ],
         });
+
         await Vc.findOne(
           {
             guildId: message.guild.id,

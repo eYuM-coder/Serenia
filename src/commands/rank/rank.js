@@ -2,6 +2,7 @@ const Command = require("../../structures/Command");
 const { createCanvas, loadImage } = require("canvas");
 const { MessageAttachment } = require("discord.js");
 const Guild = require("../../database/models/leveling");
+const assignLevelRole = require("../../utils/assignLevelRole");
 
 // Calculate the required XP for a certain level
 function calculateRequiredXP(level) {
@@ -41,7 +42,7 @@ module.exports = class extends Command {
 
   async run(message) {
     try {
-      const targetUser = message.mentions.users.first() || message.author;
+      const targetUser = message.mentions.members.first() || message.member;
       const guildId = message.guild.id;
       const guild = await Guild.findOne({ guildId: guildId });
 
@@ -77,7 +78,7 @@ module.exports = class extends Command {
       ctx.fillStyle = "#FFFFFF";
       ctx.font = "bold 36px Arial";
       ctx.textAlign = "left";
-      ctx.fillText(targetUser.username, 200, 100);
+      ctx.fillText(targetUser.user.username, 200, 100);
 
       // Avatar
       const avatar = await loadImage(
@@ -140,6 +141,8 @@ module.exports = class extends Command {
 
       const attachment = new MessageAttachment(canvas.toBuffer(), "rank.png");
       message.channel.sendCustom({ files: [attachment] });
+
+      assignLevelRole(message.guild, targetUser, user.level, user.level - 1);
     } catch (error) {
       console.error("Error occurred:", error);
       message.reply("An error occurred while generating the rank card.");

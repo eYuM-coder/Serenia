@@ -11,17 +11,16 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 </head>
-<%- include("../partials/dashMenu", { bot, user, path, description, title: `Serenia
-- Dashboard`, url})%> <% if(guild.channels.cache.filter(m => m.type ===
-'GUILD_TEXT').size > 0) { %>
+<%- include("../partials/dashMenu", { bot, user, path, description, title: `Serenia - Dashboard`, url})%>
+<% if(guild.channels.cache.filter(m=> m.type ===
+    'GUILD_TEXT').size > 0) { %>
 
 <link rel="stylesheet" href="https://cdn.lineicons.com/2.0/LineIcons.css" />
 <link rel="preconnect" href="https://fonts.gstatic.com" />
 <link href="https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@300;500&display=swap" rel="stylesheet" />
-<% if (guild.icon) { iconurl = "https://cdn.discordapp.com/icons/" + guild.id +
-"/" + guild.icon + ".png??size=512"; } else { iconurl =
-"https://cdn.glitch.com/82fe990a-7942-42e3-9790-39807ccdb9f6%2Ficon-404-dark.png?v=1602427904949";
-} %>
+<% if (guild.icon) { iconurl="https://cdn.discordapp.com/icons/" + guild.id + "/" + guild.icon + ".png??size=512" ;
+      } else { iconurl="https://cdn.glitch.com/82fe990a-7942-42e3-9790-39807ccdb9f6%2Ficon-404-dark.png?v=1602427904949"
+      ; } %>
 
 <div class="container" style="padding-top: 80px">
   <div class="main">
@@ -29,7 +28,9 @@
       <ul>
         <div class="guild">
           <img class="server-image" src="<%= iconurl %>" alt="<% guild.name %>" />
-          <p class="server-name" style="font-size: 26px"><%= guild.name %></p>
+          <p class="server-name" style="font-size: 26px">
+            <%= guild.name %>
+          </p>
         </div>
         <p>Settings</p>
         <li>
@@ -105,8 +106,8 @@
 
     <div class="botsettings">
       <div class="alert alert-info" role="alert">
-        <i class="fa fa-info-circle" style="font-size: 16px"></i>This Page is
-        currently under Development, feel free to come back later.
+        <i class="fa fa-info-circle" style="font-size: 16px"></i>This page is
+        currently under development, feel free to come back later.
       </div>
     </div>
   </div>

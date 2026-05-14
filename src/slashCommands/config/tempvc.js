@@ -16,6 +16,7 @@ module.exports = {
     )
     .setContexts(0)
     .setIntegrationTypes(0),
+  cooldown: 10,
   async execute(interaction) {
     const guildDB = await Guild.findOne({
       guildId: interaction.guild.id,
@@ -139,223 +140,112 @@ module.exports = {
       return;
     } else if (toggle.includes("enable") || toggle.includes("on")) {
       if (!interaction.member.permissions.has("MANAGE_CHANNELS"))
-        return interaction
-          .reply({
-            embeds: [
-              new MessageEmbed()
-                .setAuthor({
-                  name: `${interaction.user.tag}`,
-                  iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
-                })
-                .setTitle(`${fail} ${language.missingUser}`)
-                .setDescription(`${language.tempvc2}`)
-                .setTimestamp()
-                .setFooter({ text: `${process.env.AUTH_DOMAIN}` }),
-            ],
-            ephemeral: true,
-          })
-          .setColor(interaction.guild.members.me.displayHexColor);
+        return interaction.reply({
+          embeds: [
+            new MessageEmbed()
+              .setAuthor({
+                name: interaction.user.tag,
+                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+              })
+              .setTitle(`${fail} ${language.missingUser}`)
+              .setDescription(language.tempvc2)
+              .setTimestamp()
+              .setFooter({ text: process.env.AUTH_DOMAIN }),
+          ],
+          ephemeral: true,
+        });
 
       try {
         const embed = new MessageEmbed()
           .setAuthor({
-            name: `${language.tempvc5}`,
-            iconURL: `https://www.creeda.co.in/Images/loader.gif`,
+            name: language.tempvc5,
+            iconURL: "https://www.creeda.co.in/Images/loader.gif",
           })
           .setDescription(`\`${language.tempvc6}\``)
           .setColor(interaction.guild.members.me.displayHexColor);
-        const msg = await interaction.reply({ embeds: [embed] });
 
+        await interaction.reply({ embeds: [embed], fetchReply: true });
+
+        const msg = await interaction.fetchReply();
+
+        // ================= CATEGORY =================
         let category = interaction.guild.channels.cache.find(
           (c) =>
-            c.name.toLowerCase() == "join to create" &&
-            c.type == "GUILD_CATEGORY",
+            c.name.toLowerCase() === "join to create" &&
+            c.type === "GUILD_CATEGORY",
         );
-        setTimeout(async () => {
-          if (!category) {
-            await embed
-              .setDescription(`**${language.tempvc7}**`)
-              .setFooter({ text: `${interaction.client.config.botName} v2.5` })
-              .setTimestamp();
-            interaction.editReply({ embeds: [embed] }) +
-              interaction.guild.channels.create(`Join to Create`, {
-                type: "GUILD_CATEGORY",
-                permissionOverwrites: [
-                  {
-                    id: interaction.guild.id,
-                    allow: ["VIEW_CHANNEL"],
-                  },
-                  {
-                    id: interaction.user.id,
-                    allow: ["VIEW_CHANNEL"],
-                  },
-                ],
-              });
-            return;
-          } else {
-            embed
-              .setDescription(`**${language.tempvc8}**\n\nID: ${category.id}`)
-              .setFooter({ text: `${interaction.client.config.botName} v2.5` })
-              .setTimestamp();
-            interaction.editReply({ embeds: [embed] });
-          }
-        }, 2000);
 
+        if (!category) {
+          category = await interaction.guild.channels.create("Join to Create", {
+            type: "GUILD_CATEGORY",
+          });
+
+          embed.setDescription(`**${language.tempvc7}**`);
+          await interaction.editReply({ embeds: [embed] });
+        } else {
+          embed.setDescription(`**${language.tempvc8}**\n\nID: ${category.id}`);
+          await interaction.editReply({ embeds: [embed] });
+        }
+
+        // ================= VOICE =================
         let voice = interaction.guild.channels.cache.find(
           (c) =>
-            c.name.toLowerCase() == "join to create" && c.type == "GUILD_VOICE",
+            c.name.toLowerCase() === "join to create" &&
+            c.type === "GUILD_VOICE",
         );
 
-        setTimeout(async () => {
-          if (!voice) {
-            await embed
-              .setDescription(`**${language.tempvc9}**`)
-              .setFooter({ text: `${interaction.client.config.botName} v2.5` })
-              .setTimestamp();
-            interaction.editReply({ embeds: [embed] }) +
-              interaction.guild.channels
-                .create("Join to create", {
-                  type: "GUILD_VOICE",
-                  permissionOverwrites: [
-                    {
-                      id: interaction.guild.id,
-                      allow: ["VIEW_CHANNEL"],
-                    },
-                    {
-                      id: interaction.user.id,
-                      allow: ["VIEW_CHANNEL"],
-                    },
-                  ],
-                })
-                .then(() => {
-                  if (!category) return;
-                  interaction.setParent(category.id).catch(() => {});
-                });
+        if (!voice) {
+          voice = await interaction.guild.channels.create("Join to create", {
+            type: "GUILD_VOICE",
+            parent: category.id,
+          });
 
-            return;
-          } else {
-            embed
-              .setDescription(`**${language.tempvc10}**\n\nID: ${voice.id}`)
-              .setFooter({ text: `${interaction.client.config.botName} v2.5` })
-              .setTimestamp();
-            interaction.editReply({ embeds: [embed] });
-          }
-        }, 2000);
+          embed.setDescription(`**${language.tempvc9}**`);
+          await interaction.editReply({ embeds: [embed] });
+        } else {
+          embed.setDescription(`**${language.tempvc10}**\n\nID: ${voice.id}`);
+          await interaction.editReply({ embeds: [embed] });
+        }
 
-        setTimeout(async () => {
-          if (!voice || !category) {
-            embed
-              .setAuthor({ name: `Setup Fail` })
-              .setDescription(
-                `${language.tempvc11.replace(/{prefix}/g, `${prefix}`)}`,
-              )
-              .setFooter({ text: `${interaction.client.config.botName} v2.5` })
-              .setTimestamp();
-            interaction.editReply({ embeds: [embed] });
-            await Vc.findOne(
-              {
-                guildId: interaction.guild.id,
-              },
-              async (err, guild) => {
-                if (!guild) {
-                  Vc.create({
-                    guildId: interaction.guild.id,
-                    channelId: null,
-                    categoryID: null,
-                  });
+        // ================= SAVE =================
+        await Vc.findOneAndUpdate(
+          { guildId: interaction.guild.id },
+          {
+            guildId: interaction.guild.id,
+            channelId: voice.id,
+            categoryID: category.id,
+          },
+          { upsert: true },
+        );
 
-                  return;
-                } else {
-                  guild
-                    .updateOne({
-                      channelId: null,
-                      categoryID: null,
-                    })
-                    .catch((err) => console.error(err));
-                }
-              },
-            );
+        // ================= FINAL =================
+        embed
+          .setAuthor({
+            name: language.tempvc12,
+            iconURL: `${process.env.AUTH_DOMAIN}/logo.png`,
+          })
+          .setDescription(
+            `**${language.tempvc13}** ${category.name}\n` +
+              `ID: ${category.id}\n\n` +
+              `**${language.tempvc14}** ${voice.name}\n` +
+              `ID: ${voice.id}\n\n` +
+              `${language.tempvc15} \`${prefix}tempvc off\``,
+          )
+          .setFooter({ text: `${interaction.client.config.botName} v2.5` })
+          .setTimestamp();
 
-            return;
-          } else {
-            let channelVoice = interaction.client.channels.cache.get(voice.id);
-            let channelInv = await channelVoice
-              .createInvite({
-                maxAge: 0,
-                maxUses: 0,
-              })
-              .catch(() => {});
-            voice.setParent(category.id);
-            embed
-              .setAuthor({
-                name: `${language.tempvc12}`,
-                iconURL: `${process.env.AUTH_DOMAIN}/logo.png`,
-                url: `${channelInv}`,
-              })
-              .setDescription(
-                `**${language.tempvc13}** ${category.name}\n**${language.tempvc13} ID:** ${category.id}\n\n**${language.tempvc14}** ${voice.name}\n**${language.tempvc14} ID:** ${voice.id}\n\n${language.tempvc15} \`${prefix}tempvc off\``,
-              )
-              .setFooter({ text: `${interaction.client.config.botName} v2.5` })
-              .setTimestamp();
-            interaction.editReply({ embeds: [embed] });
-            if (channelInv && channelVoice)
-              interaction.followUp({ content: `${channelInv}` });
-            await Vc.findOne(
-              {
-                guildId: interaction.guild.id,
-              },
-              async (err, guild) => {
-                if (!guild) {
-                  Vc.create({
-                    guildId: interaction.guild.id,
-                    channelId: voice.id,
-                    categoryID: category.id,
-                  });
+        await interaction.editReply({ embeds: [embed] });
+      } catch (err) {
+        console.error(err);
 
-                  return;
-                } else {
-                  guild
-                    .updateOne({
-                      channelId: voice.id,
-                      categoryID: category.id,
-                    })
-                    .catch((err) => console.error(err));
-                }
-              },
-            );
-          }
-        }, 2000);
-      } catch {
         interaction.reply({
           embeds: [
             new MessageEmbed()
-              .setDescription(`${language.tempvc16}`)
-              .setColor(`RED`),
+              .setDescription(language.tempvc16)
+              .setColor("RED"),
           ],
+          ephemeral: true,
         });
-        await Vc.findOne(
-          {
-            guildId: interaction.guild.id,
-          },
-          async (err, guild) => {
-            if (!guild) {
-              Vc.create({
-                guildId: interaction.guild.id,
-                channelId: null,
-                categoryID: null,
-              });
-
-              return;
-            } else {
-              guild
-                .updateOne({
-                  channelId: null,
-                  categoryID: null,
-                })
-                .catch((err) => console.error(err));
-            }
-          },
-        );
       }
     } else if (toggle[0]) {
       interaction.reply({ embeds: [properUsage] });

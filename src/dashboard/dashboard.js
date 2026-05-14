@@ -38,7 +38,6 @@ const metrics = require("datadog-metrics");
 const { cpu } = require("node-os-utils");
 const Application = require("../database/models/application/application.js");
 const customCommand = require("../database/schemas/customCommand.js");
-const fs = require("fs");
 
 const Hook = new Discord.WebhookClient({ url: jsonconfig.webhooks.votes });
 
@@ -838,20 +837,20 @@ module.exports = async (client) => {
         xx = Date.now() - leave;
       }
 
-      let createdd = Math.floor(xx / 86400000);
+      let created = Math.floor(xx / 86400000);
 
-      if (6 >= createdd) {
+      if (6 >= created) {
         leave2.push(leave);
       }
 
-      if (0 >= createdd) {
+      if (0 >= created) {
         leave1.push(leave);
       }
     });
 
     renderTemplate(res, req, "./new/mainpage.ejs", {
       guild: guild,
-      alert: `Dashboard and bot hosted by eYuM (https://eyum.org)`,
+      alert: `Dashboard and bot hosted by eYuM (https://eyum.dev)`,
       join1: join1.length || 0,
       join2: join2.length || 0,
       leave1: leave1.length || 0,
@@ -909,13 +908,13 @@ module.exports = async (client) => {
         xx = Date.now() - leave;
       }
 
-      let createdd = Math.floor(xx / 86400000);
+      let created = Math.floor(xx / 86400000);
 
-      if (6 >= createdd) {
+      if (6 >= created) {
         leave2.push(leave);
       }
 
-      if (0 >= createdd) {
+      if (0 >= created) {
         leave1.push(leave);
       }
     });
@@ -1127,7 +1126,7 @@ module.exports = async (client) => {
     await appSettings.save().catch(() => {});
     renderTemplate(res, req, "./new/mainapp.ejs", {
       guild: guild,
-      alert: `Your Changes have been saved ✅`,
+      alert: `Your changes have been saved ✅`,
       app: appSettings,
       settings: storedSettings,
     });
@@ -1371,7 +1370,7 @@ module.exports = async (client) => {
 
           renderTemplate(res, req, "./new/mainwelcome.ejs", {
             guild: guild,
-            alert: `Please make sure to save the welcome Channel first ❌`,
+            alert: `Please make sure to save the welcome channel first ❌`,
             settings: storedSettings,
             welcome: welcomeSettings,
             leave: leaveSettings,
@@ -1390,7 +1389,7 @@ module.exports = async (client) => {
 
           renderTemplate(res, req, "./new/mainwelcome.ejs", {
             guild: guild,
-            alert: `Please make sure to save the welcome Channel first ❌`,
+            alert: `Please make sure to save the welcome channel first ❌`,
             settings: storedSettings,
             welcome: welcomeSettings,
             leave: leaveSettings,
@@ -1402,7 +1401,7 @@ module.exports = async (client) => {
           if (data.leaveMessage.length > 2000) {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please make sure text length is below 2000❌`,
+              alert: `Please make sure text length is below 2000 ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1414,7 +1413,7 @@ module.exports = async (client) => {
         } else {
           renderTemplate(res, req, "./new/mainwelcome.ejs", {
             guild: guild,
-            alert: `Please Provide me with a text ❌`,
+            alert: `Please provide me with text ❌`,
             settings: storedSettings,
             welcome: welcomeSettings,
             leave: leaveSettings,
@@ -1449,7 +1448,7 @@ module.exports = async (client) => {
           if (data.leave_author_name.length > 256) {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please make sure the author length is below 200❌`,
+              alert: `Please make sure the author length is below 200 ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1471,7 +1470,7 @@ module.exports = async (client) => {
           } else {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please make sure this is a valid URL❌`,
+              alert: `Please make sure this is a valid URL ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1491,7 +1490,7 @@ module.exports = async (client) => {
           } else {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please make sure this is a valid URL❌`,
+              alert: `Please make sure this is a valid URL ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1506,7 +1505,7 @@ module.exports = async (client) => {
           if (data.leave_embedTitle.length > 200) {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please make sure your title is under 200 characters long❌`,
+              alert: `Please make sure your title is under 200 characters long ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1518,7 +1517,7 @@ module.exports = async (client) => {
         } else {
           renderTemplate(res, req, "./new/mainwelcome.ejs", {
             guild: guild,
-            alert: `Please make sure to include a title❌`,
+            alert: `Please make sure to include a title ❌`,
             settings: storedSettings,
             welcome: welcomeSettings,
             leave: leaveSettings,
@@ -1532,7 +1531,7 @@ module.exports = async (client) => {
           } else {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Invalid Link Provided ❌`,
+              alert: `Invalid link provided ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1575,7 +1574,7 @@ module.exports = async (client) => {
           } else {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please provide a valid thumbnail❌`,
+              alert: `Please provide a valid thumbnail ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1610,7 +1609,7 @@ module.exports = async (client) => {
           } else {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Invalid Footer Icon ❌`,
+              alert: `Invalid footer icon ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1667,7 +1666,7 @@ module.exports = async (client) => {
 
           renderTemplate(res, req, "./new/mainwelcome.ejs", {
             guild: guild,
-            alert: `Please make sure to save the welcome Channel first ❌`,
+            alert: `Please make sure to save the welcome channel first ❌`,
             settings: storedSettings,
             welcome: welcomeSettings,
             leave: leaveSettings,
@@ -1685,7 +1684,7 @@ module.exports = async (client) => {
           await welcomeSettings.save().catch(() => {});
           renderTemplate(res, req, "./new/mainwelcome.ejs", {
             guild: guild,
-            alert: `Please make sure to save the welcome Channel first ❌`,
+            alert: `Please make sure to save the welcome channel first ❌`,
             settings: storedSettings,
             welcome: welcomeSettings,
             leave: leaveSettings,
@@ -1697,7 +1696,7 @@ module.exports = async (client) => {
           if (data.welcomeMessage.length > 2000) {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please make sure text length is below 2000❌`,
+              alert: `Please make sure text length is below 2000 ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1709,7 +1708,7 @@ module.exports = async (client) => {
         } else {
           renderTemplate(res, req, "./new/mainwelcome.ejs", {
             guild: guild,
-            alert: `Please Provide me with a text ❌`,
+            alert: `Please provide me with text ❌`,
             settings: storedSettings,
             welcome: welcomeSettings,
             leave: leaveSettings,
@@ -1744,7 +1743,7 @@ module.exports = async (client) => {
           if (data.author_name.length > 256) {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please make sure the author length is below 200❌`,
+              alert: `Please make sure the author length is below 200 ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1766,7 +1765,7 @@ module.exports = async (client) => {
           } else {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please make sure this is a valid URL❌`,
+              alert: `Please make sure this is a valid URL ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1786,7 +1785,7 @@ module.exports = async (client) => {
           } else {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please make sure this is a valid URL❌`,
+              alert: `Please make sure this is a valid URL ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1801,7 +1800,7 @@ module.exports = async (client) => {
           if (data.embedTitle.length > 200) {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please make sure your title is under 200 characters long❌`,
+              alert: `Please make sure your title is under 200 characters long ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1813,7 +1812,7 @@ module.exports = async (client) => {
         } else {
           renderTemplate(res, req, "./new/mainwelcome.ejs", {
             guild: guild,
-            alert: `Please make sure to include a title❌`,
+            alert: `Please make sure to include a title ❌`,
             settings: storedSettings,
             welcome: welcomeSettings,
             leave: leaveSettings,
@@ -1827,7 +1826,7 @@ module.exports = async (client) => {
           } else {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Invalid Link Provided ❌`,
+              alert: `Invalid link provided ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1873,7 +1872,7 @@ module.exports = async (client) => {
           } else {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please provide a valid thumbnail❌`,
+              alert: `Please provide a valid thumbnail ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1894,7 +1893,7 @@ module.exports = async (client) => {
           } else {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Please provide a valid image❌`,
+              alert: `Please provide a valid image ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1929,7 +1928,7 @@ module.exports = async (client) => {
           } else {
             renderTemplate(res, req, "./new/mainwelcome.ejs", {
               guild: guild,
-              alert: `Invalid Footer Icon ❌`,
+              alert: `Invalid footer icon ❌`,
               settings: storedSettings,
               welcome: welcomeSettings,
               leave: leaveSettings,
@@ -1973,7 +1972,7 @@ module.exports = async (client) => {
     await leaveSettings.save().catch(() => {});
     renderTemplate(res, req, "./new/mainwelcome.ejs", {
       guild: guild,
-      alert: `Your Changes have been saved! ✅`,
+      alert: `Your changes have been saved! ✅`,
       settings: storedSettings,
       welcome: welcomeSettings,
       leave: leaveSettings,
@@ -2261,7 +2260,7 @@ module.exports = async (client) => {
 
       renderTemplate(res, req, "./new/mainmoderation.ejs", {
         guild: guild,
-        alert: `Auto Punish has been disabled ✅`,
+        alert: `Auto-punish has been disabled ✅`,
         settings: storedSettings,
         mod: mod,
       });
@@ -2275,7 +2274,7 @@ module.exports = async (client) => {
 
       renderTemplate(res, req, "./new/mainmoderation.ejs", {
         guild: guild,
-        alert: `Ban Message has been disabled ✅`,
+        alert: `Ban message has been disabled ✅`,
         settings: storedSettings,
         mod: mod,
       });
@@ -2292,7 +2291,7 @@ module.exports = async (client) => {
         if (message.length > 1999) {
           renderTemplate(res, req, "./new/mainmoderation.ejs", {
             guild: guild,
-            alert: `Please Provide a message under 2000 characters long`,
+            alert: `Please provide a message under 2000 characters long`,
             settings: storedSettings,
             mod: mod,
           });
@@ -2301,7 +2300,7 @@ module.exports = async (client) => {
       } else {
         renderTemplate(res, req, "./new/mainmoderation.ejs", {
           guild: guild,
-          alert: `Please Provide a message`,
+          alert: `Please provide a message`,
           settings: storedSettings,
           mod: mod,
         });
@@ -2884,7 +2883,7 @@ module.exports = async (client) => {
         guild: guild,
         settings: storedSettings,
         sticky: stickySettings,
-        alert: "Successfuly disabled the autorole Module ✅",
+        alert: "Successfully disabled the autorole module ✅",
       });
       return;
     }
@@ -2920,7 +2919,7 @@ module.exports = async (client) => {
         guild: guild,
         settings: storedSettings,
         sticky: stickySettings,
-        alert: "Successfuly disabled the sticky role Module ✅",
+        alert: "Successfully disabled the sticky role module ✅",
       });
       return;
     }
@@ -2930,7 +2929,7 @@ module.exports = async (client) => {
     renderTemplate(res, req, "./new/mainautorole.ejs", {
       guild: guild,
       sticky: stickySettings,
-      alert: `Your Changes have been saved ✅`,
+      alert: `Your changes have been saved ✅`,
       settings: storedSettings,
     });
   });
@@ -3014,7 +3013,7 @@ module.exports = async (client) => {
       if (resultsHeheLol === "0" || !results || !results.length) {
         renderTemplate(res, req, "./new/mainreactionroles.ejs", {
           guild: guild,
-          alert: `The current guild doesn't have any existing reaction Role to delete.`,
+          alert: `The current guild doesn't have any existing reaction role to delete.`,
           emojiArray: EmojiArray,
           settings: storedSettings,
         });
@@ -3024,7 +3023,7 @@ module.exports = async (client) => {
 
       renderTemplate(res, req, "./new/mainreactionroles.ejs", {
         guild: guild,
-        alert: `Succesfuly wiped ${resultsHeheLol} ${resultsHehe} ✅`,
+        alert: `Successfully wiped ${resultsHeheLol} ${resultsHehe} ✅`,
         emojiArray: EmojiArray,
         settings: storedSettings,
       });
@@ -3043,7 +3042,7 @@ module.exports = async (client) => {
       } else {
         renderTemplate(res, req, "./new/mainreactionroles.ejs", {
           guild: guild,
-          alert: `Please Provide me with a valid Channel`,
+          alert: `Please provide me with a valid channel`,
           emojiArray: EmojiArray,
           settings: storedSettings,
         });
@@ -3059,7 +3058,7 @@ module.exports = async (client) => {
         } catch {
           renderTemplate(res, req, "./new/mainreactionroles.ejs", {
             guild: guild,
-            alert: `Please Provide me with a valid message ID`,
+            alert: `Please provide me with a valid message ID`,
             emojiArray: EmojiArray,
             settings: storedSettings,
           });
@@ -3075,7 +3074,7 @@ module.exports = async (client) => {
       } else {
         renderTemplate(res, req, "./new/mainreactionroles.ejs", {
           guild: guild,
-          alert: `Please Provide me with a valid Emoji`,
+          alert: `Please provide me with a valid emoji`,
           emojiArray: EmojiArray,
           settings: storedSettings,
         });
@@ -3092,7 +3091,7 @@ module.exports = async (client) => {
       } else {
         renderTemplate(res, req, "./new/mainreactionroles.ejs", {
           guild: guild,
-          alert: `Please Provide me with a valid  Role`,
+          alert: `Please provide me with a valid role`,
           emojiArray: EmojiArray,
           settings: storedSettings,
         });
@@ -3121,7 +3120,7 @@ module.exports = async (client) => {
 
       renderTemplate(res, req, "./new/mainreactionroles.ejs", {
         guild: guild,
-        alert: `Succesfully Created reaction role ✅`,
+        alert: `Successfully created reaction role ✅`,
         emojiArray: EmojiArray,
         settings: storedSettings,
       });
@@ -3167,7 +3166,7 @@ module.exports = async (client) => {
     await storedSettings.save().catch(() => {});
     renderTemplate(res, req, "./new/mainreactionroles.ejs", {
       guild: guild,
-      alert: `Your Changes have been saved ✅`,
+      alert: `Your changes have been saved ✅`,
       emojiArray: EmojiArray,
       settings: storedSettings,
     });
@@ -3503,7 +3502,7 @@ module.exports = async (client) => {
         guild: guild,
         settings: storedSettings,
         ticket: ticketSettingsNew,
-        alert: "Successfuly Resetted Database ✅",
+        alert: "Successfully reset database ✅",
       });
 
       return;
@@ -3664,7 +3663,7 @@ In the mean time, please explain your issue below`;
         guild: guild,
         settings: storedSettings,
         ticket: ticketSettings,
-        alert: "Successfuly disabled the ticket Module ✅",
+        alert: "Successfully disabled the ticket module ✅",
       });
       return;
     }
@@ -3903,7 +3902,7 @@ In the mean time, please explain your issue below`;
               guild: guild,
               settings: storedSettings,
               ticket: ticketSettings,
-              alert: "Could not find the following Message ",
+              alert: "Could not find the following message ❌",
             });
             return;
           }
@@ -3915,7 +3914,7 @@ In the mean time, please explain your issue below`;
               guild: guild,
               settings: storedSettings,
               ticket: ticketSettings,
-              alert: "Could not find the following Message ",
+              alert: "Could not find the following message ❌",
             });
 
             return;
@@ -4012,7 +4011,7 @@ In the mean time, please explain your issue below`;
             settings: storedSettings,
             ticket: ticketSettings,
             guild: guild,
-            alert: "Succesfuly reacted to the message! ✅",
+            alert: "Successfully reacted to the message! ✅",
           });
           return;
         }
@@ -4024,7 +4023,7 @@ In the mean time, please explain your issue below`;
           settings: storedSettings,
           ticket: ticketSettings,
           guild: guild,
-          alert: "Succesfuly sent the Embed ✅",
+          alert: "Successfully sent the embed ✅",
         });
         return;
       }
@@ -4040,7 +4039,7 @@ In the mean time, please explain your issue below`;
         settings: storedSettings,
         ticket: ticketSettings,
         guild: guild,
-        alert: "Succesfuly switched to Message Ticketing ✅",
+        alert: "Successfully switched to message ticketing ✅",
       });
 
       return;
@@ -4056,7 +4055,7 @@ In the mean time, please explain your issue below`;
         settings: storedSettings,
         ticket: ticketSettings,
         guild: guild,
-        alert: "Succesfuly switched to Reaction Ticketing ✅",
+        alert: "Successfully switched to reaction ticketing ✅",
       });
       return;
     }
@@ -4072,7 +4071,7 @@ In the mean time, please explain your issue below`;
         settings: storedSettings,
         ticket: ticketSettings,
         guild: guild,
-        alert: "Succesfuly switched to Reaction Ticketing ✅",
+        alert: "Successfully switched to reaction ticketing ✅",
       });
       return;
     }
@@ -4088,7 +4087,7 @@ In the mean time, please explain your issue below`;
         settings: storedSettings,
         ticket: ticketSettings,
         guild: guild,
-        alert: "Succesfuly switched to message Ticketing ✅",
+        alert: "Successfully switched to message ticketing ✅",
       });
       return;
     }
@@ -4557,7 +4556,7 @@ In the mean time, please explain your issue below`;
     await storedSettings.save().catch(() => {});
     renderTemplate(res, req, "./new/mainreports.ejs", {
       guild: guild,
-      alert: `Your changes have been saved  ✅`,
+      alert: `Your changes have been saved ✅`,
       settings: storedSettings,
     });
   });

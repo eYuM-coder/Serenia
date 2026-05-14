@@ -30,7 +30,7 @@ module.exports = class extends Event {
 
       if (muteRole)
         member.roles
-          .add(muteRole.id, ["Mute Command / User left and Rejoined."])
+          .add(muteRole.id, ["Mute Command / User left and rejoined."])
           .catch(() => {});
 
       muteDoc.memberRoles = [];
@@ -64,7 +64,7 @@ module.exports = class extends Event {
                 ),
               })
               .setTimestamp()
-              .setColor(member.guild.members.medisplayHexColor);
+              .setColor(color);
 
             if (
               channelEmbed &&

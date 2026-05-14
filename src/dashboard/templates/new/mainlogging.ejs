@@ -252,9 +252,9 @@
               <select id="select12" name="ignore_role">
 
                 <% if(log.moderation.ignore_role && guild.roles.cache.has(log.moderation.ignore_role)){ %>
-                <option style="color: <%= guild.roles.cache.get(log.moderation.ignore_role).hexColor === "#000000" ? {r:255,g:255,b:255} : guild.roles.cache.get(log.moderation.ignore_role).hexColor%>" selected="selected">@<%= guild.roles.cache.get(log.moderation.ignore_role).name %></option>
+                <option style="color: <%= guild.roles.cache.get(log.moderation.ignore_role).hexColor === '#000000' ? {r:255,g:255,b:255} : guild.roles.cache.get(log.moderation.ignore_role).hexColor%>" selected="selected">@<%= guild.roles.cache.get(log.moderation.ignore_role).name %></option>
                 <% guild.roles.cache.filter((r) => r.id !== log.moderation.ignore_role && r.name !== "@everyone" && !r.managed).forEach((r) => { %>
-                <option style="color: <%= r.hexColor === "#000000" ? {r:255,g:255,b:255} : r.hexColor%>">@<%= r.name %></option>
+                <option style="color: <%= r.hexColor === '#000000' ? {r:255,g:255,b:255} : r.hexColor%>">@<%= r.name %></option>
 
                 <% }); %>
                 <option>None</option>

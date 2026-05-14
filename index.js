@@ -150,6 +150,21 @@ client.on("messageCreate", async (message) => {
         .setFooter({ text: `XP: ${currentXP}/${xpNeededForNextLevel}` });
 
       message.channel.sendCustom({ embeds: [levelbed] });
+
+      if (message.guild) {
+        const member =
+          message.guild.members.cache.get(userId) ??
+          (await message.guild.members.fetch(userId).catch(() => null));
+
+        if (member) {
+          await assignLevelRole(
+            message.guild,
+            member,
+            currentLevel,
+            previousLevel,
+          );
+        }
+      }
     }
   }
 });
@@ -432,6 +447,7 @@ client.on("interactionCreate", async (interaction) => {
 });
 
 const { debounce } = require("lodash");
+const assignLevelRole = require("./src/utils/assignLevelRole.js");
 
 const blockEmojis = {
   I: "🟩",
