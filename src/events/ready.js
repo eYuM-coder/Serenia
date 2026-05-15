@@ -31,7 +31,7 @@ module.exports = class extends Event {
 
         const activity =
           entry.type === "CUSTOM"
-            ? { type: "CUSTOM", name: "Custom Status", state: text }
+            ? { type: Discord.ActivityType.Custom, name: "Custom Status", state: text }
             : { type: entry.type, name: text };
 
         this.client.user.setPresence({
