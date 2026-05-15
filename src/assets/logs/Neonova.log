@@ -1,0 +1,29 @@
+2026-02-03 21:23:29 [[31merror[39m] [[36mDatabase[39m] Mongoose connection lost
+2026-02-03 21:23:29 [[32minfo[39m] [[36mERROR[39m] [unhandledRejection] bad auth : authentication failed
+2026-02-03 21:23:29 [[32minfo[39m] [[36mERROR[39m] [multipleResolves] MULTIPLE RESOLVES
+2026-02-03 21:23:32 [[32minfo[39m] [[36mRate Limit[39m] Time out: 3054ms. Limit: 2
+2026-02-03 21:23:33 [[32minfo[39m] [[36mReady[39m] Serenia#2173 is ready to serve 6 guilds with 89 members.
+2026-02-03 21:23:34 [[32minfo[39m] [[36mERROR[39m] [unhandledRejection] bad auth : authentication failed
+2026-02-03 21:23:43 [[32minfo[39m] [[36mERROR[39m] [unhandledRejection] Operation `pastes.find()` buffering timed out after 10000ms
+2026-02-03 21:23:44 [[31merror[39m] [[36mERROR[39m] Error checking empty warnings: Operation `warns.find()` buffering timed out after 10000ms
+2026-02-03 21:23:45 [[31merror[39m] [[36mERROR[39m] Error checking empty warnings: Operation `warns.find()` buffering timed out after 10000ms
+2026-02-03 21:23:46 [[31merror[39m] [[36mERROR[39m] Error checking empty warnings: Operation `warns.find()` buffering timed out after 10000ms
+2026-02-03 21:23:47 [[31merror[39m] [[36mERROR[39m] Error checking empty warnings: Operation `warns.find()` buffering timed out after 10000ms
+2026-02-03 21:23:48 [[31merror[39m] [[36mERROR[39m] Error checking empty warnings: Operation `warns.find()` buffering timed out after 10000ms
+2026-02-03 21:23:49 [[31merror[39m] [[36mERROR[39m] Error checking empty warnings: Operation `warns.find()` buffering timed out after 10000ms
+2026-02-03 21:23:57 [[32minfo[39m] [[36mERROR[39m] [multipleResolves] MULTIPLE RESOLVES
+2026-02-03 21:23:57 [[31merror[39m] [[36mDatabase[39m] Mongoose connection lost
+2026-02-03 21:23:57 [[32minfo[39m] [[36mERROR[39m] [unhandledRejection] bad auth : authentication failed
+2026-02-03 21:24:00 [[32minfo[39m] [[36mRate Limit[39m] Time out: 3257ms. Limit: 2
+2026-02-03 21:24:02 [[32minfo[39m] [[36mReady[39m] Serenia#2173 is ready to serve 6 guilds with 89 members.
+2026-02-03 21:24:46 [[32minfo[39m] [[36mERROR[39m] [multipleResolves] MULTIPLE RESOLVES
+2026-02-03 21:24:47 [[32minfo[39m] [[36mDatabase[39m] Mongoose connection made and is connected
+2026-02-03 21:24:50 [[32minfo[39m] [[36mRate Limit[39m] Time out: 2907ms. Limit: 2
+2026-02-03 21:24:51 [[32minfo[39m] [[36mReady[39m] Serenia#2173 is ready to serve 6 guilds with 89 members.
+2026-02-03 21:24:52 [[32minfo[39m] [[36mDashboard[39m] Listening on port 4000
+2026-02-03 21:47:45 [[32minfo[39m] [[36mERROR[39m] [multipleResolves] MULTIPLE RESOLVES
+2026-02-03 21:47:46 [[32minfo[39m] [[36mDatabase[39m] Mongoose connection made and is connected
+2026-02-03 21:47:49 [[32minfo[39m] [[36mRate Limit[39m] Time out: 2817ms. Limit: 2
+2026-02-03 21:47:50 [[32minfo[39m] [[36mReady[39m] Serenia#2173 is ready to serve 6 guilds with 89 members.
+2026-02-03 21:47:50 [[32minfo[39m] [[36mDashboard[39m] Listening on port 4000
+2026-02-04 10:07:10 [[32minfo[39m] [[36mSlash Commmand[39m] "/ping" (ping) ran by "theeyum_yall" (1067137336674107453) in a DM.
