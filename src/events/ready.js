@@ -7,6 +7,7 @@ const Guild = require("../database/schemas/Guild");
 const { WebhookClient } = require("discord.js");
 const premiumrip = new WebhookClient({ url: config.webhooks.premium }); // make sure webhook link is correct!!
 const Message = require("../utils/other/message");
+
 module.exports = class extends Event {
   async run() {
     Message(this.client);
@@ -29,13 +30,32 @@ module.exports = class extends Event {
           )
           .replace("{shards}", this.client.shardCount ?? 1);
 
-        const activity =
-          entry.type === "CUSTOM"
-            ? { type: Discord.ActivityType.Custom, name: "Custom Status", state: text }
-            : { type: entry.type, name: text };
+        let activity;
+
+        if (entry.type === "CUSTOM") {
+          activity = {
+            name: "Custom Status",
+            state: text,
+            type: Discord.ActivityType.Custom,
+          };
+        } else {
+          // Map string types to Discord.js v14 ActivityType
+          const activityTypeMap = {
+            PLAYING: Discord.ActivityType.Playing,
+            STREAMING: Discord.ActivityType.Streaming,
+            LISTENING: Discord.ActivityType.Listening,
+            WATCHING: Discord.ActivityType.Watching,
+            COMPETING: Discord.ActivityType.Competing,
+          };
+
+          activity = {
+            name: text,
+            type: activityTypeMap[entry.type] || Discord.ActivityType.Playing,
+          };
+        }
 
         this.client.user.setPresence({
-          status: "online",
+          status: Discord.PresenceUpdateStatus.Online,
           activities: [activity],
         });
       };
@@ -60,9 +80,9 @@ module.exports = class extends Event {
           ) {
             const guildPremium = this.client.guilds.cache.get(result.guildId);
             if (guildPremium) {
-              const user = await this.client.users.cache.get(
-                result.premium.redeemedBy.id,
-              );
+              const user = await this.client.users
+                .fetch(result.premium.redeemedBy.id)
+                .catch(() => null);
 
               if (user) {
                 const embed = new Discord.EmbedBuilder()
@@ -79,14 +99,14 @@ module.exports = class extends Event {
                   `**Premium Subscription**\n\n**Guild:** ${
                     guildPremium.name
                   } | **${guildPremium.id}**\nRedeemed by: ${
-                    user.tag || "Unknown"
+                    user?.tag || "Unknown"
                   }\n**Plan:** ${result.premium.plan}`,
                 )
-                .setColor("RED")
+                .setColor("Red")
                 .setTimestamp();
 
               await premiumrip
-                .sendCustom({
+                .send({
                   username: `${config.botName} Lose Premium`,
                   avatarURL: `${this.client.domain}/logo.png`,
                   embeds: [rip],
