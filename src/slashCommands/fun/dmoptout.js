@@ -1,0 +1,77 @@
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const Logging = require("../../database/schemas/logging");
+const dmSystem = require("../../database/models/dmSystem");
+
+module.exports = {
+  data: new SlashCommandBuilder()
+    .setName("dmoptout")
+    .setDescription("Opts out of the DM system")
+    .setContexts(0)
+    .setIntegrationTypes(0),
+  async execute(interaction) {
+    try {
+      const logging = await Logging.findOne({ guildId: interaction.guild.id });
+
+      const dmsystem = await dmSystem.findOne({ userId: interaction.user.id });
+      if (!dmsystem) {
+        const newDmSystem = new dmSystem({
+          userId: interaction.user.id,
+          optedout: "true",
+        });
+
+        await newDmSystem.save();
+        const embed = new EmbedBuilder().setDescription(
+          `DM System profile created.`,
+        );
+        return interaction
+          .reply({ embeds: [embed] })
+          .then(async () => {
+            if (logging && logging.moderation.delete_reply === "true") {
+              setTimeout(() => {
+                interaction.deleteReply().catch(() => {
+                  interaction.channel.send({
+                    content: "Error deleting message.",
+                  });
+                });
+              }, 5000);
+            }
+          })
+          .catch(() => {
+            interaction.channel.send({ content: "Error deleting message." });
+          });
+      } else {
+        await dmSystem.updateOne(
+          {
+            userId: interaction.user.id,
+          },
+          { $set: { optedout: "true" } },
+        );
+        const dmoptout = new EmbedBuilder().setDescription(
+          `You have opted out of the DM system. To begin recieving DMs again, use /dmoptin.`,
+        );
+        return interaction
+          .reply({ embeds: [dmoptout] })
+          .then(async () => {
+            if (logging && logging.moderation.delete_reply === "true") {
+              setTimeout(() => {
+                interaction.deleteReply().catch(() => {
+                  interaction.channel.send({
+                    content: "Error deleting message.",
+                  });
+                });
+              }, 5000);
+            }
+          })
+          .catch(() => {
+            interaction.channel.send({ content: "Error deleting message." });
+          });
+      }
+    } catch (err) {
+      interaction.reply({
+        content: `This command cannot be used in Direct Messages.`,
+        ephemeral: true,
+      });
+      console.error(err);
+    }
+  },
+};
