@@ -1,7 +1,6 @@
 const Event = require("../../structures/Event");
-const { Permissions, Collection } = require("discord.js");
+const { Permissions, Collection, MessageEmbed } = require("discord.js");
 const moment = require("moment");
-const { MessageEmbed } = require("discord.js");
 const logger = require("../../utils/logger");
 const Guild = require("../../database/schemas/Guild");
 const User = require("../../database/schemas/User");
@@ -79,7 +78,7 @@ module.exports = class extends Event {
             { name: `Usage`, value: proofitaa, inline: true },
           )
           .setDescription(
-            `\nIf you like ${this.client.user.username}, Consider [voting](https://top.gg/bot/767705905235099658), or [inviting](${config.invite_link}) it to your server! Thank you for using Neonova, we hope you enjoy it, as we always look forward to improve the bot`,
+            `\nIf you like ${this.client.user.username}, consider [voting](https://top.gg/bot/767705905235099658), or [inviting](${config.invite_link}) it to your server! Thank you for using ${this.client.user.username}, we hope you enjoy it, as we always look forward to improve the bot.`,
           )
           .setFooter({
             text: `Thank you for using ${this.client.user.username}!`,
@@ -206,7 +205,7 @@ module.exports = class extends Event {
                 number === 2
                   ? "*You can check our top.gg page at `https://serenia.eyum.dev/vote`*"
                   : ""
-              }${number === 3 ? "*" : ""}`,
+              }`,
             )
             .then((s) => {
               message.delete().catch(() => {});
@@ -241,7 +240,9 @@ module.exports = class extends Event {
               .setTimestamp()
               .setFooter({ text: `${process.env.AUTH_DOMAIN}` })
               .setColor(this.client.color.red);
-            return message.channel.sendCustom({ embeds: [embed] }).catch(() => {});
+            return message.channel
+              .sendCustom({ embeds: [embed] })
+              .catch(() => {});
           }
         }
 
@@ -267,13 +268,15 @@ module.exports = class extends Event {
               .setTimestamp()
               .setFooter({ text: `${process.env.AUTH_DOMAIN}` })
               .setColor(this.client.color.red);
-            return message.channel.sendCustom({ embeds: [embed] }).catch(() => {});
+            return message.channel
+              .sendCustom({ embeds: [embed] })
+              .catch(() => {});
           }
         }
         if (disabledCommands.includes(command.name || command)) return;
 
         if (command.ownerOnly) {
-          if (!this.client.config.developers.includes(message.author.id))
+          if (!this.client.config.owners.includes(message.author.id))
             return;
         }
 
@@ -281,7 +284,7 @@ module.exports = class extends Event {
 
         if (command.disabled)
           return message.channel.sendCustom(
-            `The owner has disabled the following command for now. Try again Later!\n\nFor Updates: ${config.discord}`,
+            `The owner has disabled the following command for now. Try again later.\n\nFor updates: ${config.discord}`,
           );
 
         await this.runCommand(message, cmd, args).catch((error) => {

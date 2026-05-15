@@ -147,7 +147,9 @@ module.exports = class extends Event {
         `I have joined the ${guild.name} server.\n\nID: ${guild.id}`,
       )
       .setFooter({
-        text: `Gained ${guild.members.cache.size - 1} members • I'm now in ${
+        text: `Gained ${guild.members.cache.size - 1} members 
+        
+         I'm now in ${
           this.client.guilds.cache.size
         } servers!`,
       })
