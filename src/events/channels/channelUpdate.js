@@ -18,6 +18,7 @@ const CHANNEL_TYPE_MAP = {
   [ChannelType.GuildAnnouncement]: "Announcement channel",
   [ChannelType.GuildStageVoice]: "Stage channel",
   [ChannelType.GuildForum]: "Forum channel",
+  [ChannelType.GuildMedia]: "Media channel",
 };
 
 const channelUpdateQueue = new Map();
@@ -45,28 +46,22 @@ module.exports = class extends Event {
       );
       if (!channelEmbed) return;
 
-      const logChannelUpdate = logging.server_events.channel_update;
-      if (!logChannelUpdate) return;
+      if (!logging.server_events.channel_update) return;
 
       const guild = newChannel.guild;
-      let fetchedLogs;
-      let overwriteLogs;
+      let fetchedLogs, overwriteLogs;
 
       try {
-        fetchedLogs = await guild.fetchAuditLogs({
-          type: AuditLogEvent.ChannelUpdate,
-          limit: 10,
-        });
-      } catch (error) {
-        console.error("Error fetching audit logs:", error);
-        return;
-      }
-
-      try {
-        overwriteLogs = await guild.fetchAuditLogs({
-          type: AuditLogEvent.ChannelOverwriteUpdate,
-          limit: 10,
-        });
+        [fetchedLogs, overwriteLogs] = await Promise.all([
+          guild.fetchAuditLogs({
+            type: AuditLogEvent.ChannelUpdate,
+            limit: 10,
+          }),
+          guild.fetchAuditLogs({
+            type: AuditLogEvent.ChannelOverwriteUpdate,
+            limit: 10,
+          }),
+        ]);
       } catch (error) {
         console.error("Error fetching audit logs:", error);
         return;
@@ -84,17 +79,15 @@ module.exports = class extends Event {
           e.changes?.length &&
           Date.now() - e.createdTimestamp < 5000,
       );
-      let executor = null;
-      let reason = null;
 
       const entry = auditEntry || overwriteEntry;
+      let executor = null;
+      let reason = null;
 
       if (entry) {
         executor = entry.executor;
         reason = entry.reason;
-      }
-
-      if (!executor && !reason) {
+      } else {
         return;
       }
 
@@ -150,52 +143,42 @@ module.exports = class extends Event {
       const newPerms = newChannel.permissionOverwrites.cache;
       let permChanges = [];
 
-      // Check for added or updated permissions
-      newPerms.forEach((newPerm, id) => {
+      // Added or updated permissions
+      for (const [id, newPerm] of newPerms) {
         const oldPerm = oldPerms.get(id);
-        let changes = [];
+        const changes = [];
 
         const overwrite = newChannel.permissionOverwrites.cache.get(id);
         const isMember = overwrite?.type === 1;
-        let mention;
+        const mention = isMember ? `<@${id}>` : `<@&${id}>`;
 
-        if (isMember) {
-          const member = guild.members.cache.get(id);
-          mention = member ? `<@${id}>` : `<@${id}>`;
-        } else {
-          const role = guild.roles.cache.get(id);
-          mention = role ? `<@&${id}>` : `<@&${id}>`;
+        for (const [permName, flag] of Object.entries(PermissionFlagsBits)) {
+          const oldState = oldPerm
+            ? oldPerm.allow.has(flag)
+              ? `${this.client.emoji.success}`
+              : oldPerm.deny.has(flag)
+                ? `${this.client.emoji.fail}`
+                : "NONE"
+            : "NONE";
+
+          const newState = newPerm.allow.has(flag)
+            ? `${this.client.emoji.success}`
+            : newPerm.deny.has(flag)
+              ? `${this.client.emoji.fail}`
+              : "NONE";
+
+          if (oldState !== newState && permissions[permName]) {
+            changes.push(`${permissions[permName]}: ${oldState} → ${newState}`);
+          }
         }
 
-        Object.entries(PermissionsBitField.Flags).forEach(
-          ([permName, flag]) => {
-            const oldState = oldPerm?.allow?.has(flag)
-              ? `${this.client.emoji.success}`
-              : oldPerm?.deny?.has(flag)
-                ? `${this.client.emoji.fail}`
-                : "NONE";
-
-            const newState = newPerm.allow.has(flag)
-              ? `${this.client.emoji.success}`
-              : newPerm.deny.has(flag)
-                ? `${this.client.emoji.fail}`
-                : "NONE";
-
-            if (oldState !== newState && permissions[permName]) {
-              changes.push(
-                `${permissions[permName]}: ${oldState} → ${newState}`,
-              );
-            }
-          },
-        );
-
-        if (changes.length > 0) {
+        if (changes.length) {
           permChanges.push(`**${mention}** → ${changes.join(", ")}`);
         }
-      });
+      }
 
-      // Check for removed permissions
-      oldPerms.forEach((_, id) => {
+      // Removed permissions
+      for (const [id] of oldPerms) {
         if (!newPerms.has(id)) {
           const overwrite = oldChannel.permissionOverwrites.cache.get(id);
           const isMember = overwrite?.type === 1;
@@ -204,9 +187,9 @@ module.exports = class extends Event {
             `**${mention}** → ${this.client.emoji.fail} Permissions Removed`,
           );
         }
-      });
+      }
 
-      if (permChanges.length > 0) {
+      if (permChanges.length) {
         description.push(`**Permissions Updated:**\n${permChanges.join("\n")}`);
       }
 

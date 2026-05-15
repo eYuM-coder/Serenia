@@ -1,8 +1,7 @@
 const Event = require("../../structures/Event");
-const Discord = require("discord.js");
+const { PermissionFlagsBits, WebhookClient } = require("discord.js");
 const config = require("../../../config.json");
-const Guild = require("../../database/schemas/Guild");
-const webhookClient = new Discord.WebhookClient({
+const webhookClient = new WebhookClient({
   url: config.webhooks.errors,
 });
 
@@ -15,10 +14,7 @@ module.exports = class extends Event {
       message.channel.viewable &&
       message.channel
         .permissionsFor(message.guild.members.me)
-        .has([
-          Discord.PermissionFlagsBits.SendMessages,
-          Discord.PermissionFlagsBits.EmbedLinks,
-        ])
+        .has([PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks])
     ) {
       message.channel
         .sendCustom(

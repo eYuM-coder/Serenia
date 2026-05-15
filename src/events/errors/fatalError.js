@@ -1,7 +1,7 @@
 const Event = require("../../structures/Event");
-const Discord = require("discord.js");
+const { EmbedBuilder, WebhookClient } = require("discord.js");
 const config = require("../../../config.json");
-const webhookClient = new Discord.WebhookClient({
+const webhookClient = new WebhookClient({
   url: config.webhooks.errors,
 });
 const uuid = require("uuid");
@@ -11,7 +11,7 @@ module.exports = class extends Event {
   async run(error, message) {
     console.log(error);
 
-    const embed = new Discord.EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setColor("Green")
       .setDescription(
         `**User:** ${message.author} (${message.author.tag} - ${message.author.id})\n**Message:** ${message.content}\n**Error:** ${error}\n**ID:** \`${id}\`\n\n__**Guild Info**__\nName: ${message.guild.name}\nID: ${messsage.guild.id}\nChannel: ${message.channel.name} (${message.channel.id})`,

@@ -1,13 +1,18 @@
 const Event = require("../../structures/Event");
-const Discord = require("discord.js");
+const {
+  WebhookClient,
+  ChannelType,
+  PermissionFlagsBits,
+  EmbedBuilder,
+} = require("discord.js");
 const logger = require("../../utils/logger");
 const Guild = require("../../database/schemas/Guild");
 const Logging = require("../../database/schemas/logging");
 const config = require("../../../config.json");
-const webhookClient = new Discord.WebhookClient({
+const webhookClient = new WebhookClient({
   url: config.webhooks.joinsPublic,
 });
-const welcomeClient = new Discord.WebhookClient({
+const welcomeClient = new WebhookClient({
   url: config.webhooks.joinsPrivate,
 });
 
@@ -29,13 +34,13 @@ module.exports = class extends Event {
 
     var textChats = guild.channels.cache.find(
       (ch) =>
-        ch.type === Discord.ChannelType.GuildText &&
+        ch.type === ChannelType.GuildText &&
         ch
           .permissionsFor(guild.members.me)
           .has([
-            Discord.PermissionFlagsBits.SendMessages,
-            Discord.PermissionFlagsBits.ViewChannel,
-            Discord.PermissionFlagsBits.EmbedLinks,
+            PermissionFlagsBits.SendMessages,
+            PermissionFlagsBits.ViewChannel,
+            PermissionFlagsBits.EmbedLinks,
           ]),
     );
 
@@ -63,15 +68,15 @@ module.exports = class extends Event {
             channel.viewable &&
             channel
               .permissionsFor(guild.members.me)
-              .has(Discord.PermissionFlagsBits.ManageChannels)
+              .has(PermissionFlagsBits.ManageChannels)
           ) {
-            if (channel.type === Discord.ChannelType.GuildText)
+            if (channel.type === ChannelType.GuildText)
               await channel.permissionOverwrites.edit(muteRole, {
                 SendMessages: false,
                 AddReactions: false,
               });
             else if (
-              channel.type === Discord.ChannelType.GuildVoice &&
+              channel.type === ChannelType.GuildVoice &&
               channel.editable
             )
               await channel.permissionOverwrites.edit(muteRole, {
@@ -109,7 +114,7 @@ module.exports = class extends Event {
     }
 
     if (textChats) {
-      const embed = new Discord.EmbedBuilder()
+      const embed = new EmbedBuilder()
         .setColor("Purple")
         .setDescription(
           `Hey there! I'm **${config.botName}**.\n\nThank you for inviting me to your server, it means a lot to us! You can get started with [\`!help\`](${process.env.AUTH_DOMAIN}) & customize your server settings by accessing the dashboard [\`here\`](${process.env.AUTH_DOMAIN}/dashboard/${guiild.id}).\n\n__**Current News**__\n\`\`\`\nWe are currently giving premium to all servers until 1000 guilds! If interested, please visit [this site](${process.env.AUTH_DOMAIN}/redeem).\`\`\`\n\nAgain, thank you for inviting me! (This server is now very pog)\n**- ${config.botName}**`,
@@ -125,7 +130,7 @@ module.exports = class extends Event {
       textChats.send({ embeds: [embed] }).catch(() => {});
     }
 
-    const welcomeEmbed = new Discord.EmbedBuilder()
+    const welcomeEmbed = new EmbedBuilder()
       .setColor(this.client.color.green)
       .setTitle("New Server")
       .setThumbnail(`${process.env.AUTH_DOMAIN}/logo.png`)
@@ -145,7 +150,7 @@ module.exports = class extends Event {
       embeds: [welcomeEmbed],
     });
 
-    const embed = new Discord.EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setColor(this.client.color.green)
       .setDescription(
         `I have joined the ${guild.name} server.\n\nID: ${guild.id}`,
