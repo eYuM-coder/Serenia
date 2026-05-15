@@ -1,4 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  PermissionFlagsBits,
+} = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -8,7 +12,7 @@ module.exports = {
     .setIntegrationTypes(0),
   async execute(interaction) {
     try {
-      if (!interaction.member.permissions.has("BAN_MEMBERS")) {
+      if (!interaction.member.permissions.has(PermissionFlagsBits.BanMembers)) {
         return interaction.reply({
           content: "You do not have permission to use this command.",
           ephemeral: true,

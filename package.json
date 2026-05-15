@@ -13,10 +13,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@discordjs/voice": "^0.18.0",
     "@top-gg/sdk": "^3.1.6",
     "body-parser": "^2.2.2",
     "chalk": "^5.6.2",
+    "codeformatterforstrings": "^1.1.1",
     "colors": "^1.4.0",
+    "common-tags": "^1.8.2",
     "connect-mongo": "^6.0.0",
     "crypto": "^1.0.1",
     "datadog-metrics": "^0.12.1",
@@ -27,6 +30,7 @@
     "ejs": "^5.0.2",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
+    "figlet": "^1.11.0",
     "generate-password": "^1.7.1",
     "intl": "^1.2.5",
     "lodash": "^4.18.1",
@@ -37,9 +41,14 @@
     "nerdamer": "^1.1.13",
     "node-os-utils": "^2.0.3",
     "passport": "^0.7.0",
+    "passport-discord": "^0.1.4",
     "pretty-ms": "^9.3.0",
+    "random": "^5.4.1",
+    "random-email": "^1.0.3",
     "uniqid": "^5.4.0",
     "uuid": "^14.0.0",
+    "wav-decoder": "^1.3.0",
+    "wavefile": "^11.0.0",
     "winston": "^3.19.0"
   }
 }

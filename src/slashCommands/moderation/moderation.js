@@ -478,7 +478,7 @@ module.exports = {
   async execute(interaction) {
     const subcommandGroup = interaction.options.getSubcommandGroup(false);
     const subcommand = interaction.options.getSubcommand();
-    
+
     if (subcommandGroup === "channel") {
       if (checkModPermissions(interaction.member, "manage_channels")) {
         return interaction.reply({

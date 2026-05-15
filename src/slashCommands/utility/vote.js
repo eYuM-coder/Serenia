@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");const User = require("../../database/schemas/User");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const User = require("../../database/schemas/User");
 const ms = require("ms");
 
 module.exports = {

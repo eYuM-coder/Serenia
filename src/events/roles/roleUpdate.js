@@ -99,10 +99,7 @@ module.exports = class extends Event {
               channelEmbed.viewable &&
               channelEmbed
                 .permissionsFor(newRole.guild.members.me)
-                .has([
-                  discord.PermissionFlagsBits.SendMessages,
-                  discord.PermissionFlagsBits.EmbedLinks,
-                ])
+                .has(["SendMessages", "EmbedLinks"])
             ) {
               send(
                 channelEmbed,

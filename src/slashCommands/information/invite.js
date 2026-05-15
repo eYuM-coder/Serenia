@@ -1,10 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const config = require("../../../config.json");
 const {
+  SlashCommandBuilder,
   EmbedBuilder,
   ActionRowBuilder,
   StringSelectMenuBuilder,
 } = require("discord.js");
+const config = require("../../../config.json");
 const Guild = require("../../database/schemas/Guild");
 
 module.exports = {

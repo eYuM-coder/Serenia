@@ -107,7 +107,7 @@ module.exports = class extends Event {
             if (
               !message.channel
                 .permissionsFor(message.guild.members.me)
-                .has(PermissionFlagsBits.SendMessages)
+                .has("SendMessages")
             )
               return;
 

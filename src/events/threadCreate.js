@@ -4,7 +4,7 @@ module.exports = class extends Event {
     try {
       await thread.join();
     } catch (err) {
-      //nigga
+      //do nothing
     }
   }
 };

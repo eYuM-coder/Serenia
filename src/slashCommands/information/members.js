@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");const Guild = require("../../database/schemas/Guild");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const Guild = require("../../database/schemas/Guild");
 const ReactionMenu = require("../../data/ReactionMenu.js");
 
 module.exports = {

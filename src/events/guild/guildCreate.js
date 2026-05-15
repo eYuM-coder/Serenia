@@ -37,11 +37,7 @@ module.exports = class extends Event {
         ch.type === ChannelType.GuildText &&
         ch
           .permissionsFor(guild.members.me)
-          .has([
-            PermissionFlagsBits.SendMessages,
-            PermissionFlagsBits.ViewChannel,
-            PermissionFlagsBits.EmbedLinks,
-          ]),
+          .has(["SendMessages", "ViewChannel", "EmbedLinks"]),
     );
 
     const modLog = guild.channels.cache.find(

@@ -1,6 +1,6 @@
 const Guild = require("../database/schemas/Guild");
 const fetch = require("node-fetch");
-const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 
 module.exports = async (message) => {
   const settings = await Guild.findOne({
@@ -13,11 +13,11 @@ module.exports = async (message) => {
   if (settings.antiInvites) {
     // Fix permission check: use PermissionsBitField.Flags and check each
     const hasPerm = message.member.permissions.has(
-      PermissionsBitField.Flags.Administrator ||
-        PermissionsBitField.Flags.ManageGuild ||
-        PermissionsBitField.Flags.BanMembers ||
-        PermissionsBitField.Flags.KickMembers ||
-        PermissionsBitField.Flags.ManageMessages,
+      "Administrator" ||
+        "ManageGuild" ||
+        "BanMembers" ||
+        "KickMembers" ||
+        "ManageMessages",
     );
 
     if (!hasPerm) {

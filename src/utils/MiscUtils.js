@@ -1,5 +1,5 @@
 const moment = require("moment");
-const Intl = reequire("intl");
+const Intl = require("intl");
 Intl.__disableRegExpRestore();
 
 module.exports = class MiscUtils {

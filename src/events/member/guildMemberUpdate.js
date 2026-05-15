@@ -50,10 +50,7 @@ module.exports = class extends Event {
                 channelEmbed.viewable &&
                 channelEmbed
                   .permissionsFor(newMember.guild.members.me)
-                  .has([
-                    discord.PermissionFlagsBits.SendMessages,
-                    discord.PermissionFlagsBits.EmbedLinks,
-                  ])
+                  .has(["SendMessages", "EmbedLinks"])
               ) {
                 send(
                   channelEmbed,
@@ -88,10 +85,7 @@ module.exports = class extends Event {
                 channelEmbed.viewable &&
                 channelEmbed
                   .permissionsFor(newMember.guild.members.me)
-                  .has([
-                    discord.PermissionFlagsBits.SendMessages,
-                    discord.PermissionFlagsBits.EmbedLinks,
-                  ])
+                  .has(["SendMessages", "EmbedLinks"])
               ) {
                 send(
                   channelEmbed,
@@ -134,10 +128,7 @@ module.exports = class extends Event {
                 channelEmbed.viewable &&
                 channelEmbed
                   .permissionsFor(newMember.guild.members.me)
-                  .has([
-                    discord.PermissionFlagsBits.SendMessages,
-                    discord.PermissionFlagsBits.EmbedLinks,
-                  ])
+                  .has(["SendMessages", "EmbedLinks"])
               ) {
                 send(
                   channelEmbed,

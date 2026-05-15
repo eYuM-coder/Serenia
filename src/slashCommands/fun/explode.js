@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");module.exports = {
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+module.exports = {
   data: new SlashCommandBuilder()
     .setName("explode")
     .setDescription("Says WTF boom")

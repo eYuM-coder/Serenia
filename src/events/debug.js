@@ -1,4 +1,4 @@
-const Event = require("../../structures/Event");
+const Event = require("../structures/Event");
 const Discord = require("discord.js");
 const config = require("../../config.json");
 const webhookClient = new Discord.WebhookClient({

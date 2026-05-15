@@ -212,10 +212,7 @@ module.exports = class extends Event {
         channelEmbed.viewable &&
         channelEmbed
           .permissionsFor(guild.members.me)
-          .has([
-            PermissionFlagsBits.SendMessages,
-            PermissionFlagsBits.EmbedLinks,
-          ])
+          .has(["SendMessages", "EmbedLinks"])
       ) {
         const key = channelEmbed.id;
 

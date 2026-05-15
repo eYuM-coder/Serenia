@@ -16,8 +16,8 @@ const color = require("./src/data/colors.js");
 const jointocreate = require("./src/structures/jointocreate.js");
 const emoji = require("./src/data/emoji.js");
 const warnModel = require("./src/database/models/moderation.js");
-const sharder = require("./shards.js");
-const deploy = require("./src/deployCommands.js");
+require("./shards.js");
+require("./src/deployCommands.js");
 
 let client = Serenia;
 module.exports = client;
@@ -28,7 +28,7 @@ Serenia.emoji = emoji;
 
 require("dotenv").config();
 
-client.on("ready", () => {
+client.on("clientReady", () => {
   async function checkEmptyWarnings() {
     try {
       const userWarnings = await warnModel.find({}, null, { maxTimeMS: 5000 });

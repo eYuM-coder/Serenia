@@ -1,23 +1,18 @@
 const Guild = require("../database/schemas/Guild");
 
 module.exports = async (message) => {
-  const settings = await Guild.findOne(
-    {
-      guildId: message.guild.id,
-    },
-    (err) => {
-      if (err) console.log(err);
-    },
-  );
+  const settings = await Guild.findOne({
+    guildId: message.guild.id,
+  }).catch((err) => console.error(err));
 
   if (settings.antiLinks) {
     if (
       !message.member.permissions.has(
-        "ADMINISTRATOR" ||
-          "MANAGE_GUILD" ||
-          "BAN_MEMBERS" ||
-          "KICK_MEMBERS" ||
-          "MANAGE_MESSAGES",
+        "Administrator" ||
+          "ManageGuild" ||
+          "BanMembers" ||
+          "KickMembers" ||
+          "ManageMessages",
       )
     ) {
       if (hasLink(message.content)) {

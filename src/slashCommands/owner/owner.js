@@ -1,5 +1,8 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const { EmbedBuilder, WebhookClient } = require("discord.js");
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  WebhookClient,
+} = require("discord.js");
 const User = require("../../database/schemas/User");
 const config = require("../../../config.json");
 const webhookClient = new WebhookClient({
@@ -8,9 +11,6 @@ const webhookClient = new WebhookClient({
 const Blacklist = require("../../database/schemas/blacklist");
 const { exec } = require("child_process");
 const NewsSchema = require("../../database/schemas/Serenia");
-const fs = require("fs");
-const path = require("path");
-const { capitalize } = require("../../utils/utils");
 
 module.exports = {
   data: new SlashCommandBuilder()

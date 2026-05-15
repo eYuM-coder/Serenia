@@ -5,11 +5,11 @@ const config = require("../../config.json");
 const webhookClient = new Discord.WebhookClient({
   url: config.webhooks.logs,
 });
-const chalk = require("chalk");
+const { cyan } = require("colors");
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
   webhookClient.send(`${timestamp} [${label}] ${message}`);
-  return `${timestamp} [${level}] [${chalk.cyan(label)}] ${message}`;
+  return `${timestamp} [${level}] [${cyan(label)}] ${message}`;
 });
 
 const myCustomLevels = {

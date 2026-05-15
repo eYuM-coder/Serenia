@@ -1,7 +1,11 @@
 const logger = require("../utils/logger"); // logger used for logs
 const Event = require("../structures/Event"); /* Event file. This is used for the events
 required for the bot to function correctly */
-const Discord = require("discord.js");
+const {
+  ActivityType,
+  PresenceUpdateStatus,
+  EmbedBuilder,
+} = require("discord.js");
 const config = require("../../config.json");
 const Guild = require("../database/schemas/Guild");
 const { WebhookClient } = require("discord.js");
@@ -14,7 +18,7 @@ module.exports = class extends Event {
 
     logger.info(
       `${this.client.user.tag} is ready to serve ${this.client.guilds.cache.size} guilds with ${this.client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)} members.`,
-      { label: "Ready" },
+      { label: "ClientReady" },
     );
 
     const startActivityRotator = () => {
@@ -36,26 +40,26 @@ module.exports = class extends Event {
           activity = {
             name: "Custom Status",
             state: text,
-            type: Discord.ActivityType.Custom,
+            type: ActivityType.Custom,
           };
         } else {
           // Map string types to Discord.js v14 ActivityType
           const activityTypeMap = {
-            PLAYING: Discord.ActivityType.Playing,
-            STREAMING: Discord.ActivityType.Streaming,
-            LISTENING: Discord.ActivityType.Listening,
-            WATCHING: Discord.ActivityType.Watching,
-            COMPETING: Discord.ActivityType.Competing,
+            PLAYING: ActivityType.Playing,
+            STREAMING: ActivityType.Streaming,
+            LISTENING: ActivityType.Listening,
+            WATCHING: ActivityType.Watching,
+            COMPETING: ActivityType.Competing,
           };
 
           activity = {
             name: text,
-            type: activityTypeMap[entry.type] || Discord.ActivityType.Playing,
+            type: activityTypeMap[entry.type] || ActivityType.Playing,
           };
         }
 
         this.client.user.setPresence({
-          status: Discord.PresenceUpdateStatus.Online,
+          status: PresenceUpdateStatus.Online,
           activities: [activity],
         });
       };
@@ -85,7 +89,7 @@ module.exports = class extends Event {
                 .catch(() => null);
 
               if (user) {
-                const embed = new Discord.EmbedBuilder()
+                const embed = new EmbedBuilder()
                   .setColor(this.client.color.red)
                   .setDescription(
                     `Hey ${user.username}, Premium in ${guildPremium.name} has Just expired :(\n\n__You can you re-new your server here! [${process.env.AUTH_DOMAIN}/premium](${process.env.AUTH_DOMAIN}/premium)__\n\nThank you for purchasing premium Previously! We hope you enjoyed what you purchased.\n\n**- Serenia**`,
@@ -94,7 +98,7 @@ module.exports = class extends Event {
                 user.send({ embeds: [embed] }).catch(() => {});
               }
 
-              const rip = new Discord.EmbedBuilder()
+              const rip = new EmbedBuilder()
                 .setDescription(
                   `**Premium Subscription**\n\n**Guild:** ${
                     guildPremium.name

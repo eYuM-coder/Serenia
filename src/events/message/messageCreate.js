@@ -159,7 +159,7 @@ module.exports = class extends Event {
         if (
           !message.channel
             .permissionsFor(message.guild.members.me)
-            .has(PermissionFlagsBits.SendMessages)
+            .has("SendMessages")
         )
           return;
 
@@ -286,7 +286,7 @@ module.exports = class extends Event {
       !message.channel.permissionsFor(message.guild.members.me) ||
       !message.channel
         .permissionsFor(message.guild.members.me)
-        .has(PermissionFlagsBits.EmbedLinks)
+        .has("EmbedLinks")
     )
       return message.channel.sendCustom(
         `${message.client.emoji.fail} Missing Bot Permissions - **Embeds Links**`,

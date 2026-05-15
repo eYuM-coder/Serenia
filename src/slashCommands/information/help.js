@@ -1,8 +1,9 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const {
+  SlashCommandBuilder,
   EmbedBuilder,
   ActionRowBuilder,
   StringSelectMenuBuilder,
+  ComponentType,
 } = require("discord.js");
 const emojis = require("../../assets/emojis.json");
 const fs = require("fs");
@@ -25,7 +26,7 @@ module.exports = {
     const client = interaction.client;
     const row = new ActionRowBuilder().addComponents(
       new StringSelectMenuBuilder()
-        .setCustomId("select")
+        .setCustomId("help_select")
         .setPlaceholder("Select your option")
         .addOptions([
           {
@@ -72,7 +73,7 @@ module.exports = {
     );
 
     let embed = new EmbedBuilder()
-      .setTitle(`${interaction.client.config.botName}'s slash commands`)
+      .setTitle(`${client.config.botName}'s slash commands`)
       .setDescription(`Choose a category from the list below`)
       .setColor("#9C59B6")
       .addFields(
@@ -105,7 +106,7 @@ module.exports = {
         {
           name: "\u200b",
           value:
-            "**[Invite](https://invite.example.com) | " +
+            "**[Invite](https://serenia.eyum.dev/invite) | " +
             `[Support Server](${process.env.AUTH_DOMAIN}/support) | ` +
             `[Dashboard](${process.env.AUTH_DOMAIN}/dashboard)**`,
         },
@@ -120,26 +121,26 @@ module.exports = {
       .addFields({
         name: "\u200b",
         value:
-          "**[Invite](https://invite.example.com) | " +
+          "**[Invite](https://serenia.eyum.dev/invite) | " +
           `[Support Server](${process.env.AUTH_DOMAIN}/support) | ` +
           `[Dashboard](${process.env.AUTH_DOMAIN}/dashboard)**`,
       })
       .setTimestamp();
 
-    let sendmsg = await interaction.reply({
-      content: " ",
+    await interaction.reply({
       embeds: [embed],
       ephemeral: true,
       components: [row],
     });
+    const reply = await interaction.fetchReply();
 
-    const collector = interaction.channel.createMessageComponentCollector({
-      componentType: "SELECT_MENU",
+    const collector = reply.createMessageComponentCollector({
+      componentType: ComponentType.StringSelect,
       time: 60000,
       idle: 60000 / 2,
     });
     collector.on("end", async () => {
-      await interaction.editReply({ components: [] });
+      await interaction.editReply({ components: [] }).catch(() => {});
     });
 
     collector.on("collect", async (collected) => {

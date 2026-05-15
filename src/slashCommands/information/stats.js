@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");const { mem, cpu, os } = require("node-os-utils");
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { mem, cpu, os } = require("node-os-utils");
 const { stripIndent } = require("common-tags");
 const { formatFileSize } = require("codeformatterforstrings");
 const Guild = require("../../database/schemas/Guild");

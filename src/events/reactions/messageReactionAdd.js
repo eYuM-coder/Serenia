@@ -105,10 +105,7 @@ module.exports = class extends Event {
             message.channel.viewable &&
             message.channel
               .permissionsFor(message.guild.members.me)
-              .has([
-                PermissionFlagsBits.SendMessages,
-                PermissionFlagsBits.EmbedLinks,
-              ])
+              .has(["SendMessages", "EmbedLinks"])
           ) {
             user.send({ embeds: [slowDownEmbed] }).catch(() => {});
             botCooldown.add(message.guild.id);

@@ -1,5 +1,5 @@
 const Event = require("../../structures/Event");
-const { EmbedBuilder, PermissionFlagsBits } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 module.exports = class extends Event {
   async run(Permissions, message) {
     if (!message) return;
@@ -20,7 +20,7 @@ module.exports = class extends Event {
       message.channel.viewable &&
       message.channel
         .permissionsFor(message.guild.members.me)
-        .has([PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks])
+        .has(["SendMessages", "EmbedLinks"])
     ) {
       message.channel.sendCustom({ embeds: [embed] }).catch(() => {});
     }

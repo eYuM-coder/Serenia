@@ -71,10 +71,7 @@ module.exports = class extends Event {
               channelEmbed.viewable &&
               channelEmbed
                 .permissionsFor(member.guild.members.me)
-                .has([
-                  discord.PermissionFlagsBits.SendMessages,
-                  discord.PermissionFlagsBits.EmbedLinks,
-                ])
+                .has(["SendMessages", "EmbedLinks"])
             ) {
               send(
                 channelEmbed,
@@ -315,10 +312,7 @@ module.exports = class extends Event {
                 greetChannel.viewable &&
                 greetChannel
                   .permissionsFor(member.guild.members.me)
-                  .has([
-                    discord.PermissionFlagsBits.SendMessages,
-                    discord.PermissionFlagsBits.EmbedLinks,
-                  ])
+                  .has(["SendMessages", "EmbedLinks"])
               ) {
                 greetChannel.send(`${text}`).catch(() => {});
               }
@@ -413,10 +407,7 @@ module.exports = class extends Event {
                 greetChannel.viewable &&
                 greetChannel
                   .permissionsFor(member.guild.members.me)
-                  .has([
-                    discord.PermissionFlagsBits.SendMessages,
-                    discord.PermissionFlagsBits.EmbedLinks,
-                  ])
+                  .has(["SendMessages", "EmbedLinks"])
               ) {
                 greetChannel.send({ embeds: [embed] }).catch(() => {});
               }

@@ -149,10 +149,7 @@ module.exports = class extends Event {
               channelEmbed.viewable &&
               channelEmbed
                 .permissionsFor(message.guild.members.me)
-                .has([
-                  PermissionFlagsBits.SendMessages,
-                  PermissionFlagsBits.EmbedLinks,
-                ])
+                .has(["SendMessages", "EmbedLinks"])
             ) {
               send(
                 channelEmbed,

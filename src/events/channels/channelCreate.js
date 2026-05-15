@@ -1,11 +1,6 @@
 const Event = require("../../structures/Event");
 const Logging = require("../../database/schemas/logging");
-const {
-  AuditLogEvent,
-  EmbedBuilder,
-  ChannelType,
-  PermissionFlagsBits,
-} = require("discord.js");
+const { AuditLogEvent, EmbedBuilder, ChannelType } = require("discord.js");
 const send = require("../../packages/logs/index.js");
 const Maintenance = require("../../database/schemas/maintenance");
 
@@ -119,7 +114,7 @@ module.exports = class extends Event {
       channelEmbed.viewable &&
       channelEmbed
         .permissionsFor(channel.guild.members.me)
-        .has([PermissionFlagsBits.SendMessages, PermissionFlagsBits.EmbedLinks])
+        .has(["SendMessages", "EmbedLinks"])
     ) {
       try {
         await send(

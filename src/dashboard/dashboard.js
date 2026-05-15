@@ -10,7 +10,7 @@ const passport = require("passport");
 const jsonconfig = require("../../config.json");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-const Strategy = require("./passport").Strategy;
+const Strategy = require("passport-discord").Strategy;
 const premiumWeb = new Discord.WebhookClient({
   url: jsonconfig.webhooks.premium,
 });
@@ -38,7 +38,6 @@ const metrics = require("datadog-metrics");
 const { cpu } = require("node-os-utils");
 const Application = require("../database/models/application/application.js");
 const customCommand = require("../database/schemas/customCommand.js");
-const fs = require("fs");
 
 const Hook = new Discord.WebhookClient({ url: jsonconfig.webhooks.votes });
 
@@ -95,7 +94,7 @@ module.exports = async (client) => {
       secret: process.env.SESSION_SECRET,
       resave: true,
       saveUninitialized: true,
-      store: MongoStore.create({ mongoUrl: process.env.MONGO }),
+      store: MongoStore.MongoStore.create({ mongoUrl: process.env.MONGO }),
     }),
   );
 
@@ -4569,7 +4568,7 @@ In the mean time, please explain your issue below`;
     });
   });
 
-  app.get("*", (req, res) => {
+  app.get("/{*splat}", (req, res) => {
     var fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
 
     if (
