@@ -47,7 +47,7 @@ module.exports = class extends Event {
             const guild = newRole.guild;
 
             const fetchedLogs = await guild.fetchAuditLogs({
-              type: AuditLogEvent,
+              type: "ROLE_UPDATE",
               limit: 10,
             });
             const auditEntry = fetchedLogs?.entries?.find(
