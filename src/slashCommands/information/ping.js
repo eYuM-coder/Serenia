@@ -24,15 +24,20 @@ module.exports = {
       .setColor(client.color.red)
       .setFooter({ text: `Powered by ${process.env.AUTH_DOMAIN}` });
 
-    const msg = await interaction.reply({ embeds: [embed], fetchReply: true });
+    await interaction.reply({ embeds: [embed], withResponse: true });
+    const msg = await interaction.fetchReply();
 
     const vowel = ["a", "e", "i", "u", "u"];
 
     const latency = msg.createdTimestamp - interaction.createdTimestamp;
+    const wsPing =
+      client.ws.ping === -1
+        ? "Calculating..."
+        : `${Math.round(client.ws.ping)}ms`;
 
     let koko = stripIndent`
         **${language.timeTaken}** \`${latency}ms\`
-        **${language.discordAPI}** \`${Math.round(client.ws.ping)}ms\`
+        **${language.discordAPI}** \`${wsPing}\`
         `;
 
     let color = "";

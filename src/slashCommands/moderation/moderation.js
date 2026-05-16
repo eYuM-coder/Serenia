@@ -479,20 +479,981 @@ module.exports = {
     const subcommandGroup = interaction.options.getSubcommandGroup(false);
     const subcommand = interaction.options.getSubcommand();
 
-    if (subcommandGroup === "channel") {
-      if (checkModPermissions(interaction.member, "manage_channels")) {
-        return interaction.reply({
-          embeds: [
-            new EmbedBuilder()
-              .setColor(interaction.client.color.red)
+    if (subcommand === "clear") {
+      try {
+        await interaction.deferReply({ ephemeral: true });
+        const logging = await Logging.findOne({
+          guildId: interaction.guild.id,
+        });
+
+        const client = interaction.client;
+        const fail = client.emoji.fail;
+        const success = client.emoji.success;
+
+        const amount = parseInt(interaction.options.getString("amount"));
+        const channel =
+          interaction.options.getChannel("channel") || interaction.channel;
+        let reason = interaction.options.getString("reason");
+        if (!reason) {
+          reason = "No reason provided.";
+        }
+        if (reason.length > 1024) {
+          reason = reason.slice(0, 1021) + "...";
+        }
+
+        if (isNaN(amount) || amount < 0 || amount > 10000) {
+          let invalidamount = new EmbedBuilder()
+            .setAuthor({
+              name: `${interaction.user.tag}`,
+              iconURL: interaction.member.displayAvatarURL({ dynamic: true }),
+            })
+            .setTitle(`${fail} | Purge Error`)
+            .setDescription(
+              `Please provide a message count between 1 and 10000!`,
+            )
+            .setTimestamp()
+            .setFooter({
+              text: `${process.env.AUTH_DOMAIN}`,
+            })
+            .setColor(client.color.red);
+          return interaction.editReply({
+            embeds: [invalidamount],
+            ephemeral: true,
+          });
+        }
+
+        let totalDeleted = 0;
+        const TWO_WEEKS = 14 * 24 * 60 * 60 * 1000; // 14 days in milliseconds
+        const now = Date.now(); // Current timestamp
+
+        const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+        while (totalDeleted < amount) {
+          const messagesToFetch = Math.min(100, amount - totalDeleted);
+          try {
+            // Fetch messages
+            const fetchedMessages = await channel.messages.fetch({
+              limit: messagesToFetch,
+              before: interaction.id,
+            });
+
+            // Filter out messages older than 14 days
+            const validMessages = fetchedMessages.filter(
+              (msg) => now - msg.createdTimestamp < TWO_WEEKS,
+            );
+
+            if (validMessages.size === 0) break; // No eligible messages to delete
+
+            // Bulk delete the valid messages
+            const deletedMessages = await channel.bulkDelete(
+              validMessages,
+              true,
+            );
+
+            totalDeleted += deletedMessages.size;
+
+            logger.info(
+              `Deleted ${deletedMessages.size} ${
+                deletedMessages.size === 1 ? "message" : "messages"
+              }.`,
+              { label: "Purge" },
+            );
+
+            // If fewer than `messagesToFetch` were deleted, stop early
+            if (deletedMessages.size < messagesToFetch) {
+              break;
+            } else if (
+              deletedMessages.size !== 100 &&
+              deletedMessages.size == messagesToFetch
+            ) {
+              break;
+            }
+          } catch (error) {
+            logger.error(`Error deleting messages: ${error}`, {
+              label: "ERROR",
+            });
+            return interaction.editReply({
+              content:
+                "There was an error trying to delete messages in this channel.",
+            });
+          }
+          await delay(5000);
+        }
+
+        if (channel == interaction.channel) {
+          if (totalDeleted > 100) {
+            const embed = new EmbedBuilder()
               .setDescription(
-                `${interaction.client.emoji.fail} | You do not have permission to use this command.`,
-              ),
-          ],
+                `${success} | ***Found and purged ${totalDeleted} ${
+                  totalDeleted === 1 ? "message" : "messages"
+                }.* || ${reason}**`,
+              )
+              .setColor(interaction.client.color.green);
+            interaction.editReply({ embeds: [embed], ephemeral: true });
+          } else {
+            const embed = new EmbedBuilder()
+
+              .setDescription(
+                `${success} | ***Successfully deleted ${totalDeleted} ${
+                  totalDeleted === 1 ? "message" : "messages"
+                }.* || ${reason}**`,
+              )
+
+              .setColor(interaction.client.color.green);
+
+            interaction.editReply({ embeds: [embed], ephemeral: true });
+          }
+        } else {
+          const embed = new EmbedBuilder()
+
+            .setDescription(
+              `${success} | ***Found and purged ${totalDeleted} ${
+                totalDeleted === 1 ? "message" : "messages"
+              } in ${channel}.* || ${reason}**`,
+            )
+
+            .setColor(interaction.client.color.green);
+
+          interaction.editReply({ embeds: [embed], ephemeral: true });
+        }
+
+        if (logging) {
+          const role = interaction.guild.roles.cache.get(
+            logging.moderation.ignore_role,
+          );
+          const loggingChannel = interaction.guild.channels.cache.get(
+            logging.moderation.channel,
+          );
+
+          if (logging.moderation.toggle == "true") {
+            if (loggingChannel) {
+              if (
+                interaction.channel.id !== logging.moderation.ignore_channel
+              ) {
+                if (
+                  !role ||
+                  (role &&
+                    !interaction.member.roles.cache.find(
+                      (r) => r.name.toLowerCase() === role.name,
+                    ))
+                ) {
+                  if (logging.moderation.purge == "true") {
+                    let color = logging.moderation.color;
+                    if (color == "#000000")
+                      color = interaction.client.color.red;
+
+                    let logcase = logging.moderation.caseN;
+                    if (!logcase) logcase = `1`;
+
+                    const logEmbed = new EmbedBuilder()
+                      .setAuthor({
+                        name: `Action: \`Purge\` | Case #${logcase}`,
+                        iconURL: interaction.member.displayAvatarURL({
+                          format: "png",
+                        }),
+                      })
+                      .addFields({
+                        name: "Moderator",
+                        value: `${interaction.member}`,
+                        inline: true,
+                      })
+                      .setTimestamp()
+                      .setFooter({
+                        text: `Responsible ID: ${interaction.member.id}`,
+                      })
+                      .setColor(color);
+
+                    send(
+                      loggingChannel,
+                      {
+                        embeds: [logEmbed],
+                      },
+                      {
+                        name: `${interaction.client.user.username}`,
+                        username: `${interaction.client.user.username}`,
+                        icon: interaction.client.user.displayAvatarURL({
+                          dynamic: true,
+                          format: "png",
+                        }),
+                      },
+                    ).catch(() => {});
+
+                    logging.moderation.caseN = logcase + 1;
+                    await logging.save().catch(() => {});
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.log(err);
+        interaction.editReply({
+          content: "This command cannot be used in Direct Messages.",
           ephemeral: true,
         });
       }
+    } else if (subcommand === "membercount") {
+      const guildDB = await Guild.findOne({
+        guildId: interaction.guild.id,
+      });
 
+      const members = interaction.guild.members.cache.size;
+
+      const embed = new EmbedBuilder()
+        .setTitle(`Members`)
+        .setFooter({
+          text: interaction.user.tag,
+          iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+        })
+        .setDescription(`${members}`)
+        .setTimestamp()
+        .setColor(interaction.guild.members.me.displayHexColor);
+
+      return interaction.reply({ embeds: [embed] });
+    }
+
+    if (subcommandGroup === "role") {
+      const subcommand = interaction.options.getSubcommand();
+      try {
+        if (!interaction.member.permissions.has("ManageRoles")) {
+          return interaction.reply({
+            content: `You do not have permission to use this command.`,
+            ephemeral: true,
+          });
+        }
+        const client = interaction.client;
+        const fail = client.emoji.fail;
+        const success = client.emoji.success;
+        const logging = await Logging.findOne({
+          guildId: interaction.guild.id,
+        });
+
+        if (subcommand === "info") {
+          const role =
+            interaction.options.getRole("role") ||
+            interaction.guild.roles.cache.get(role) ||
+            interaction.guild.roles.cache.find(
+              (rl) =>
+                rl.name.toLowerCase() === role.slice(1).join(" ").toLowerCase(),
+            );
+
+          const keyPermissions = {
+            Administrator: "Administrator",
+            MANAGE_GUILD: "Manage Server",
+            ManageRoles: "Manage Roles",
+            ManageChannels: "Manage Channels",
+            ManageMessages: "Manage Messages",
+            ManageWebhooks: "Manage Webhooks",
+            ManageNicknames: "Manage Nicknames",
+            ManageEmojisAndStickers: "Manage Emojis and Stickers",
+            KickMembers: "Kick Members",
+            BanMembers: "Ban Members",
+            MentionEveryone: "Mention Everyone",
+            ModerateMembers: "Timeout Members",
+          };
+
+          // Get all role Permissions as an array
+          const rolePermissions = role.Permissions.toArray();
+
+          // Filter to only include key Permissions & maintain the correct order
+          const filteredPermissions = Object.keys(keyPermissions)
+            .filter((perm) => rolePermissions.includes(perm)) // Check if the role has this permission
+            .map((perm) => keyPermissions[perm]) // Convert to human-readable names
+            .join(", "); // Format as a single line
+
+          const embed = new EmbedBuilder()
+            .addFields(
+              { name: "ID", value: role.id, inline: true },
+              { name: "Name", value: role.name, inline: true },
+              {
+                name: "Color",
+                value: `${role.color != 0 ? `#` + makehex(role.color) : "None"}`,
+                inline: true,
+              },
+              { name: "Mention", value: `\`${role}\``, inline: true },
+              {
+                name: "Hoisted",
+                value: role.hoist ? "Yes" : "No",
+                inline: true,
+              },
+              {
+                name: "Position",
+                value: role.position.toString(),
+                inline: true,
+              },
+              {
+                name: "Mentionable",
+                value: role.mentionable ? "Yes" : "No",
+                inline: true,
+              },
+              {
+                name: "Managed",
+                value: role.managed ? "Yes" : "No",
+                inline: true,
+              },
+              {
+                name: "Key Permissions",
+                value:
+                  filteredPermissions.length > 0 ? filteredPermissions : "None",
+              },
+            )
+            .setColor(`${`#` + makehex(role.color)}`);
+
+          interaction.reply({ embeds: [embed] });
+        } else if (subcommand === "all") {
+          const role =
+            interaction.options.getRole("role") ||
+            interaction.guild.roles.cache.get(role) ||
+            interaction.guild.roles.cache.find(
+              (rl) =>
+                rl.name.toLowerCase() === role.slice(1).join(" ").toLowerCase(),
+            );
+          const removerole = interaction.options.getBoolean("remove") || false;
+          let inrole = interaction.options.getRole("inrole");
+          let inroleoptionspecified;
+          let inroleoptionnotspecified;
+          if (inrole) {
+            inroleoptionspecified = true;
+            inroleoptionnotspecified = false;
+          } else {
+            inroleoptionspecified = false;
+            inroleoptionnotspecified = true;
+            inrole = interaction.guild.roles.cache.find(
+              (role) => role.name === "@everyone",
+            );
+          }
+
+          let reason = interaction.options.getString("reason");
+          if (!reason) {
+            reason = removerole ? `Role Remove` : `Role Add`;
+          }
+          if (reason.length > 1024) reason = reason.slice(0, 1021) + "...";
+
+          if (!role) {
+            let rolenotfound = new EmbedBuilder()
+              .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+              })
+              .setDescription(`${fail} | Please provide a valid role!`)
+              .setTimestamp()
+              .setFooter({
+                text: "https://serenia.eyum.dev",
+              })
+              .setColor(interaction.client.color.red);
+            return interaction.reply({
+              embeds: [rolenotfound],
+              ephmeral: true,
+            });
+          } else {
+            let members;
+            if (removerole === false) {
+              members = interaction.guild.members.cache.filter(
+                (member) =>
+                  !member.roles.cache.has(role.id) &&
+                  (inroleoptionspecified || inroleoptionnotspecified) &&
+                  member.roles.cache.has(inrole.id),
+              );
+              let memberstoaddroleto = members.size;
+              await interaction
+                .reply({
+                  embeds: [
+                    new EmbedBuilder()
+                      .setDescription(
+                        `${success} | Adding ${role} to ${memberstoaddroleto} ${
+                          memberstoaddroleto === 1 ? "member" : "members"
+                        }. This may take a while!`,
+                      )
+                      .setColor(interaction.client.color.green),
+                  ],
+                })
+                .then(async () => {
+                  await members.forEach(
+                    async (member) =>
+                      await member.roles.add(role, [
+                        `${reason} / Responsible User: ${interaction.user.tag}, Reason: ${reason}`,
+                      ]),
+                  );
+                })
+                .then(() => {
+                  const embed = new EmbedBuilder()
+                    .setDescription(
+                      `${success} | Added **${role}** to **${memberstoaddroleto}** ${
+                        memberstoaddroleto === 1 ? "member" : "members"
+                      }.`,
+                    )
+                    .setColor(interaction.client.color.green);
+                  interaction
+                    .editReply({ embeds: [embed] })
+                    .then(async () => {
+                      if (
+                        logging &&
+                        logging.moderation.delete_reply === "true"
+                      ) {
+                        setTimeout(() => {
+                          interaction.deleteReply().catch(() => {});
+                        }, 5000);
+                      }
+                    })
+                    .catch(() => {});
+                });
+            } else {
+              members = interaction.guild.members.cache.filter(
+                (member) =>
+                  member.roles.cache.has(role.id) &&
+                  (inroleoptionspecified || inroleoptionnotspecified) &&
+                  member.roles.cache.has(inrole.id),
+              );
+              let memberstoaddroleto = members.size;
+              interaction
+                .reply({
+                  embeds: [
+                    new EmbedBuilder()
+                      .setDescription(
+                        `${success} | Removing ${role} from ${memberstoaddroleto} ${
+                          memberstoaddroleto === 1 ? "member" : "members"
+                        }. This may take a while!`,
+                      )
+                      .setColor(interaction.client.color.green),
+                  ],
+                })
+                .then(async () => {
+                  await members.forEach(
+                    async (member) =>
+                      await member.roles.remove(role, [
+                        `${reason} / Responsible User: ${interaction.user.tag}`,
+                      ]),
+                  );
+                })
+                .then(() => {
+                  const embed = new EmbedBuilder()
+                    .setDescription(
+                      `${success} | Removed **${role}** from **${memberstoaddroleto}** ${
+                        memberstoaddroleto === 1 ? "member" : "members"
+                      }.`,
+                    )
+                    .setColor(interaction.client.color.green);
+                  interaction
+                    .editReply({ embeds: [embed] })
+                    .then(async () => {
+                      if (
+                        logging &&
+                        logging.moderation.delete_reply === "true"
+                      ) {
+                        setTimeout(() => {
+                          interaction.deleteReply().catch(() => {});
+                        }, 5000);
+                      }
+                    })
+                    .catch(() => {});
+                });
+            }
+          }
+        } else if (subcommand === "bots") {
+          const role =
+            interaction.options.getRole("role") ||
+            interaction.guild.roles.cache.get(role) ||
+            interaction.guild.roles.cache.find(
+              (rl) =>
+                rl.name.toLowerCase() === role.slice(1).join(" ").toLowerCase(),
+            );
+          const removerole = interaction.options.getBoolean("remove") || false;
+
+          let reason = interaction.options.getString("reason");
+          if (!reason) {
+            reason = removerole ? `Role Remove` : `Role Add`;
+          }
+          if (reason.length > 1024) {
+            reason = reason.slice(0, 1021) + "...";
+          }
+
+          if (!role) {
+            let rolenotfound = new EmbedBuilder()
+              .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+              })
+              .setDescription(`${fail} | Please provide a valid role!`)
+              .setTimestamp()
+              .setFooter({
+                text: "https://serenia.eyum.dev",
+              })
+              .setColor(interaction.client.color.red);
+            return interaction.reply({
+              embeds: [rolenotfound],
+              ephmeral: true,
+            });
+          } else {
+            let members;
+            if (removerole === false) {
+              members = interaction.guild.members.cache.filter(
+                (member) => member.user.bot && !member.roles.cache.has(role.id),
+              );
+              let memberstoaddroleto = members.size;
+              interaction
+                .reply({
+                  embeds: [
+                    new EmbedBuilder()
+                      .setDescription(
+                        `${success} | Adding ${role} to ${memberstoaddroleto} bots. This may take a while!`,
+                      )
+                      .setColor(interaction.client.color.green),
+                  ],
+                })
+                .then(async () => {
+                  await members.forEach(
+                    async (member) =>
+                      await member.roles.add(role, [
+                        `${reason} / Responsible User: ${interaction.user.tag}`,
+                      ]),
+                  );
+                })
+                .then(() => {
+                  const embed = new EmbedBuilder()
+                    .setDescription(
+                      `${success} | Added **${role}** to **${memberstoaddroleto}** ${
+                        memberstoaddroleto === 1 ? "bot" : "bots"
+                      }.`,
+                    )
+                    .setColor(interaction.client.color.green);
+                  interaction
+                    .editReply({ embeds: [embed] })
+                    .then(async () => {
+                      if (
+                        logging &&
+                        logging.moderation.delete_reply === "true"
+                      ) {
+                        setTimeout(() => {
+                          interaction.deleteReply().catch(() => {});
+                        }, 5000);
+                      }
+                    })
+                    .catch(() => {});
+                });
+            } else {
+              members = interaction.guild.members.cache.filter(
+                (member) => member.user.bot && member.roles.cache.has(role.id),
+              );
+              let memberstoaddroleto = members.size;
+              interaction
+                .reply({
+                  embeds: [
+                    new EmbedBuilder()
+                      .setDescription(
+                        `${success} | Removing ${role} from ${memberstoaddroleto} ${
+                          memberstoaddroleto === 1 ? "bot" : "bots"
+                        }. This may take a while!`,
+                      )
+                      .setColor(interaction.client.color.green),
+                  ],
+                })
+                .then(async () => {
+                  await members.forEach(
+                    async (member) =>
+                      await member.roles.remove(role, [
+                        `${reason} / Responsible User: ${interaction.user.tag}`,
+                      ]),
+                  );
+                })
+                .then(() => {
+                  const embed = new EmbedBuilder()
+                    .setDescription(
+                      `${success} | Removed **${role}** from **${memberstoaddroleto}** ${
+                        memberstoaddroleto === 1 ? "bot" : "bots"
+                      }`,
+                    )
+                    .setColor(interaction.client.color.green);
+                  interaction
+                    .editReply({ embeds: [embed] })
+                    .then(async () => {
+                      if (
+                        logging &&
+                        logging.moderation.delete_reply === "true"
+                      ) {
+                        setTimeout(() => {
+                          interaction.deleteReply().catch(() => {});
+                        }, 5000);
+                      }
+                    })
+                    .catch(() => {});
+                });
+            }
+          }
+        } else if (subcommand === "humans") {
+          const role =
+            interaction.options.getRole("role") ||
+            interaction.guild.roles.cache.get(role) ||
+            interaction.guild.roles.cache.find(
+              (rl) =>
+                rl.name.toLowerCase() === role.slice(1).join(" ").toLowerCase(),
+            );
+          const removerole = interaction.options.getBoolean("remove") || false;
+          let inrole = interaction.options.getRole("inrole");
+          let inroleoptionspecified;
+          let inroleoptionnotspecified;
+          if (inrole) {
+            inroleoptionspecified = true;
+            inroleoptionnotspecified = false;
+          } else {
+            inroleoptionspecified = false;
+            inroleoptionnotspecified = true;
+            inrole = interaction.guild.roles.cache.find(
+              (role) => role.name === "@everyone",
+            );
+          }
+
+          let reason = interaction.options.getString("reason");
+          if (!reason) {
+            reason = removerole ? `Role Remove` : `Role Add`;
+          }
+          if (reason.length > 1024) {
+            reason = reason.slice(0, 1021) + "...";
+          }
+
+          if (!role) {
+            let rolenotfound = new EmbedBuilder()
+              .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+              })
+              .setDescription(`${fail} | Please provide a valid role!`)
+              .setTimestamp()
+              .setFooter({
+                text: "https://serenia.eyum.dev",
+              })
+              .setColor(interaction.client.color.red);
+            return interaction.reply({
+              embeds: [rolenotfound],
+              ephmeral: true,
+            });
+          } else {
+            let members;
+            if (removerole === false) {
+              members = interaction.guild.members.cache.filter(
+                (member) =>
+                  !member.user.bot &&
+                  !member.roles.cache.has(role.id) &&
+                  (inroleoptionspecified || inroleoptionnotspecified) &&
+                  member.roles.cache.has(inrole.id),
+              );
+              interaction
+                .reply({
+                  embeds: [
+                    new EmbedBuilder()
+                      .setDescription(
+                        `${success} | Adding ${role.name} to ${members.size} ${
+                          members.size === 1 ? "human" : "humans"
+                        }. This may take a while!`,
+                      )
+                      .setColor(interaction.client.color.green),
+                  ],
+                })
+                .then(async () => {
+                  await members.forEach(
+                    async (member) =>
+                      await member.roles.add(role, [
+                        `${reason} / Responsible User: ${interaction.user.tag}`,
+                      ]),
+                  );
+                })
+                .then(() => {
+                  const embed = new EmbedBuilder()
+                    .setDescription(
+                      `${success} | Added **${role}** to **${members.size}** ${
+                        members.size === 1 ? "human" : "humans"
+                      }.`,
+                    )
+                    .setColor(interaction.client.color.green);
+                  interaction
+                    .editReply({ embeds: [embed] })
+                    .then(async () => {
+                      if (
+                        logging &&
+                        logging.moderation.delete_reply === "true"
+                      ) {
+                        setTimeout(() => {
+                          interaction.deleteReply().catch(() => {});
+                        }, 5000);
+                      }
+                    })
+                    .catch(() => {});
+                });
+            } else {
+              members = interaction.guild.members.cache.filter(
+                (member) =>
+                  !member.user.bot &&
+                  member.roles.cache.has(role.id) &&
+                  (inroleoptionspecified || inroleoptionnotspecified) &&
+                  member.roles.cache.has(inrole.id),
+              );
+              interaction
+                .reply({
+                  embeds: [
+                    new EmbedBuilder()
+                      .setDescription(
+                        `${success} | Removing ${role.name} from ${
+                          members.size
+                        } ${
+                          members.size === 1 ? "human" : "humans"
+                        }. This may take a while!`,
+                      )
+                      .setColor(interaction.client.color.green),
+                  ],
+                })
+                .then(async () => {
+                  await members.forEach(
+                    async (member) =>
+                      await member.roles.remove(role, [
+                        `${reason} / Responsible User: ${interaction.user.tag}`,
+                      ]),
+                  );
+                })
+                .then(() => {
+                  const embed = new EmbedBuilder()
+                    .setDescription(
+                      `${success} | Removed **${role}** from **${
+                        members.size
+                      }** ${members.size === 1 ? "human" : "humans"}.`,
+                    )
+                    .setColor(interaction.client.color.green);
+                  interaction
+                    .editReply({ embeds: [embed] })
+                    .then(async () => {
+                      if (
+                        logging &&
+                        logging.moderation.delete_reply === "true"
+                      ) {
+                        setTimeout(() => {
+                          interaction.deleteReply().catch(() => {});
+                        }, 5000);
+                      }
+                    })
+                    .catch(() => {});
+                });
+            }
+          }
+        } else if (subcommand === "add") {
+          const member = interaction.options.getMember("user");
+          const role =
+            interaction.options.getRole("role") ||
+            interaction.guild.roles.cache.get(role) ||
+            interaction.guild.roles.cache.find(
+              (rl) =>
+                rl.name.toLowerCase() === role.slice(1).join(" ").toLowerCase(),
+            );
+          let reason = interaction.options.getString("reason");
+          if (!reason) {
+            reason = `Role Add`;
+          }
+          if (reason.length > 1024) {
+            reason = reason.slice(0, 1021) + "...";
+          }
+
+          if (!role) {
+            let rolenotfound = new EmbedBuilder()
+              .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+              })
+              .setDescription(`${fail} | Please provide a valid role!`)
+              .setTimestamp()
+              .setFooter({
+                text: "https://serenia.eyum.dev",
+              })
+              .setColor(interaction.client.color.red);
+            return interaction.reply({
+              embeds: [rolenotfound],
+              ephmeral: true,
+            });
+          } else {
+            if (member.roles.cache.has(role.id)) {
+              let alreadyhasrole = new EmbedBuilder()
+                .setAuthor({
+                  name: `${interaction.user.tag}`,
+                  iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+                })
+                .setDescription(
+                  `${fail} | ${member} already has the role ${role}.`,
+                )
+                .setTimestamp()
+                .setFooter({
+                  text: "https://serenia.eyum.dev",
+                })
+                .setColor(interaction.client.color.red);
+              return interaction.reply({
+                embeds: [alreadyhasrole],
+                ephmeral: true,
+              });
+            } else {
+              member.roles
+                .add(role, [
+                  `${reason} / Responsible User: ${interaction.user.tag}`,
+                ])
+                .then(() => {
+                  const embed = new EmbedBuilder()
+                    .setDescription(`${success} | Added ${role} to ${member}.`)
+                    .setColor(interaction.client.color.green);
+                  interaction
+                    .reply({ embeds: [embed] })
+                    .then(async () => {
+                      if (
+                        logging &&
+                        logging.moderation.delete_reply === "true"
+                      ) {
+                        setTimeout(() => {
+                          interaction.deleteReply().catch(() => {});
+                        }, 5000);
+                      }
+                    })
+                    .catch(() => {});
+                })
+                .catch(() => {
+                  let botrolepossiblylow = new EmbedBuilder()
+                    .setAuthor({
+                      name: `${interaction.user.tag}`,
+                      iconURL: interaction.user.displayAvatarURL({
+                        dynamic: true,
+                      }),
+                    })
+                    .setDescription(
+                      `${fail} | The role is possibly higher than me or you. Please move my role above the role and try again!`,
+                    )
+                    .setTimestamp()
+                    .setFooter({
+                      text: "https://serenia.eyum.dev",
+                    })
+                    .setColor(interaction.client.color.red);
+                  return interaction.reply({
+                    embeds: [botrolepossiblylow],
+                    ephmeral: true,
+                  });
+                });
+            }
+          }
+        } else if (subcommand === "remove") {
+          let member = interaction.options.getMember("user");
+          let role =
+            interaction.options.getRole("role") ||
+            interaction.guild.roles.cache.get(role) ||
+            interaction.guild.roles.cache.find(
+              (rl) =>
+                rl.name.toLowerCase() === role.slice(1).join(" ").toLowerCase(),
+            );
+          let reason = interaction.options.getString("reason");
+          if (!reason) {
+            reason = `Role Remove`;
+          }
+          if (reason.length > 1024) {
+            reason = reason.slice(0, 1021) + "...";
+          }
+
+          if (!role) {
+            const rolenotfound = new EmbedBuilder()
+              .setAuthor({
+                name: `${interaction.user.tag}`,
+                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+              })
+              .setDescription(`${fail} | Please provide a valid role!`)
+              .setTimestamp()
+              .setFooter({
+                text: "https://serenia.eyum.dev",
+              })
+              .setColor(interaction.client.color.red);
+            return interaction.reply({
+              embeds: [rolenotfound],
+              ephemeral: true,
+            });
+          } else {
+            if (!member.roles.cache.has(role.id)) {
+              const nothasrole = new EmbedBuilder()
+                .setAuthor({
+                  name: `${interaction.user.tag}`,
+                  iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+                })
+                .setDescription(
+                  `${fail} | ${member} doesn't have the role ${role}!`,
+                )
+                .setTimestamp()
+                .setFooter({
+                  text: "https://serenia.eyum.dev",
+                })
+                .setColor(interaction.client.color.red);
+              return interaction.reply({
+                embeds: [nothasrole],
+                ephemeral: true,
+              });
+            } else {
+              member.roles
+                .remove(role, [
+                  `${reason} / Responsible User: ${interaction.user.tag}`,
+                ])
+                .then(() => {
+                  const embed = new EmbedBuilder()
+                    .setDescription(
+                      `${success} | Removed ${role} from ${member}.`,
+                    )
+                    .setColor(interaction.client.color.green);
+                  interaction
+                    .reply({ embeds: [embed] })
+                    .then(() => {
+                      if (
+                        logging &&
+                        logging.moderation.delete_reply === "true"
+                      ) {
+                        setTimeout(() => {
+                          interaction.deleteReply().catch(() => {});
+                        }, 5000);
+                      }
+                    })
+                    .catch(() => {});
+                })
+                .catch(() => {
+                  let botrolepossiblylow = new EmbedBuilder()
+                    .setAuthor({
+                      name: `${interaction.user.tag}`,
+                      iconURL: interaction.user.displayAvatarURL({
+                        dynamic: true,
+                      }),
+                    })
+                    .setDescription(
+                      `${fail} | The role is possibly higher than me or you. Please move my role above the role and try again.`,
+                    )
+                    .setTimestamp()
+                    .setFooter({
+                      text: `https://serenia.eyum.dev`,
+                    })
+                    .setColor(interaction.client.color.red);
+                  return interaction.reply({
+                    embeds: [botrolepossiblylow],
+                    ephemeral: true,
+                  });
+                });
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error);
+        const fail = interaction.client.emoji.fail;
+        let botrolepossiblylow = new EmbedBuilder()
+          .setAuthor({
+            name: `${interaction.user.tag}`,
+            iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+          })
+          .setDescription(
+            `${fail} | This role is a(n) mod/admin role, I can't do that.`,
+          )
+          .setTimestamp()
+          .setFooter({
+            text: `https://serenia.eyum.dev`,
+          })
+          .setColor(interaction.client.color.red);
+        return interaction.reply({
+          embeds: [botrolepossiblylow],
+          ephemeral: true,
+        });
+      }
+    } else if (subcommandGroup === "channel") {
       if (subcommand === "lock") {
         try {
           const client = interaction.client;
@@ -518,7 +1479,7 @@ module.exports = {
           if (
             channel
               .permissionsFor(interaction.guild.id)
-              .has(PermissionsBitField.Flags.SendMessages) === false
+              .has("SEND_MESSAGES") === false
           ) {
             const lockchannelError2 = new EmbedBuilder()
               .setDescription(`${fail} | ${channel} is already locked`)
@@ -530,15 +1491,15 @@ module.exports = {
           }
 
           channel.permissionOverwrites
-            .edit(interaction.guild.members.me, { SendMessages: true })
+            .edit(interaction.guild.members.me, { SEND_MESSAGES: true })
             .catch(() => {});
 
           channel.permissionOverwrites
-            .edit(interaction.guild.id, { SendMessages: false })
+            .edit(interaction.guild.id, { SEND_MESSAGES: false })
             .catch(() => {});
 
           channel.permissionOverwrites
-            .edit(interaction.member.id, { SendMessages: true })
+            .edit(interaction.member.id, { SEND_MESSAGES: true })
             .catch(() => {});
 
           const embed = new EmbedBuilder()
@@ -677,7 +1638,7 @@ module.exports = {
           if (
             channel
               .permissionsFor(interaction.guild.id)
-              .has(PermissionsBitField.Flags.SendMessages) === true
+              .has("SEND_MESSAGES") === true
           ) {
             const lockchannelError2 = new EmbedBuilder()
               .setDescription(`${fail} | ${channel} is already unlocked`)
@@ -689,15 +1650,15 @@ module.exports = {
           }
 
           channel.permissionOverwrites
-            .edit(interaction.guild.members.me, { SendMessages: true })
+            .edit(interaction.guild.members.me, { SEND_MESSAGES: true })
             .catch(() => {});
 
           channel.permissionOverwrites
-            .edit(interaction.guild.id, { SendMessages: true })
+            .edit(interaction.guild.id, { SEND_MESSAGES: true })
             .catch(() => {});
 
           channel.permissionOverwrites
-            .edit(interaction.member.id, { SendMessages: true })
+            .edit(interaction.member.id, { SEND_MESSAGES: true })
             .catch(() => {});
 
           const embed = new EmbedBuilder()
@@ -728,7 +1689,7 @@ module.exports = {
         }
       } else if (subcommand === "slowmode") {
         try {
-          if (checkModPermissions(interaction.member, "manage_channels")) {
+          if (!interaction.member.permissions.has("ManageChannels")) {
             return interaction.reply({
               content: "You do not have permission to use this command.",
               ephemeral: true,
@@ -855,7 +1816,7 @@ module.exports = {
           });
         }
       } else if (subcommand === "overwritePermissions") {
-        const permissionsData = JSON.parse(
+        const PermissionsData = JSON.parse(
           fs.readFileSync(
             "./src/assets/json/serializedpermissions.json",
             "utf-8",
@@ -866,49 +1827,52 @@ module.exports = {
         const user = interaction.options.getMember("user");
         const role = interaction.options.getRole("role");
         const serializedPermissions = interaction.options
-          .getString("permissions")
+          .getString("Permissions")
           .split(",")
           .map((p) => p.trim());
         const allow = interaction.options.getBoolean("allow");
 
         if (
-          !(channel instanceof TextChannel || channel instanceof VoiceChannel)
+          !(
+            channel instanceof discord.TextChannel ||
+            channel instanceof discord.VoiceChannel
+          )
         ) {
           return interaction.reply({
             content:
-              "You can only overwrite permissions for text or voice channels.",
+              "You can only overwrite Permissions for text or voice channels.",
             ephemeral: true,
           });
         }
 
         let permissionUpdates = {};
         serializedPermissions.forEach((number) => {
-          if (permissionsData[number]) {
-            permissionUpdates[permissionsData[number]] = allow;
+          if (PermissionsData[number]) {
+            permissionUpdates[PermissionsData[number]] = allow;
           }
         });
 
         if (Object.keys(permissionUpdates).length === 0) {
-          return interaction.reply("No valid permissions were provided.");
+          return interaction.reply("No valid Permissions were provided.");
         }
 
         try {
           if (user) {
             await channel.permissionOverwrites.edit(user.id, permissionUpdates);
             return interaction.reply(
-              `Successfully updated permissions for ${user.tag} in ${channel.name}.`,
+              `Successfully updated Permissions for ${user.tag} in ${channel.name}.`,
             );
           }
 
           if (role) {
             await channel.permissionOverwrites.edit(role.id, permissionUpdates);
             return interaction.reply(
-              `Successfully updated permissions for the role ${role.name} in ${channel.name}.`,
+              `Successfully updated Permissions for the role ${role.name} in ${channel.name}.`,
             );
           }
 
           return interaction.reply(
-            "Please provide a user or role to overwrite permissions for.",
+            "Please provide a user or role to overwrite Permissions for.",
           );
         } catch (error) {
           console.error(error);
@@ -920,7 +1884,7 @@ module.exports = {
     } else if (subcommandGroup === "user") {
       if (subcommand === "ban") {
         try {
-          if (checkModPermissions(interaction.member, "ban")) {
+          if (!interaction.member.permissions.has("BanMembers")) {
             return interaction.reply({
               content: "You do not have permission to use this command.",
               ephemeral: true,
@@ -995,7 +1959,7 @@ module.exports = {
 
           if (response) {
             const banEmbed = new EmbedBuilder()
-              .setColor(client.color.green)
+              .setColor("Green")
               .setDescription(
                 `${client.emoji.success} | **${targetUser.tag}** has been banned.\n**Reason:** ${reason}`,
               );
@@ -1016,7 +1980,7 @@ module.exports = {
               if (logging.moderation.toggle === "true" && logChannel) {
                 const logEmbed = new EmbedBuilder()
                   .setTitle("User Banned")
-                  .setColor(client.color.red)
+                  .setColor("Red")
                   .addFields(
                     {
                       name: "User",
@@ -1081,18 +2045,11 @@ module.exports = {
           const language = require(
             `../../data/language/${guildDB.language}.json`,
           );
-          if (checkModPermissions(interaction.member, "kick")) {
+          if (!interaction.member.permissions.has("KickMembers"))
             return interaction.reply({
-              embeds: [
-                new EmbedBuilder()
-                  .setColor(client.color.red)
-                  .setDescription(
-                    `${client.emoji.fail} | You do not have permission to use this command.`,
-                  ),
-              ],
+              content: "You do not have permission to use this command.",
               ephemeral: true,
             });
-          }
 
           const member = interaction.options.getMember("member");
           const reason =
@@ -1100,7 +2057,7 @@ module.exports = {
 
           if (!member) {
             let usernotfound = new EmbedBuilder()
-              .setColor(client.color.red)
+              .setColor("Red")
               .setDescription(
                 `${client.emoji.fail} | I can't find that member`,
               );
@@ -1118,7 +2075,7 @@ module.exports = {
 
           if (member === interaction.user) {
             let kickerror = new EmbedBuilder()
-              .setColor(client.color.red)
+              .setColor("Red")
               .setDescription(
                 `${client.emoji.fail} | You can't kick yourself!`,
               );
@@ -1138,7 +2095,7 @@ module.exports = {
 
           if (response) {
             let kicksuccess = new EmbedBuilder()
-              .setColor(client.color.green)
+              .setColor("Green")
               .setDescription(
                 `${client.emoji.success} ***${member} was kicked.*** | ${
                   reason || "No reason Provided"
@@ -1298,22 +2255,14 @@ module.exports = {
             Math.random().toString(36).substring(2, 5) +
             Math.random().toString(36).substring(2, 5);
 
-          if (checkModPermissions(interaction.member, "nicknames")) {
+          if (!interaction.member.permissions.has("ManageNicknames"))
             return interaction.reply({
-              embeds: [
-                new EmbedBuilder()
-                  .setDescription(
-                    `${client.emoji.fail} | You do not have permission to use this command.`,
-                  )
-                  .setColor(client.color.red),
-              ],
-              ephemeral: true,
+              content: "You do not have permission to use this command.",
             });
-          }
 
           if (!member) {
             let validmention = new EmbedBuilder()
-              .setColor(client.color.red)
+              .setColor("Red")
               .setDescription(
                 `${client.emoji.fail} | Please mention a valid member!`,
               );
@@ -1328,9 +2277,9 @@ module.exports = {
               })
               .catch(() => {});
           }
-          if (member === interaction.user) {
+          if (member === interaction.author) {
             let modnickerror = new EmbedBuilder()
-              .setColor(client.color.red)
+              .setColor("Red")
               .setDescription(
                 `${client.emoji.fail} | You can't moderate your own nickname!`,
               );
@@ -1347,38 +2296,34 @@ module.exports = {
               .catch(() => {});
           }
 
-          try {
-            if (member) {
-              const oldNickname = member.nickname || "None";
-              await member.setNickname(
-                `Moderated Nickname ${impostorpassword}`,
+          if (member) {
+            const oldNickname = member.nickname || "None";
+            await member.setNickname(`Moderated Nickname ${impostorpassword}`);
+            let embed = new EmbedBuilder()
+              .setColor("Blurple")
+              .setDescription(
+                `${client.emoji.success} | Moderated ${member}'s nickname for \`${reason}\``,
               );
-              let embed = new EmbedBuilder()
-                .setColor(client.color.green)
-                .setDescription(
-                  `${client.emoji.success} | Moderated ${member}'s nickname for \`${reason}\``,
-                );
-              return interaction
-                .reply({ embeds: [embed] })
-                .then(async () => {
-                  if (logging && logging.moderation.delete_reply === "true") {
-                    setTimeout(() => {
-                      interaction.deleteReply().catch(() => {});
-                    }, 5000);
-                  }
-                })
-                .catch(() => {});
-            }
-            if (member) {
-              let dmEmbed = new EmbedBuilder()
-                .setColor(client.color.red)
-                .setDescription(
-                  `**Nickname Moderated**\nYour nickname was moderated in **${interaction.guild.name}**. If you would like to change your nickname to something else, please reach out to a staff member.\n**Possible Reasons**\n• Your name was not typeable on a standard English QWERTY keyboard.\n• Your name contained words that are not suitable for the server.\n• Your name was not mentionable.\n\n__**Moderator:**__ ${interaction.author} **(${interaction.author.tag})**\n__**Reason:**__ ${reason}`,
-                )
-                .setTimestamp();
-              member.send({ embeds: [dmEmbed] });
-            }
-          } catch {
+            return interaction
+              .reply({ embeds: [embed] })
+              .then(async () => {
+                if (logging && logging.moderation.delete_reply === "true") {
+                  setTimeout(() => {
+                    interaction.deleteReply().catch(() => {});
+                  }, 5000);
+                }
+              })
+              .catch(() => {});
+          }
+          if (member) {
+            let dmEmbed = new EmbedBuilder()
+              .setColor("Red")
+              .setDescription(
+                `**Nickname Moderated**\nYour nickname was moderated in **${interaction.guild.name}**. If you would like to change your nickname to something else, please reach out to a staff member.\n**Possible Reasons**\n• Your name was not typeable on a standard English QWERTY keyboard.\n• Your name contained words that are not suitable for the server.\n• Your name was not mentionable.\n\n__**Moderator:**__ ${interaction.author} **(${interaction.author.tag})**\n__**Reason:**__ ${reason}`,
+              )
+              .setTimestamp();
+            member.send({ embeds: [dmEmbed] });
+          } else {
             let failembed = new EmbedBuilder()
               .setColor(client.color.red)
               .setDescription(
@@ -1401,8 +2346,8 @@ module.exports = {
             guildId: interaction.guild.id,
           });
 
-          if (!checkModPermissions(interaction.member, "mute"))
-            return interaction.followUp({
+          if (!interaction.member.permissions.has("ModerateMembers"))
+            return interaction.reply({
               content: "You do not have permission to use this command.",
               ephemeral: true,
             });
@@ -1414,7 +2359,7 @@ module.exports = {
 
           if (!member) {
             let usernotfound = new EmbedBuilder()
-              .setColor(client.color.red)
+              .setColor("Red")
               .setDescription(
                 `${client.emoji.fail} | I can't find that member`,
               );
@@ -1432,7 +2377,7 @@ module.exports = {
 
           if (!time) {
             let timevalid = new EmbedBuilder()
-              .setColor(client.color.red)
+              .setColor("Red")
               .setDescription(
                 `${client.emoji.fail} | The time specified is not valid. Please provide a valid time.`,
               );
@@ -1469,7 +2414,7 @@ module.exports = {
               .catch(() => {});
 
             let dmEmbed = new EmbedBuilder()
-              .setColor(client.color.red)
+              .setColor("Red")
               .setDescription(
                 `You have been muted in **${
                   interaction.guild.name
@@ -1522,7 +2467,7 @@ module.exports = {
             `../../data/language/${guildDB.language}.json`,
           );
 
-          if (!interaction.member.permissions.has("MODERATE_MEMBERS"))
+          if (!interaction.member.permissions.has("ModerateMembers"))
             return interaction.reply({
               content: "You do not have permission to use this command.",
               ephemeral: true,
@@ -1697,6 +2642,9 @@ module.exports = {
         }
       } else if (subcommand === "setnickname") {
         try {
+          // ✅ Defer first – prevents token expiration and double‑reply issues
+          await interaction.deferReply();
+
           const client = interaction.client;
           const fail = client.emoji.fail;
           const success = client.emoji.success;
@@ -1709,236 +2657,166 @@ module.exports = {
           const reason =
             interaction.options.getString("reason") || "No reason provided.";
 
-          if (!interaction.member.permissions.has("MANAGE_NICKNAMES"))
-            return interaction.reply({
+          // Permission check
+          if (!interaction.member.permissions.has("ManageNicknames")) {
+            return interaction.editReply({
               content: "You do not have permission to use this command.",
               ephemeral: true,
             });
+          }
 
           if (!member) {
             const usernotfound = new EmbedBuilder()
               .setAuthor({
-                name: `${interaction.user.tag}`,
+                name: interaction.user.tag,
                 iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
               })
               .setTitle(`${fail} | Set Nickname Error`)
-              .setDescription("Please provide a valid user")
+              .setDescription("Please provide a valid user.")
               .setTimestamp()
-              .setFooter({
-                text: `${process.env.AUTH_DOMAIN}`,
-              })
+              .setFooter({ text: process.env.AUTH_DOMAIN })
               .setColor(client.color.red);
-            return interaction
-              .reply({ embeds: [usernotfound] })
-              .then(async () => {
-                if (logging && logging.moderation.delete_reply === "true") {
-                  setTimeout(() => {
-                    interaction.deleteReply().catch(() => {});
-                  }, 5000);
-                }
-              })
-              .catch(() => {});
+            return interaction.editReply({
+              embeds: [usernotfound],
+              ephemeral: true,
+            });
           }
 
-          if (!member == interaction.guild.members.me) {
+          // If trying to change bot's nickname
+          if (member.id === interaction.guild.members.me.id) {
             if (!client.config.owners.includes(interaction.user.id)) {
               const error = new EmbedBuilder()
                 .setAuthor({
-                  name: `${interaction.user.tag}`,
+                  name: interaction.user.tag,
                   iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
                 })
                 .setTitle(`${fail} | Set Nickname Error`)
                 .setDescription(
-                  `Only an owner of ${client.config.botName} can change the bots nickname for this server.`,
+                  `Only an owner of ${client.config.botName} can change the bot's nickname.`,
                 )
                 .setTimestamp()
-                .setFooter({
-                  text: `${process.env.AUTH_DOMAIN}`,
-                })
+                .setFooter({ text: process.env.AUTH_DOMAIN })
                 .setColor(client.color.red);
-              return interaction.reply({ embeds: [error], ephemeral: true });
-            }
-          } else {
-            if (!nickname) {
-              const oldNickname = member.nickname;
-              await member.setNickname("");
-              const embed = new EmbedBuilder()
-                .setDescription(
-                  `${success} | Nickname for ${member} was reset.`,
-                )
-                .setColor(client.color.green);
-              interaction
-                .reply({ embeds: [embed] })
-                .then(async () => {
-                  if (logging && logging.moderation.delete_reply === "true") {
-                    setTimeout(() => {
-                      interaction.deleteReply().catch(() => {});
-                    }, 5000);
-                  }
-                })
-                .catch(() => {});
-            }
-
-            let nick = nickname;
-            if (nickname && !(nickname.length > 32)) {
-              try {
-                const oldNickname = member.nickname || member.user.username;
-                await member.setNickname(nick);
-                const embed = new EmbedBuilder()
-                  .setDescription(
-                    `***${success} | ${oldNickname}'s nickname was set to ${nick}.* || Reason: ${reason}**`,
-                  )
-                  .setColor(client.color.green);
-                interaction
-                  .reply({ embeds: [embed] })
-                  .then(async () => {
-                    if (logging && logging.moderation.delete_reply === "true") {
-                      setTimeout(() => {
-                        interaction.deleteReply().catch(() => {});
-                      }, 5000);
-                    }
-                  })
-                  .catch(() => {});
-
-                if (logging) {
-                  const role = interaction.guild.roles.cache.get(
-                    logging.moderation.ignore_role,
-                  );
-                  const channel = interaction.guild.channels.cache.get(
-                    logging.moderation.channel,
-                  );
-
-                  if (logging.moderation.toggle == "true") {
-                    if (channel) {
-                      if (
-                        interaction.channel.id !==
-                        logging.moderation.ignore_channel
-                      ) {
-                        if (
-                          !role ||
-                          (role &&
-                            !interaction.member.roles.cache.find(
-                              (r) => r.name.toLowerCase() === role.name,
-                            ))
-                        ) {
-                          if (logging.moderation.nicknames == "true") {
-                            let color = logging.moderation.color;
-                            if (color == "#000000")
-                              color = interaction.client.color.yellow;
-
-                            let logcase = logging.moderation.caseN;
-                            if (!logcase) logcase = `1`;
-
-                            let reason =
-                              interaction.options.getString("reason");
-
-                            if (!reason) reason = "No reason provided";
-
-                            if (reason.length > 1024)
-                              reason = reason.slice(0, 1021) + "...";
-
-                            const logEmbed = new EmbedBuilder()
-                              .setAuthor({
-                                name: `Action: \`Set Nickname\` | ${member.user.tag} | Case #${logcase}`,
-                                iconURL: member.user.displayAvatarURL({
-                                  format: "png",
-                                }),
-                              })
-                              .addFields(
-                                {
-                                  name: "User",
-                                  value: `${member}`,
-                                  inline: true,
-                                },
-                                {
-                                  name: "Moderator",
-                                  value: `${interaction.user}`,
-                                  inline: true,
-                                },
-                                {
-                                  name: "Reason",
-                                  value: `${reason}`,
-                                  inline: true,
-                                },
-                              )
-                              .setFooter({
-                                text: `ID: ${member.id}`,
-                              })
-                              .setTimestamp()
-                              .setColor(color);
-
-                            send(
-                              channel,
-                              { embeds: [logEmbed] },
-                              {
-                                name: `${interaction.client.user.username}`,
-                                username: `${interaction.client.user.username}`,
-                                icon: interaction.client.user.displayAvatarURL({
-                                  dynamic: true,
-                                  format: "png",
-                                }),
-                              },
-                            ).catch(() => {});
-
-                            logging.moderation.caseN = logcase + 1;
-                            await logging.save().catch(() => {});
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              } catch (err) {
-                console.error(err.stack);
-                interaction.reply({
-                  embeds: [
-                    new EmbedBuilder()
-                      .setAuthor({
-                        name: `${interaction.user.tag}`,
-                        iconURL: interaction.user.displayAvatarURL({
-                          dynamic: true,
-                        }),
-                      })
-                      .setTitle(`${fail} Set Nickname Error`)
-                      .setDescription(
-                        `Please ensure my role is above the provided user's role.`,
-                      )
-                      .setTimestamp()
-                      .setFooter({
-                        text: `${process.env.AUTH_DOMAIN}`,
-                      })
-                      .setColor(client.color.red),
-                  ],
-                });
-              }
-            } else {
-              interaction.reply({
-                embeds: [
-                  new EmbedBuilder()
-                    .setAuthor({
-                      name: `${interaction.user.tag}`,
-                      iconURL: interaction.user.displayAvatarURL({
-                        dynamic: true,
-                      }),
-                    })
-                    .setTitle(`${fail} | Set Nickname Error`)
-                    .setDescription(`The nickname is too long!`),
-                ],
+              return interaction.editReply({
+                embeds: [error],
+                ephemeral: true,
               });
+            }
+          }
+
+          // Handle nickname reset or change
+          if (!nickname) {
+            // Reset nickname
+            await member.setNickname(null);
+            const embed = new EmbedBuilder()
+              .setDescription(`${success} | Nickname for ${member} was reset.`)
+              .setColor(client.color.green);
+            await interaction.editReply({ embeds: [embed] });
+          } else if (nickname.length > 32) {
+            const embed = new EmbedBuilder()
+              .setAuthor({
+                name: interaction.user.tag,
+                iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+              })
+              .setTitle(`${fail} | Set Nickname Error`)
+              .setDescription("The nickname is too long (max 32 characters).")
+              .setColor(client.color.red);
+            return interaction.editReply({ embeds: [embed] });
+          } else {
+            // Set new nickname
+            const oldNickname = member.nickname || member.user.username;
+            await member.setNickname(
+              nickname,
+              `${reason} (by ${interaction.user.tag})`,
+            );
+            const embed = new EmbedBuilder()
+              .setDescription(
+                `***${success} | ${oldNickname}'s nickname was set to ${nickname}.* || Reason: ${reason}**`,
+              )
+              .setColor(client.color.green);
+            await interaction.editReply({ embeds: [embed] });
+          }
+
+          if (logging.moderation.delete_reply === "true") {
+            setTimeout(() => interaction.deleteReply().catch(() => {}), 5000);
+          }
+
+          // Logging (if enabled)
+          if (
+            logging &&
+            logging.moderation.toggle === "true" &&
+            logging.moderation.nicknames === "true"
+          ) {
+            const logChannel = interaction.guild.channels.cache.get(
+              logging.moderation.channel,
+            );
+            if (
+              logChannel &&
+              interaction.channel.id !== logging.moderation.ignore_channel
+            ) {
+              const ignoreRole = logging.moderation.ignore_role
+                ? interaction.guild.roles.cache.get(
+                    logging.moderation.ignore_role,
+                  )
+                : null;
+              if (
+                !ignoreRole ||
+                !interaction.member.roles.cache.has(ignoreRole.id)
+              ) {
+                let color = logging.moderation.color;
+                if (color === "#000000") color = client.color.yellow;
+
+                let logCase = logging.moderation.caseN || 1;
+                const logEmbed = new EmbedBuilder()
+                  .setAuthor({
+                    name: `Action: Set Nickname | ${member.user.tag} | Case #${logCase}`,
+                    iconURL: member.user.displayAvatarURL({ format: "png" }),
+                  })
+                  .addFields(
+                    { name: "User", value: `${member}`, inline: true },
+                    {
+                      name: "Moderator",
+                      value: `${interaction.user}`,
+                      inline: true,
+                    },
+                    { name: "Reason", value: reason, inline: true },
+                  )
+                  .setFooter({ text: `ID: ${member.id}` })
+                  .setTimestamp()
+                  .setColor(color);
+
+                send(
+                  logChannel,
+                  { embeds: [logEmbed] },
+                  {
+                    name: client.user.username,
+                    username: client.user.username,
+                    icon: client.user.displayAvatarURL({
+                      dynamic: true,
+                      format: "png",
+                    }),
+                  },
+                ).catch(() => {});
+
+                logging.moderation.caseN = logCase + 1;
+                await logging.save().catch(() => {});
+              }
             }
           }
         } catch (err) {
           console.error(err);
-          interaction.reply({
-            embeds: [
-              new EmbedBuilder()
-                .setColor(interaction.client.color.red)
-                .setDescription(
-                  `${interaction.client.emoji.fail} | That user is a mod/admin, I can't do that.`,
-                ),
-            ],
-            ephemeral: true,
-          });
+          interaction
+            .editReply({
+              embeds: [
+                new EmbedBuilder()
+                  .setColor(interaction.client.color.red)
+                  .setDescription(
+                    `${interaction.client.emoji.fail} | That user is a mod/admin, I can't do that.`,
+                  ),
+              ],
+              ephemeral: true,
+            })
+            .catch(() => {});
         }
       } else if (subcommand === "softban") {
         try {
@@ -1959,7 +2837,7 @@ module.exports = {
           let reason =
             interaction.options.getString("reason") || "No Reason Provided";
 
-          if (!interaction.member.permissions.has("BAN_MEMBERS"))
+          if (!interaction.member.permissions.has("BanMembers"))
             return interaction.reply({
               content: "You do not have permission to use this command.",
               ephemeral: true,
@@ -2056,8 +2934,8 @@ module.exports = {
             `../../data/language/${guildDB.language}.json`,
           );
 
-          // Check if the user has proper permissions
-          if (!interaction.member.permissions.has("BAN_MEMBERS")) {
+          // Check if the user has proper Permissions
+          if (!interaction.member.permissions.has("BanMembers")) {
             return interaction.editReply({
               content: `${language.unbanNoPerm}`,
               ephemeral: true,
@@ -2192,8 +3070,8 @@ module.exports = {
           });
 
           // Check if the user has permission to use this command
-          if (!interaction.member.permissions.has("MANAGE_MESSAGES"))
-            return interaction.followUp({
+          if (!interaction.member.permissions.has("ManageMessages"))
+            return interaction.reply({
               content: "You do not have permission to use this command.",
             });
 
@@ -2204,7 +3082,7 @@ module.exports = {
           // Check if the member is valid
           if (!member) {
             let usernotfound = new EmbedBuilder()
-              .setColor(client.color.red)
+              .setColor("Red")
               .setDescription(
                 `${client.emoji.fail} | I can't find that member`,
               );
@@ -2397,7 +3275,7 @@ module.exports = {
             let failembed = new EmbedBuilder()
               .setColor(client.color.red)
               .setDescription(
-                `${client.emoji.fail} | I can't warn that member. Make sure that my role is above their role or that I have sufficient permissions to execute the command.`,
+                `${client.emoji.fail} | I can't warn that member. Make sure that my role is above their role or that I have sufficient Permissions to execute the command.`,
               )
               .setTimestamp();
             return interaction.reply({ embeds: [failembed] });
@@ -2426,7 +3304,7 @@ module.exports = {
             `../../data/language/${guildDB.language}.json`,
           );
 
-          if (!interaction.member.permissions.has("MANAGE_MESSAGES"))
+          if (!interaction.member.permissions.has("ManageMessages"))
             return interaction.reply({
               content: "You do not have permission to use this command.",
               ephemeral: true,
@@ -2606,7 +3484,7 @@ module.exports = {
             `../../data/language/${guildDB.language}.json`,
           );
 
-          if (!interaction.member.permissions.has("MANAGE_MESSAGES"))
+          if (!interaction.member.permissions.has("ManageMessages"))
             return interaction.reply({
               content: "You do not have permission to use this command.",
               ephemeral: true,

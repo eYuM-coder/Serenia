@@ -836,7 +836,7 @@ module.exports = {
             iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
           })
           .setTimestamp()
-          .setColor(interaction.user.displayHexColor);
+          .setColor("Random");
 
         if (servers.length <= 50) {
           const range = servers.length == 1 ? "[1]" : `[1 - ${servers.length}]`;

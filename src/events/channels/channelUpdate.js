@@ -67,18 +67,8 @@ module.exports = class extends Event {
         return;
       }
 
-      const auditEntry = fetchedLogs?.entries?.find(
-        (e) =>
-          e.target?.id === newChannel.id &&
-          e.changes?.length &&
-          Date.now() - e.createdTimestamp < 5000,
-      );
-      const overwriteEntry = overwriteLogs?.entries?.find(
-        (e) =>
-          e.target?.id === newChannel.id &&
-          e.changes?.length &&
-          Date.now() - e.createdTimestamp < 5000,
-      );
+      const auditEntry = fetchedLogs.entries.first();
+      const overwriteEntry = overwriteLogs.entries.first();
 
       const entry = auditEntry || overwriteEntry;
       let executor = null;
