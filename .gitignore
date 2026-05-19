@@ -15,4 +15,3 @@ package-lock.json
 .replit
 commandCache.json
 playit/playit-linux-amd64
-src/structures
