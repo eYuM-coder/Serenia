@@ -19,7 +19,7 @@ module.exports = class extends Event {
       });
 
       if (!user) {
-        const newUser1 = new Username({
+        const newUser1 = Username.create({
           discordId: newUser.id,
         });
         newUser1.usernames.push(newUser.tag);

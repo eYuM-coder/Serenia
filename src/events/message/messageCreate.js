@@ -133,28 +133,21 @@ module.exports = class extends Event {
       }
 
       if (command) {
-        await User.findOne(
-          {
+        const user = await User.findOne({
+          discordId: message.author.id,
+        });
+
+        if (!user) {
+          await User.create({
             discordId: message.author.id,
-          },
-          (err, user) => {
-            if (err) console.log(err);
-
-            if (!user) {
-              const newUser = new User({
-                discordId: message.author.id,
-              });
-
-              newUser.save();
-            }
-          },
-        );
+          });
+        }
 
         let disabledCommands = settings.disabledCommands;
         if (typeof disabledCommands === "string")
           disabledCommands = disabledCommands.split(" ");
 
-        const rateLimit = this.ratelimit(message, cmd);
+        const rateLimit = this.rateLimit(message, cmd);
 
         if (
           !message.channel

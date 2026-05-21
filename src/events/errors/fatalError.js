@@ -14,7 +14,7 @@ module.exports = class extends Event {
     const embed = new EmbedBuilder()
       .setColor("Green")
       .setDescription(
-        `**User:** ${message.author} (${message.author.tag} - ${message.author.id})\n**Message:** ${message.content}\n**Error:** ${error}\n**ID:** \`${id}\`\n\n__**Guild Info**__\nName: ${message.guild.name}\nID: ${messsage.guild.id}\nChannel: ${message.channel.name} (${message.channel.id})`,
+        `**User:** ${message.author} (${message.author.tag} - ${message.author.id})\n**Message:** ${message.content}\n**Error:** ${error}\n**ID:** \`${id}\`\n\n__**Guild Info**__\nName: ${message.guild.name}\nID: ${message.guild.id}\nChannel: ${message.channel.name} (${message.channel.id})`,
       )
       .setTimestamp();
 
