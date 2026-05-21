@@ -28,6 +28,12 @@ module.exports = class SereniaClient extends Client {
       },
       presence: {
         status: "online",
+        activities: [
+          {
+            type: "CUSTOM",
+            name: status,
+          },
+        ],
       },
     });
     this.validate(options);

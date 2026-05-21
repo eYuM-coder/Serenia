@@ -104,7 +104,7 @@ even has the following features on the website 🌐
 </h1>
 
 **Webhooks: (for Developer)**
-With You can even log everything using webhooks directly from the config file!
+With Serenia, you can even log everything using webhooks directly from the config file!
 
 <h1 align="center">
   <a href="https://github.com/peterhanania"><img src="https://i.imgur.com/vbGuLdL.jpg"></a>
