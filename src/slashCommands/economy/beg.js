@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 const { getProfile, updateProfile } = require("../../utils/economy");
 const { abbreviateNumber } = require("../../utils/parseAmount");
+const nerdamer = require("nerdamer");
 
 const BEG_COOLDOWN = 180000;
 
@@ -251,6 +252,19 @@ module.exports = {
       });
     }
 
+    if (profile.wallet <= 0) {
+      return interaction.reply({
+        embeds: [
+          new MessageEmbed()
+            .setColor(interaction.client.color.red)
+            .setDescription(
+              "Yo bro maybe get some money first before begging.",
+            ),
+        ],
+        ephemeral: true,
+      });
+    }
+
     const now = Date.now();
     const lastBeg = profile.lastBeg || 0;
     const remaining = BEG_COOLDOWN - (now - lastBeg);
@@ -288,7 +302,9 @@ module.exports = {
     const amountChange = outcome.amount || 0;
     const finalWalletChange = amountChange;
     const walletBalance = profile.wallet;
-    const walletAfter = walletBalance + finalWalletChange;
+    const walletAfter = nerdamer(`${walletBalance} + ${finalWalletChange}`)
+      .evaluate()
+      .text();
 
     await updateProfile(
       { userID: interaction.user.id },
