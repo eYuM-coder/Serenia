@@ -250,6 +250,19 @@ module.exports = {
       });
     }
 
+    if (profile.wallet <= 0) {
+      return interaction.reply({
+        embeds: [
+          new EmbedBuilder()
+            .setColor(interaction.client.color.red)
+            .setDescription(
+              "Yo bro maybe get some money first before begging.",
+            ),
+        ],
+        ephemeral: true,
+      });
+    }
+
     const now = Date.now();
     const lastBeg = profile.lastBeg || 0;
     const remaining = BEG_COOLDOWN - (now - lastBeg);
