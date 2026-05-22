@@ -252,7 +252,7 @@ module.exports = {
       });
     }
 
-    if (profile.wallet <= 0) {
+    if (profile.wallet <= 10) {
       return interaction.reply({
         embeds: [
           new MessageEmbed()

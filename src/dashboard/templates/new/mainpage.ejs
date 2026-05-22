@@ -14,20 +14,17 @@
 
 
 </head>
-<%- include("../partials/dashMenu", { bot, user, path, description, title: `Serenia - Dashboard`,  url})%>
+<%- include("../partials/dashMenu", { bot, user, path, description, title: `Serenia - Dashboard`, url})%>
 
 
 
 
-<% if(guild.channels.cache.filter(m => m.type === "GUILD_TEXT").size > 0) { %>
+<% if(guild.channels.cache.filter(m=> m.type === "GUILD_TEXT").size > 0) { %>
 
 
-<% if (guild.icon) {
- iconurl = "https://cdn.discordapp.com/icons/" + guild.id + "/" + guild.icon + ".png??size=512";
-} else {
- iconurl = "https://cdn.glitch.com/82fe990a-7942-42e3-9790-39807ccdb9f6%2Ficon-404-dark.png?v=1602427904949";
-}
-%>
+<% if (guild.icon) { iconurl="https://cdn.discordapp.com/icons/" + guild.id + "/" + guild.icon + ".png??size=512" ;
+      } else { iconurl="https://cdn.glitch.com/82fe990a-7942-42e3-9790-39807ccdb9f6%2Ficon-404-dark.png?v=1602427904949"
+      ; } %>
 
 <link rel="stylesheet" href="https://cdn.lineicons.com/2.0/LineIcons.css">
 <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -46,7 +43,9 @@
       <ul>
         <div class="guild">
           <img class="server-image" src="<%= iconurl %>" alt="<% guild.name %>" />
-          <p class="server-name" style="font-size: 26px;"><%= guild.name %></p>
+          <p class="server-name" style="font-size: 26px;">
+            <%= guild.name %>
+          </p>
         </div>
         <p>Settings</p>
         <li><a class="active" href="/dashboard/<%= guild.id %>"><span><i class="fa fa-gear" style="color: white; font-size: 17px"></i> Bot Settings</span></a></li>
@@ -109,7 +108,7 @@
             </button>
           </div>
         </div>
-        <% }  %>
+        <% } %>
         <div class="top-rr">
           <h3>Bot Settings</h3>
         </div>
@@ -129,7 +128,8 @@
   ">
               <div class="rr-box-title">
                 <div class="overviews">
-                  <div class="overviewsTitle">Main Settings<span class="smallDesc"> - Customise Serenia's Main Settings</span></div>
+                  <div class="overviewsTitle">Main Settings<span class="smallDesc"> - Customise Serenia's Main
+                      Settings</span></div>
 
                 </div>
               </div>
@@ -160,7 +160,7 @@
               <p style="padding-left: 40px">Change the Bot's Language.</p>
 
               <select class="select" name="language">
-                <% if(settings.language == "english") {%>
+                <% if(settings.language=="english" ) {%>
 
                 <option value="english" selected>English ( EN )</option>
                 <option value="french">Francais ( FR )</option>
@@ -168,7 +168,7 @@
                 <option value="arabic">Arabic (AR)</option>
                 <option value="polish">Polish ( PO )</option>
 
-                <% } else if(settings.language == "french") {%>
+                <% } else if(settings.language=="french" ) {%>
 
                 <option value="english">English ( EN )</option>
                 <option value="french" selected>French ( FR )</option>
@@ -176,7 +176,7 @@
                 <option value="arabic">Arabic (AR)</option>
                 <option value="polish">Polish ( PO )</option>
 
-                <% } else if(settings.language == "spanish") {%>
+                <% } else if(settings.language=="spanish" ) {%>
 
                 <option value="english">English ( EN )</option>
                 <option value="french">French ( FR )</option>
@@ -184,7 +184,7 @@
                 <option value="polish">Polish ( PO )</option>
                 <option value="arabic">Arabic (AR)</option>
 
-                <% } else if(settings.language == "arabic") { %>
+                <% } else if(settings.language=="arabic" ) { %>
 
                 <option value="english">English ( EN )</option>
                 <option value="french">French ( FR )</option>
@@ -192,7 +192,7 @@
                 <option value="polish">Polish ( PO )</option>
                 <option value="arabic" selected>Arabic (AR)</option>
 
-                <% } else if(settings.language == "polish") { %>
+                <% } else if(settings.language=="polish" ) { %>
 
                 <option value="english">English ( EN )</option>
                 <option value="french">French ( FR )</option>
@@ -249,26 +249,32 @@
                   <div class="box1 box">
 
                     <div class="containerB">
-                      <h3 class="bigText"><%= guild.memberCount %></h3>
+                      <h3 class="bigText">
+                        <%= guild.memberCount %>
+                      </h3>
                       <p class="heading">Server members</p>
                     </div>
 
                   </div>
                   <div class="box2 box">
                     <div class="containerB">
-                      <h3 class="bigText"><%= guild.channels.cache.size %></h3>
+                      <h3 class="bigText">
+                        <%= guild.channels.cache.size %>
+                      </h3>
                       <p class="heading">Channels</p>
                     </div>
                   </div>
                   <div class="box3 box">
                     <div class="containerB">
-                      <h3 class="bigText"><%= guild.roles.cache.size - 1%></h3>
+                      <h3 class="bigText">
+                        <%= guild.roles.cache.size - 1%>
+                      </h3>
                       <p class="heading">Roles</p>
                     </div>
                   </div>
                   <div class="box4 box">
                     <div class="containerB">
-                      <% if(settings.isPremium === "true") { %>
+                      <% if(settings.isPremium==="true" ) { %>
                       <h3 class="bigText">Is Premium</h3>
                       <% } else { %>
                       <h3 class="bigText">Not Premium</h3>
@@ -279,7 +285,8 @@
                 </div>
                 <div style="padding-bottom: 15px;"></div>
                 <div class="overviews">
-                  <div class="overviewsTitle">Server Growth <span class="smallDesc"> -Based on server members join dates</span></div>
+                  <div class="overviewsTitle">Server Growth <span class="smallDesc"> -Based on server members
+                      join dates</span></div>
 
                 </div>
 
@@ -287,26 +294,34 @@
                   <div class="box5 box">
 
                     <div class="containerB">
-                      <h3 class="bigText"><i class="	fa fa-plus-circle"></i><%= join1 %></h3>
+                      <h3 class="bigText"><i class="	fa fa-plus-circle"></i>
+                        <%= join1 %>
+                      </h3>
                       <p class="heading">Joins Today</p>
                     </div>
 
                   </div>
                   <div class="box6 box">
                     <div class="containerB">
-                      <h3 class="bigText"><i class="	fa fa-minus-circle"></i><%= leave1 %></h3>
+                      <h3 class="bigText"><i class="	fa fa-minus-circle"></i>
+                        <%= leave1 %>
+                      </h3>
                       <p class="heading">Leaves Today</p>
                     </div>
                   </div>
                   <div class="box5 box">
                     <div class="containerB">
-                      <h3 class="bigText"><i class="	fa fa-plus-circle"></i><%= join2 %></h3>
+                      <h3 class="bigText"><i class="	fa fa-plus-circle"></i>
+                        <%= join2 %>
+                      </h3>
                       <p class="heading">Joins last 7 Days</p>
                     </div>
                   </div>
                   <div class="box6 box">
                     <div class="containerB">
-                      <h3 class="bigText"><i class="	fa fa-minus-circle"></i><%= leave2 %></h3>
+                      <h3 class="bigText"><i class="	fa fa-minus-circle"></i>
+                        <%= leave2 %>
+                      </h3>
                       <p class="heading">Leaves last 7 Days</p>
                     </div>
                   </div>
@@ -326,7 +341,8 @@
   </div>
 
   <% } else { %>
-  <p class="no-js">Make sure the guild has 1 channel, So please create a channel before accessing our dashboard</p>
+  <p class="no-js">Make sure the guild has 1 channel, So please create a channel before accessing our dashboard
+  </p>
   <% } %>
 
 </div>
