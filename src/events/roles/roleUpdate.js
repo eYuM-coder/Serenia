@@ -3,7 +3,6 @@ const Logging = require("../../database/schemas/logging");
 const discord = require("discord.js");
 const Maintenance = require("../../database/schemas/maintenance");
 const send = require("../../packages/logs/index");
-const { AuditLogEvent } = require("discord.js");
 
 function makehex(rgb) {
   var hex = Number(rgb).toString(16);
