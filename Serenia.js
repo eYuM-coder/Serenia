@@ -16,6 +16,7 @@ module.exports = class SereniaClient extends Client {
       intents: [
         "GUILDS",
         "GUILD_MEMBERS",
+        "GUILD_BANS",
         "GUILD_MESSAGES",
         "GUILD_EMOJIS_AND_STICKERS",
         "GUILD_MESSAGE_REACTIONS",
