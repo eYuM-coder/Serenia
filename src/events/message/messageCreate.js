@@ -6,6 +6,7 @@ const Guild = require("../../database/schemas/Guild");
 const User = require("../../database/schemas/User");
 const Blacklist = require("../../database/schemas/blacklist");
 const maintenanceCooldown = new Set();
+const dmCooldown = new Set();
 const metrics = require("datadog-metrics");
 const permissions = require("../../assets/json/permissions.json");
 const Maintenance = require("../../database/schemas/maintenance");
@@ -34,7 +35,25 @@ module.exports = class extends Event {
 
   async run(message) {
     try {
-      if (!message.guild) return;
+      if (!message.guild && !message.author.bot) {
+        if (dmCooldown.has(message.author.id)) return;
+
+        message.channel.sendCustom({
+          embeds: [
+            new MessageEmbed().setDescription(
+              `<:info:1511125787225358420> Are you DMing me for help?\nI would recommend contacting the owner of ${config.botName}, the_eyum_yall, for assistance.\n\nIf you are unable to contact eYuM's Discord account, [use this contact form.](https://eyum.dev/contact)\n\nIf you use the contact form provided, you may expect a response within 1-2 business days.`,
+            ),
+          ],
+        });
+
+        dmCooldown.add(message.author.id);
+
+        setTimeout(() => {
+          dmCooldown.delete(message.author.id);
+        }, 120000);
+
+        return;
+      }
 
       let metricsEnabled = false;
       if (process.env.DATADOG_API_KEY) {
@@ -276,8 +295,7 @@ module.exports = class extends Event {
         if (disabledCommands.includes(command.name || command)) return;
 
         if (command.ownerOnly) {
-          if (!this.client.config.owners.includes(message.author.id))
-            return;
+          if (!this.client.config.owners.includes(message.author.id)) return;
         }
 
         if (metricsEnabled) metrics.increment("commands_served");

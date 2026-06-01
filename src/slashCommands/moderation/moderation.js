@@ -7,17 +7,11 @@ const logger = require("../../utils/logger.js");
 const send = require("../../packages/logs/index.js");
 const ms = require("ms");
 const ReactionMenu = require("../../data/ReactionMenu.js");
-const darkpassword = require("generate-password");
 const randoStrings = require("../../packages/randostrings.js");
 const random = new randoStrings();
 const warnModel = require("../../database/models/moderation.js");
 const moment = require("moment");
 const fs = require("node:fs");
-async function usePrettyMs(ms) {
-  const { default: prettyMilliseconds } = await import("pretty-ms");
-  const time = prettyMilliseconds(ms);
-  return time;
-}
 
 function makehex(rgb) {
   var hex = Number(rgb).toString(16);
@@ -524,28 +518,25 @@ module.exports = {
         }
 
         let totalDeleted = 0;
-        const TWO_WEEKS = 14 * 24 * 60 * 60 * 1000; // 14 days in milliseconds
-        const now = Date.now(); // Current timestamp
+        const TWO_WEEKS = 14 * 24 * 60 * 60 * 1000;
+        const now = Date.now();
 
         const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
         while (totalDeleted < amount) {
           const messagesToFetch = Math.min(100, amount - totalDeleted);
           try {
-            // Fetch messages
             const fetchedMessages = await channel.messages.fetch({
               limit: messagesToFetch,
               before: interaction.id,
             });
 
-            // Filter out messages older than 14 days
             const validMessages = fetchedMessages.filter(
               (msg) => now - msg.createdTimestamp < TWO_WEEKS,
             );
 
-            if (validMessages.size === 0) break; // No eligible messages to delete
+            if (validMessages.size === 0) break;
 
-            // Bulk delete the valid messages
             const deletedMessages = await channel.bulkDelete(
               validMessages,
               true,
@@ -560,7 +551,6 @@ module.exports = {
               { label: "Purge" },
             );
 
-            // If fewer than `messagesToFetch` were deleted, stop early
             if (deletedMessages.size < messagesToFetch) {
               break;
             } else if (
@@ -593,26 +583,22 @@ module.exports = {
             interaction.editReply({ embeds: [embed], ephemeral: true });
           } else {
             const embed = new MessageEmbed()
-
               .setDescription(
                 `${success} | ***Successfully deleted ${totalDeleted} ${
                   totalDeleted === 1 ? "message" : "messages"
                 }.* || ${reason}**`,
               )
-
               .setColor(interaction.client.color.green);
 
             interaction.editReply({ embeds: [embed], ephemeral: true });
           }
         } else {
           const embed = new MessageEmbed()
-
             .setDescription(
               `${success} | ***Found and purged ${totalDeleted} ${
                 totalDeleted === 1 ? "message" : "messages"
               } in ${channel}.* || ${reason}**`,
             )
-
             .setColor(interaction.client.color.green);
 
           interaction.editReply({ embeds: [embed], ephemeral: true });
@@ -754,14 +740,12 @@ module.exports = {
             MODERATE_MEMBERS: "Timeout Members",
           };
 
-          // Get all role Permissions as an array
           const rolePermissions = role.Permissions.toArray();
 
-          // Filter to only include key Permissions & maintain the correct order
           const filteredPermissions = Object.keys(keyPermissions)
-            .filter((perm) => rolePermissions.includes(perm)) // Check if the role has this permission
-            .map((perm) => keyPermissions[perm]) // Convert to human-readable names
-            .join(", "); // Format as a single line
+            .filter((perm) => rolePermissions.includes(perm))
+            .map((perm) => keyPermissions[perm])
+            .join(", ");
 
           const embed = new MessageEmbed()
             .addFields(
@@ -1922,38 +1906,33 @@ module.exports = {
             interaction.options.getString("reason") || "No reason provided.";
           if (reason.length > 512) reason = reason.slice(0, 509) + "...";
 
-          // **DM the user before banning**
-          let dmEmbed;
+          // DM the user before banning
           if (
             logging &&
             logging.moderation.ban_action &&
-            logging.moderation.ban_message.toggle === "false" &&
             logging.moderation.ban_action !== "1"
           ) {
+            let dmMessage;
             if (logging.moderation.ban_action === "2") {
-              dmEmbed = `${interaction.client.emoji.fail} You've been banned in **${interaction.guild.name}**`;
+              dmMessage = `${client.emoji.fail} | You've been banned from **${interaction.guild.name}**.`;
             } else if (logging.moderation.ban_action === "3") {
-              dmEmbed = `${interaction.client.emoji.fail} You've been banned in **${interaction.guild.name}**. | ${reason}`;
+              dmMessage = `${client.emoji.fail} | You've been banned from **${interaction.guild.name}**. | ${reason}`;
             } else if (logging.moderation.ban_action === "4") {
-              dmEmbed = `${interaction.client.emoji.fail} You've been banned in **${interaction.guild.name}**. | ${reason}\n\n-# __**Moderator:**__ ${interaction.user} (${interaction.user.tag})`;
+              dmMessage = `${client.emoji.fail} | You've been banned from **${interaction.guild.name}**. | ${reason}\n\n-# __**Moderator:**__ ${interaction.user} (${interaction.user.tag})`;
             }
-          }
 
-          try {
             targetUser
               .send({
                 embeds: [
                   new MessageEmbed()
-                    .setColor(interaction.client.color.red)
-                    .setDescription(dmEmbed),
+                    .setColor(client.color.red)
+                    .setDescription(dmMessage),
                 ],
               })
               .catch(() => {});
-          } catch {
-            console.log(`Could not send DM to ${targetUser.tag}.`);
           }
 
-          // **Ban the user**
+          // Ban the user
           const response = await interaction.guild.bans
             .create(targetUser.id, { reason })
             .catch(() => null);
@@ -1973,15 +1952,22 @@ module.exports = {
               }
             });
 
-            // **Logging System**
+            // Logging
             if (logging) {
               const logChannel = interaction.guild.channels.cache.get(
                 logging.moderation.channel,
               );
               if (logging.moderation.toggle === "true" && logChannel) {
+                let color = logging.moderation.color;
+                if (color === "#000000") color = client.color.red;
+
+                let logcase = logging.moderation.caseN || 1;
+
                 const logEmbed = new MessageEmbed()
-                  .setTitle("User Banned")
-                  .setColor("RED")
+                  .setAuthor({
+                    name: `Action: \`Ban\` | ${targetUser.tag} | Case #${logcase}`,
+                    iconURL: targetUser.displayAvatarURL({ format: "png" }),
+                  })
                   .addFields(
                     {
                       name: "User",
@@ -1995,25 +1981,30 @@ module.exports = {
                     },
                     { name: "Reason", value: reason, inline: true },
                   )
-                  .setTimestamp();
+                  .setFooter({ text: `ID: ${targetUser.id}` })
+                  .setTimestamp()
+                  .setColor(color);
 
                 send(
                   logChannel,
                   { embeds: [logEmbed] },
                   {
-                    name: `${interaction.client.user.username}`,
-                    username: `${interaction.client.user.username}`,
-                    icon: interaction.client.user.displayAvatarURL({
+                    name: `${client.user.username}`,
+                    username: `${client.user.username}`,
+                    icon: client.user.displayAvatarURL({
                       dynamic: true,
                       format: "png",
                     }),
                   },
                 ).catch(console.error);
+
+                logging.moderation.caseN = logcase + 1;
+                await logging.save().catch(() => {});
               }
             }
           } else {
             return interaction.reply({
-              emmbeds: [
+              embeds: [
                 new MessageEmbed().setDescription(
                   `${client.emoji.fail} | That user is a mod/admin, I can't do that.`,
                 ),
@@ -2026,7 +2017,7 @@ module.exports = {
           interaction.reply({
             embeds: [
               new MessageEmbed().setDescription(
-                `${client.emoji.fail} | That user is a mod/admin, I can't do that.`,
+                `${interaction.client.emoji.fail} | That user is a mod/admin, I can't do that.`,
               ),
             ],
             ephemeral: true,
@@ -2047,7 +2038,7 @@ module.exports = {
             `../../data/language/${guildDB.language}.json`,
           );
           if (!interaction.member.permissions.has("KICK_MEMBERS"))
-            return interaction.followUp({
+            return interaction.reply({
               content: "You do not have permission to use this command.",
               ephemeral: true,
             });
@@ -2074,7 +2065,7 @@ module.exports = {
               .catch(() => {});
           }
 
-          if (member === interaction.user) {
+          if (member.id === interaction.user.id) {
             let kickerror = new MessageEmbed()
               .setColor("RED")
               .setDescription(
@@ -2092,17 +2083,41 @@ module.exports = {
               .catch(() => {});
           }
 
+          // DM the user before kicking
+          if (
+            logging &&
+            logging.moderation.kick_action &&
+            logging.moderation.kick_action !== "1"
+          ) {
+            let dmMessage;
+            if (logging.moderation.kick_action === "2") {
+              dmMessage = `${client.emoji.fail} | You've been kicked from **${interaction.guild.name}**.`;
+            } else if (logging.moderation.kick_action === "3") {
+              dmMessage = `${client.emoji.fail} | You've been kicked from **${interaction.guild.name}**. | ${reason}`;
+            } else if (logging.moderation.kick_action === "4") {
+              dmMessage = `${client.emoji.fail} | You've been kicked from **${interaction.guild.name}**. | ${reason}\n\n-# __**Moderator:**__ ${interaction.user} (${interaction.user.tag})`;
+            }
+
+            member
+              .send({
+                embeds: [
+                  new MessageEmbed()
+                    .setColor(client.color.red)
+                    .setDescription(dmMessage),
+                ],
+              })
+              .catch(() => {});
+          }
+
           const response = await member.kick({ reason });
 
           if (response) {
             let kicksuccess = new MessageEmbed()
               .setColor("GREEN")
               .setDescription(
-                `${client.emoji.success} ***${member} was kicked.*** | ${
-                  reason || "No reason Provided"
-                }`,
+                `${client.emoji.success} ***${member} was kicked.*** | ${reason}`,
               );
-            return interaction
+            interaction
               .reply({ embeds: [kicksuccess] })
               .then(async () => {
                 if (logging && logging.moderation.delete_reply === "true") {
@@ -2112,38 +2127,6 @@ module.exports = {
                 }
               })
               .catch(() => {});
-          }
-          if (response) {
-            // **DM the user before banning**
-            let dmEmbed;
-            if (
-              logging &&
-              logging.moderation.kick_action &&
-              logging.moderation.kick_message.toggle === "false" &&
-              logging.moderation.kick_action !== "1"
-            ) {
-              if (logging.moderation.kick_action === "2") {
-                dmEmbed = `${interaction.client.emoji.fail} You've been kicked from **${interaction.guild.name}**`;
-              } else if (logging.moderation.kick_action === "3") {
-                dmEmbed = `${interaction.client.emoji.fail} You've been kicked from **${interaction.guild.name}**. | ${reason}`;
-              } else if (logging.moderation.kicked_action === "4") {
-                dmEmbed = `${interaction.client.emoji.fail} You've been kicked from **${interaction.guild.name}**. | ${reason}\n\n-# __**Moderator:**__ ${interaction.user} (${interaction.user.tag})`;
-              }
-            }
-
-            try {
-              member
-                .send({
-                  embeds: [
-                    new MessageEmbed()
-                      .setColor(interaction.client.color.red)
-                      .setDescription(dmEmbed),
-                  ],
-                })
-                .catch(() => {});
-            } catch {
-              console.log(`Could not send DM to ${targetUser.tag}.`);
-            }
           } else {
             let failembed = new MessageEmbed()
               .setColor(client.color.red)
@@ -2257,7 +2240,7 @@ module.exports = {
             Math.random().toString(36).substring(2, 5);
 
           if (!interaction.member.permissions.has("MANAGE_NICKNAMES"))
-            return interaction.followUp({
+            return interaction.reply({
               content: "You do not have permission to use this command.",
             });
 
@@ -2278,7 +2261,8 @@ module.exports = {
               })
               .catch(() => {});
           }
-          if (member === interaction.author) {
+
+          if (member.id === interaction.user.id) {
             let modnickerror = new MessageEmbed()
               .setColor("RED")
               .setDescription(
@@ -2286,7 +2270,6 @@ module.exports = {
               );
             return interaction
               .reply({ embeds: [modnickerror] })
-
               .then(async () => {
                 if (logging && logging.moderation.delete_reply === "true") {
                   setTimeout(() => {
@@ -2297,42 +2280,37 @@ module.exports = {
               .catch(() => {});
           }
 
-          if (member) {
-            const oldNickname = member.nickname || "None";
-            await member.setNickname(`Moderated Nickname ${impostorpassword}`);
-            let embed = new MessageEmbed()
-              .setColor("BLURPLE")
-              .setDescription(
-                `${client.emoji.success} | Moderated ${member}'s nickname for \`${reason}\``,
-              );
-            return interaction
-              .reply({ embeds: [embed] })
-              .then(async () => {
-                if (logging && logging.moderation.delete_reply === "true") {
-                  setTimeout(() => {
-                    interaction.deleteReply().catch(() => {});
-                  }, 5000);
-                }
-              })
-              .catch(() => {});
-          }
-          if (member) {
-            let dmEmbed = new MessageEmbed()
-              .setColor("RED")
-              .setDescription(
-                `**Nickname Moderated**\nYour nickname was moderated in **${interaction.guild.name}**. If you would like to change your nickname to something else, please reach out to a staff member.\n**Possible Reasons**\n• Your name was not typeable on a standard English QWERTY keyboard.\n• Your name contained words that are not suitable for the server.\n• Your name was not mentionable.\n\n__**Moderator:**__ ${interaction.author} **(${interaction.author.tag})**\n__**Reason:**__ ${reason}`,
-              )
-              .setTimestamp();
-            member.send({ embeds: [dmEmbed] });
-          } else {
-            let failembed = new MessageEmbed()
-              .setColor(client.color.red)
-              .setDescription(
-                `${client.emoji.fail} | That user is a mod/admin, I can't do that.`,
-              )
-              .setTimestamp();
-            return interaction.reply({ embeds: [failembed], ephemeral: true });
-          }
+          await member.setNickname(`Moderated Nickname ${impostorpassword}`);
+
+          // DM the user about their moderated nickname
+          member
+            .send({
+              embeds: [
+                new MessageEmbed()
+                  .setColor("RED")
+                  .setDescription(
+                    `**Nickname Moderated**\nYour nickname was moderated in **${interaction.guild.name}**. If you would like to change your nickname to something else, please reach out to a staff member.\n**Possible Reasons**\n• Your name was not typeable on a standard English QWERTY keyboard.\n• Your name contained words that are not suitable for the server.\n• Your name was not mentionable.\n\n__**Moderator:**__ ${interaction.user} **(${interaction.user.tag})**\n__**Reason:**__ ${reason}`,
+                  )
+                  .setTimestamp(),
+              ],
+            })
+            .catch(() => {});
+
+          let embed = new MessageEmbed()
+            .setColor("BLURPLE")
+            .setDescription(
+              `${client.emoji.success} | Moderated ${member}'s nickname for \`${reason}\``,
+            );
+          return interaction
+            .reply({ embeds: [embed] })
+            .then(async () => {
+              if (logging && logging.moderation.delete_reply === "true") {
+                setTimeout(() => {
+                  interaction.deleteReply().catch(() => {});
+                }, 5000);
+              }
+            })
+            .catch(() => {});
         } catch (err) {
           console.error(err);
           interaction.reply({
@@ -2348,7 +2326,7 @@ module.exports = {
           });
 
           if (!interaction.member.permissions.has("MODERATE_MEMBERS"))
-            return interaction.followUp({
+            return interaction.reply({
               content: "You do not have permission to use this command.",
               ephemeral: true,
             });
@@ -2421,13 +2399,11 @@ module.exports = {
                   interaction.guild.name
                 }**.\n\n__**Moderator:**__ ${interaction.user} **(${
                   interaction.user.tag
-                })**\n__**Reason:**__ ${reason || "No Reason Provided"}`,
+                })**\n__**Reason:**__ ${reason}`,
               )
               .setTimestamp();
 
-            // DM the user about the mute
             return member.send({ embeds: [dmEmbed] }).catch(() => {
-              // Handle the case where the user has DMs disabled
               interaction.followUp({
                 content: `I couldn't send a DM to ${member}, they might have DMs disabled.`,
                 ephemeral: true,
@@ -2582,7 +2558,7 @@ module.exports = {
             let no = new MessageEmbed()
               .setAuthor({
                 name: `${interaction.user.tag}`,
-                conURL: interaction.member.displayAvatarURL({ dynamic: true }),
+                iconURL: interaction.member.displayAvatarURL({ dynamic: true }),
               })
               .setDescription(
                 `${client.emoji.fail} | ${language.rmWarnInvalid}`,
@@ -2603,8 +2579,6 @@ module.exports = {
 
           let toReset = warnDoc.warningID.length;
 
-          //warnDoc.memberID.splice(toReset - 1, toReset !== 1 ? toReset - 1 : 1)
-          //warnDoc.guildID.splice(toReset - 1, toReset !== 1 ? toReset - 1 : 1)
           warnDoc.warnings.splice(toReset - 1, toReset !== 1 ? toReset - 1 : 1);
           warnDoc.warningID.splice(
             toReset - 1,
@@ -3002,7 +2976,6 @@ module.exports = {
             `../../data/language/${guildDB.language}.json`,
           );
 
-          // Check if the user has proper Permissions
           if (!interaction.member.permissions.has("BAN_MEMBERS")) {
             return interaction.editReply({
               content: `${language.unbanNoPerm}`,
@@ -3010,13 +2983,11 @@ module.exports = {
             });
           }
 
-          // Fetch the options
           const input = interaction.options.getString("member");
           let reason =
             interaction.options.getString("reason") ||
             `${language.unbanNoReason}`;
 
-          // Fetch all bans to find the user
           const bans = await interaction.guild.bans.fetch();
           const totalBans = bans.size;
           let successCount = 0;
@@ -3034,6 +3005,32 @@ module.exports = {
                 await interaction.guild.members.unban(ban.user.id, reason);
                 successCount++;
 
+                // Build and send DM after each successful unban
+                if (
+                  logging &&
+                  logging.moderation.unban_action &&
+                  logging.moderation.unban_action !== "1"
+                ) {
+                  let dmMessage;
+                  if (logging.moderation.unban_action === "2") {
+                    dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}**.`;
+                  } else if (logging.moderation.unban_action === "3") {
+                    dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}**. | ${reason}`;
+                  } else if (logging.moderation.unban_action === "4") {
+                    dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}** by **${interaction.user} (${interaction.user.tag})**. | ${reason}`;
+                  }
+
+                  ban.user
+                    .send({
+                      embeds: [
+                        new MessageEmbed()
+                          .setColor(client.color.green)
+                          .setDescription(dmMessage),
+                      ],
+                    })
+                    .catch(() => {});
+                }
+
                 if (successCount % 1 === 0) {
                   const progress = successCount + failCount;
                   const percentage = ((progress / totalBans) * 100).toFixed(2);
@@ -3042,34 +3039,19 @@ module.exports = {
                       `${client.emoji.success} Successful: ${successCount} | ${client.emoji.fail} Failed: ${failCount}`,
                   );
                 }
-
-                let dmEmbed;
-                if (
-                  logging &&
-                  logging.moderation.warn_action &&
-                  logging.moderation.warn_action !== "1"
-                ) {
-                  if (logging.moderation.warn_action === "2") {
-                    dmEmbed = `${interaction.client.emoji.fail} | You were unbanned in **${interaction.guild.name}**.`;
-                  } else if (logging.moderation.warn_action === "3") {
-                    dmEmbed = `${interaction.client.emoji.fail} | You were unbanned in **${interaction.guild.name}**. | ${reason}`;
-                  } else if (logging.moderation.warn_action === "4") {
-                    dmEmbed = `${interaction.client.emoji.fail} | You were unbanned in **${interaction.guild.name}** by **${interaction.member} (${interaction.member.tag})**. | ${reason}`;
-                  }
-                }
               } catch (error) {
+                failCount++;
                 logger.error(`Failed to unban ${ban.user.tag}:` + error, {
                   label: "ERROR",
                 });
               }
             }
           } else {
-            // Try to find the user based on ID, tag, or mention
             const banInfo = bans.find((ban) => {
               return (
-                ban.user.id === input || // Match by ID
-                ban.user.tag === input || // Match by tag (username#discriminator)
-                `<@${ban.user.id}>` === input // Match by mention
+                ban.user.id === input ||
+                ban.user.tag === input ||
+                `<@${ban.user.id}>` === input
               );
             });
 
@@ -3093,10 +3075,8 @@ module.exports = {
                 });
             }
 
-            // Unban the user
             await interaction.guild.bans.remove(banInfo.user.id, reason);
 
-            // Reply with a success message
             const unbanSuccessEmbed = new MessageEmbed()
               .setColor("GREEN")
               .setDescription(
@@ -3115,13 +3095,31 @@ module.exports = {
                 }
               });
 
-            banInfo.user.send({
-              embeds: [
-                new MessageEmbed()
-                  .setColor(interaction.client.color.green)
-                  .setDescription(dmEmbed),
-              ],
-            });
+            // DM the unbanned user
+            if (
+              logging &&
+              logging.moderation.unban_action &&
+              logging.moderation.unban_action !== "1"
+            ) {
+              let dmMessage;
+              if (logging.moderation.unban_action === "2") {
+                dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}**.`;
+              } else if (logging.moderation.unban_action === "3") {
+                dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}**. | ${reason}`;
+              } else if (logging.moderation.unban_action === "4") {
+                dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}** by **${interaction.user} (${interaction.user.tag})**. | ${reason}`;
+              }
+
+              banInfo.user
+                .send({
+                  embeds: [
+                    new MessageEmbed()
+                      .setColor(client.color.green)
+                      .setDescription(dmMessage),
+                  ],
+                })
+                .catch(() => {});
+            }
           }
         } catch (err) {
           console.error(err);
@@ -3137,9 +3135,8 @@ module.exports = {
             guildId: interaction.guild.id,
           });
 
-          // Check if the user has permission to use this command
           if (!interaction.member.permissions.has("MANAGE_MESSAGES"))
-            return interaction.followUp({
+            return interaction.reply({
               content: "You do not have permission to use this command.",
             });
 
@@ -3147,7 +3144,6 @@ module.exports = {
           const reason =
             interaction.options.getString("reason") || "No reason provided";
 
-          // Check if the member is valid
           if (!member) {
             let usernotfound = new MessageEmbed()
               .setColor("RED")
@@ -3166,8 +3162,7 @@ module.exports = {
               .catch(() => {});
           }
 
-          // Remove timeout (unmute the member)
-          await member.timeout(null, reason); // This will remove the timeout
+          await member.timeout(null, reason);
 
           let timeoutsuccess = new MessageEmbed()
             .setColor("GREEN")
@@ -3185,7 +3180,6 @@ module.exports = {
             })
             .catch(() => {});
 
-          // DM the user about the unmute
           let dmEmbed = new MessageEmbed()
             .setColor("GREEN")
             .setDescription(
@@ -3193,12 +3187,11 @@ module.exports = {
                 interaction.guild.name
               }**.\n\n__**Moderator:**__ ${interaction.user} **(${
                 interaction.user.tag
-              })**\n__**Reason:**__ ${reason || "No Reason Provided"}`,
+              })**\n__**Reason:**__ ${reason}`,
             )
             .setTimestamp();
 
           return member.send({ embeds: [dmEmbed] }).catch(() => {
-            // Handle the case where the user has DMs disabled
             interaction.followUp({
               content: `I couldn't send a DM to ${member}, they might have DMs disabled.`,
               ephemeral: true,
@@ -3291,63 +3284,54 @@ module.exports = {
 
           await warnDoc.save().catch((err) => console.log(err));
 
-          let dmEmbed;
+          // DM the warned user
           if (
             logging &&
             logging.moderation.warn_action &&
             logging.moderation.warn_action !== "1"
           ) {
+            let dmMessage;
             if (logging.moderation.warn_action === "2") {
-              dmEmbed = `${interaction.client.emoji.fail} | You were warned in **${interaction.guild.name}**.`;
+              dmMessage = `${client.emoji.fail} | You were warned in **${interaction.guild.name}**.`;
             } else if (logging.moderation.warn_action === "3") {
-              dmEmbed = `${interaction.client.emoji.fail} | You were warned in **${interaction.guild.name}** for ${reason}`;
+              dmMessage = `${client.emoji.fail} | You were warned in **${interaction.guild.name}** for ${reason}.`;
             } else if (logging.moderation.warn_action === "4") {
-              dmEmbed = `${interaction.client.emoji.fail} | You were warned in **${interaction.guild.name}** by **${interaction.member} (${interaction.member.tag})** for ${reason}`;
+              dmMessage = `${client.emoji.fail} | You were warned in **${interaction.guild.name}** by **${interaction.user} (${interaction.user.tag})** for ${reason}.`;
             }
 
             mentionedMember
               .send({
                 embeds: [
                   new MessageEmbed()
-                    .setColor(interaction.client.color.red)
-                    .setDescription(dmEmbed),
+                    .setColor(client.color.red)
+                    .setDescription(dmMessage),
                 ],
               })
               .catch(() => {});
           }
 
-          if (mentionedMember) {
-            interaction
-              .reply({
-                embeds: [
-                  new MessageEmbed().setColor(client.color.green)
-                    .setDescription(`${language.warnSuccessful
-                    .replace("{emoji}", client.emoji.success)
-                    .replace("{user}", `**${mentionedMember.user.tag}**`)}
-                    ${
-                      logging && logging.moderation.include_reason === "true"
-                        ? `\n\n**Reason:** ${reason}`
-                        : ``
-                    }`),
-                ],
-              })
-              .then(async () => {
-                if (logging && logging.moderation.delete_reply === "true") {
-                  setTimeout(() => {
-                    interaction.deleteReply().catch(() => {});
-                  }, 5000);
-                }
-              })
-              .catch(() => {});
-          } else {
-            let failembed = new MessageEmbed()
-              .setColor(client.color.red)
-              .setDescription(
-                `${client.emoji.fail} | I can't warn that member. Make sure that my role is above their role or that I have sufficient Permissions to execute the command.`,
-              )
-              .setTimestamp();
-            return interaction.reply({ embeds: [failembed] });
-          }
+          interaction
+            .reply({
+              embeds: [
+                new MessageEmbed().setColor(client.color.green)
+                  .setDescription(`${language.warnSuccessful
+                  .replace("{emoji}", client.emoji.success)
+                  .replace("{user}", `**${mentionedMember.user.tag}**`)}
+                  ${
+                    logging && logging.moderation.include_reason === "true"
+                      ? `\n\n**Reason:** ${reason}`
+                      : ``
+                  }`),
+              ],
+            })
+            .then(async () => {
+              if (logging && logging.moderation.delete_reply === "true") {
+                setTimeout(() => {
+                  interaction.deleteReply().catch(() => {});
+                }, 5000);
+              }
+            })
+            .catch(() => {});
         } catch (err) {
           console.error(err);
           interaction.reply({
@@ -3585,8 +3569,7 @@ module.exports = {
           }
 
           if (amount < 0 || amount > 100) {
-            let invalidamount = new MessageEmbed();
-            new MessageEmbed()
+            let invalidamount = new MessageEmbed()
               .setAuthor({
                 name: `${interaction.user.tag}`,
                 iconURL: interaction.member.displayAvatarURL({ dynamic: true }),
@@ -3648,56 +3631,56 @@ module.exports = {
           warnDoc.date.push(Date.now());
 
           await warnDoc.save().catch((err) => console.log(err));
-          let dmEmbed;
+
+          // DM the warned user
           if (
             logging &&
             logging.moderation.warn_action &&
             logging.moderation.warn_action !== "1"
           ) {
+            let dmMessage;
             if (logging.moderation.warn_action === "2") {
-              dmEmbed = `${interaction.client.emoji.fail} | You've been warned in **${interaction.guild.name}**.`;
+              dmMessage = `${client.emoji.fail} | You've been warned in **${interaction.guild.name}**.`;
             } else if (logging.moderation.warn_action === "3") {
-              dmEmbed = `${interaction.client.emoji.fail} | You've been warned in **${interaction.guild.name}** for ${reason}`;
+              dmMessage = `${client.emoji.fail} | You've been warned in **${interaction.guild.name}** for ${reason}.`;
             } else if (logging.moderation.warn_action === "4") {
-              dmEmbed = `${interaction.client.emoji.fail} | You've been warned in **${interaction.guild.name}** by ${interaction.author} **(${interaction.user.tag})** for ${reason}`;
+              dmMessage = `${client.emoji.fail} | You've been warned in **${interaction.guild.name}** by **${interaction.user} (${interaction.user.tag})** for ${reason}.`;
             }
 
             mentionedMember
               .send({
                 embeds: [
                   new MessageEmbed()
-                    .setColor(interaction.client.color.red)
-                    .setDescription(dmEmbed),
+                    .setColor(client.color.red)
+                    .setDescription(dmMessage),
                 ],
               })
               .catch(() => {});
           }
 
-          // Purge
+          // Purge messages
           const messages = (
             await interaction.channel.messages.fetch({ limit: amount })
           ).filter((m) => m.member.id === mentionedMember.id);
           if (messages.size > 0)
             await interaction.channel.bulkDelete(messages, true);
 
-          if (mentionedMember) {
-            const embed = new MessageEmbed()
-              .setDescription(
-                `${success} | **${mentionedMember.user.tag}** has been warned, with **${messages.size}** messages purged.\n\n__**Reason:**__ ${reason}`,
-              )
-              .setColor(client.color.green)
-              .setTimestamp();
-            interaction
-              .reply({ embeds: [embed] })
-              .then(async () => {
-                if (logging && logging.moderation.delete_reply === "true") {
-                  setTimeout(() => {
-                    interaction.deleteReply().catch(() => {});
-                  }, 5000);
-                }
-              })
-              .catch(() => {});
-          }
+          const embed = new MessageEmbed()
+            .setDescription(
+              `${success} | **${mentionedMember.user.tag}** has been warned, with **${messages.size}** messages purged.\n\n__**Reason:**__ ${reason}`,
+            )
+            .setColor(client.color.green)
+            .setTimestamp();
+          interaction
+            .reply({ embeds: [embed] })
+            .then(async () => {
+              if (logging && logging.moderation.delete_reply === "true") {
+                setTimeout(() => {
+                  interaction.deleteReply().catch(() => {});
+                }, 5000);
+              }
+            })
+            .catch(() => {});
         } catch (err) {
           console.error(err);
           interaction.reply({

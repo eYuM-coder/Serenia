@@ -126,6 +126,8 @@ client.on("messageCreate", async (message) => {
   if (message.author.bot) {
     return;
   }
+  
+  if (!message.guild) return;
 
   const guildId = message.guild?.id;
   const userId = message.author.id;

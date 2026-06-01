@@ -22,6 +22,7 @@ module.exports = class SereniaClient extends Client {
         "GUILD_MESSAGE_REACTIONS",
         "GUILD_VOICE_STATES",
         "GUILD_PRESENCES",
+        "DIRECT_MESSAGES",
       ],
       allowedMentions: {
         parse: ["roles", "users", "everyone"],
