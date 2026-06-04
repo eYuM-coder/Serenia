@@ -634,7 +634,7 @@ module.exports = {
 
                     const logEmbed = new MessageEmbed()
                       .setAuthor({
-                        name: `Action: \`Purge\` | Case #${logcase}`,
+                        name: `Action: Purge | Case #${logcase}`,
                         iconURL: interaction.member.displayAvatarURL({
                           format: "png",
                         }),
@@ -1965,7 +1965,7 @@ module.exports = {
 
                 const logEmbed = new MessageEmbed()
                   .setAuthor({
-                    name: `Action: \`Ban\` | ${targetUser.tag} | Case #${logcase}`,
+                    name: `Action: Ban | ${targetUser.tag} | Case #${logcase}`,
                     iconURL: targetUser.displayAvatarURL({ format: "png" }),
                   })
                   .addFields(
@@ -2172,7 +2172,7 @@ module.exports = {
 
                       const logEmbed = new MessageEmbed()
                         .setAuthor({
-                          name: `Action: \`Kick\` | ${member.user.tag} | Case #${logcase}`,
+                          name: `Action: Kick | ${member.user.tag} | Case #${logcase}`,
                           iconURL: member.user.displayAvatarURL({
                             format: "png",
                           }),
@@ -3008,15 +3008,15 @@ module.exports = {
                 // Build and send DM after each successful unban
                 if (
                   logging &&
-                  logging.moderation.unban_action &&
-                  logging.moderation.unban_action !== "1"
+                  logging.moderation.ban_action &&
+                  logging.moderation.ban_action !== "1"
                 ) {
                   let dmMessage;
-                  if (logging.moderation.unban_action === "2") {
+                  if (logging.moderation.ban_action === "2") {
                     dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}**.`;
-                  } else if (logging.moderation.unban_action === "3") {
+                  } else if (logging.moderation.ban_action === "3") {
                     dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}**. | ${reason}`;
-                  } else if (logging.moderation.unban_action === "4") {
+                  } else if (logging.moderation.ban_action === "4") {
                     dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}** by **${interaction.user} (${interaction.user.tag})**. | ${reason}`;
                   }
 
@@ -3098,15 +3098,15 @@ module.exports = {
             // DM the unbanned user
             if (
               logging &&
-              logging.moderation.unban_action &&
-              logging.moderation.unban_action !== "1"
+              logging.moderation.ban_action &&
+              logging.moderation.ban_action !== "1"
             ) {
               let dmMessage;
-              if (logging.moderation.unban_action === "2") {
+              if (logging.moderation.ban_action === "2") {
                 dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}**.`;
-              } else if (logging.moderation.unban_action === "3") {
+              } else if (logging.moderation.ban_action === "3") {
                 dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}**. | ${reason}`;
-              } else if (logging.moderation.unban_action === "4") {
+              } else if (logging.moderation.ban_action === "4") {
                 dmMessage = `${client.emoji.success} | You've been unbanned from **${interaction.guild.name}** by **${interaction.user} (${interaction.user.tag})**. | ${reason}`;
               }
 

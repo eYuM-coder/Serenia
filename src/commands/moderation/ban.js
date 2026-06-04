@@ -210,7 +210,7 @@ module.exports = class extends Command {
         if (!isBanwave) {
           const logEmbed = new MessageEmbed()
             .setAuthor({
-              name: `Action: \`Ban\` | ${results.banned[0].tag} | Case #${logcase}`,
+              name: `Action: Ban | ${results.banned[0].tag} | Case #${logcase}`,
               iconURL: results.banned[0].displayAvatarURL({ format: "png" }),
             })
             .addFields(

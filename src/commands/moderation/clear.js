@@ -203,7 +203,7 @@ module.exports = class extends Command {
 
                   const logEmbed = new MessageEmbed()
                     .setAuthor({
-                      name: `Action: \`Purge\` | Case #${logcase}`,
+                      name: `Action: Purge | Case #${logcase}`,
                       iconURL: message.author.displayAvatarURL({
                         format: "png",
                       }),

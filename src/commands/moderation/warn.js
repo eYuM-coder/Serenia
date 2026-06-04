@@ -238,7 +238,7 @@ module.exports = class extends Command {
 
                 const logEmbed = new MessageEmbed()
                   .setAuthor({
-                    name: `Action: \`Warn\` | ${mentionedMember.user.tag} | Case #${logcase}`,
+                    name: `Action: Warn | ${mentionedMember.user.tag} | Case #${logcase}`,
                     iconURL: mentionedMember.user.displayAvatarURL({
                       format: "png",
                     }),

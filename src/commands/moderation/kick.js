@@ -161,7 +161,7 @@ module.exports = class extends Command {
 
                 const logEmbed = new MessageEmbed()
                   .setAuthor({
-                    name: `Action: \`Kick\` | ${member.user.tag} | Case #${logcase}`,
+                    name: `Action: Kick | ${member.user.tag} | Case #${logcase}`,
                     iconURL: member.user.displayAvatarURL({ format: "png" }),
                   })
                   .addFields(
