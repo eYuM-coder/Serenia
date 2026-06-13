@@ -1,6 +1,7 @@
 const Command = require("../../structures/Command");
 const { MessageEmbed } = require("discord.js");
 const Logging = require("../../database/schemas/logging.js");
+const send = require("../../packages/logs/index.js");
 
 module.exports = class extends Command {
   constructor(...args) {
@@ -22,6 +23,10 @@ module.exports = class extends Command {
     const fail = client.emoji.fail;
     const success = client.emoji.success;
     const logging = await Logging.findOne({ guildId: message.guild.id });
+
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
 
     let member =
       message.mentions.members.last() ||
@@ -107,62 +112,51 @@ module.exports = class extends Command {
           })
           .catch(() => {});
 
-        if (logging) {
-          const role = message.guild.roles.cache.get(
-            logging.moderation.ignore_role,
-          );
-          const channel = message.guild.channels.cache.get(
+        if (logging && logging.moderation.role === "true") {
+          const logChannel = message.guild.channels.cache.get(
             logging.moderation.channel,
           );
+          if (logChannel) {
+            let color = logging.moderation.color;
+            if (color == "#000000") color = message.client.color.red;
 
-          if (logging.moderation.delete_after_executed === "true") {
-            message.delete().catch(() => {});
-          }
+            let logcase = logging.moderation.caseN || 1;
+            const logEmbed = new MessageEmbed()
+              .setAuthor({
+                name: `Action: \`Add Role\` | ${member.user.tag} | Case #${logcase}`,
+                iconURL: member.user.displayAvatarURL({
+                  format: "png",
+                }),
+              })
+              .addFields(
+                { name: "User", value: `${member}`, inline: true },
+                {
+                  name: "Moderator",
+                  value: `${message.member}`,
+                  inline: true,
+                },
+              )
+              .setFooter({ text: `ID: ${member.id}` })
+              .setTimestamp()
+              .setColor(color);
 
-          if (logging.moderation.toggle == "true") {
-            if (channel) {
-              if (message.channel.id !== logging.moderation.ignore_channel) {
-                if (
-                  !role ||
-                  (role &&
-                    !message.member.roles.cache.find(
-                      (r) => r.name.toLowerCase() === role.name,
-                    ))
-                ) {
-                  if (logging.moderation.role == "true") {
-                    let color = logging.moderation.color;
-                    if (color == "#000000") color = message.client.color.green;
+            send(
+              logChannel,
+              {
+                embeds: [logEmbed],
+              },
+              {
+                name: `${this.client.user.username}`,
+                username: `${this.client.user.username}`,
+                icon: this.client.user.displayAvatarURL({
+                  dynamic: true,
+                  format: "png",
+                }),
+              },
+            ).catch((e) => console.log(e));
 
-                    let logcase = logging.moderation.caseN;
-                    if (!logcase) logcase = `1`;
-
-                    const logEmbed = new MessageEmbed()
-                      .setAuthor({
-                        name: `Action: \`Add Role\` | ${member.user.tag} | Case #${logcase}`,
-                        iconURL: member.user.displayAvatarURL({
-                          format: "png",
-                        }),
-                      })
-                      .addFields(
-                        { name: "User", value: `${member}`, inline: true },
-                        {
-                          name: "Moderator",
-                          value: `${message.member}`,
-                          inline: true,
-                        },
-                      )
-                      .setFooter({ text: `ID: ${member.id}` })
-                      .setTimestamp()
-                      .setColor(color);
-
-                    channel.send({ embeds: [logEmbed] }).catch(() => {});
-
-                    logging.moderation.caseN = logcase + 1;
-                    await logging.save().catch(() => {});
-                  }
-                }
-              }
-            }
+            logging.moderation.caseN = logcase + 1;
+            await logging.save().catch(() => {});
           }
         }
       } catch {

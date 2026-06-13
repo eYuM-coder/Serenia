@@ -191,8 +191,8 @@ module.exports = class extends Command {
           </body>
           <div class="footer">
             <img src="https://serenia.eyum.dev/favicon.ico" alt="Serenia" width="75" height="75">
-            <p>v2.Serenia.xyz</p>
-            <p>© 2021 Serenia.xyz. All rights reserved.</p>
+            <p>serenia.eyum.dev</p>
+            <p>© 2021 serenia.eyum.dev. All rights reserved.</p>
             <p3>Made with ❤️ by Hotsuop</p3>
           </div>
         </html>
@@ -228,4 +228,4 @@ module.exports = class extends Command {
 
 /* Coded by hotsuop with ❤️
 
-© 2021 Serenia.xyz. All rights reserved. */
+© 2021 serenia.eyum.dev. All rights reserved. */

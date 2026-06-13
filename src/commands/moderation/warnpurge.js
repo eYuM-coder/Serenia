@@ -31,24 +31,17 @@ module.exports = class extends Command {
     });
     let language = require(`../../data/language/${guildDB.language}.json`);
 
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
+
     const fail = client.emoji.fail;
     const success = client.emoji.success;
     const mentionedMember =
       message.mentions.members.last() ||
       message.guild.members.cache.get(args[0]);
 
-    if (!message.member.permissions.has("MANAGE_MESSAGES")) {
-      return message.channel.sendCustom({
-        embeds: [
-          new discord.MessageEmbed()
-            .setDescription(
-              `${client.emoji.fail} ${language.warnMissingPermission}`,
-            )
-            .setTimestamp(message.createdAt)
-            .setColor(client.color.red),
-        ],
-      });
-    } else if (!mentionedMember) {
+    if (!mentionedMember) {
       return message.channel.sendCustom({
         embeds: [
           new discord.MessageEmbed()
@@ -233,10 +226,6 @@ module.exports = class extends Command {
     }
 
     if (logging) {
-      if (logging.moderation.delete_after_executed === "true") {
-        message.delete().catch(() => {});
-      }
-
       const role = message.guild.roles.cache.get(
         logging.moderation.ignore_role,
       );

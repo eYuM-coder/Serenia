@@ -16,19 +16,16 @@ module.exports = class extends Command {
     });
   }
 
-  async run(message) {
+  async run(message, args) {
     const guildDB = await Guild.findOne({
       guildId: message.guild.id,
     });
 
     const language = require(`../../data/language/${guildDB.language}.json`);
 
-    const match = message.content.match(/\d{18}/);
-    let member = match
-      ? message.guild.members.cache.get(match[0])
-      : message.member;
-
-    if (!member) member = message.member;
+    const member = message.mentions.members.first() ||
+      message.guild.members.cache.get(args[0]) ||
+      message.member;
 
     const embed = new MessageEmbed()
       .setAuthor({

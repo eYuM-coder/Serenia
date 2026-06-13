@@ -3,7 +3,6 @@ const { MessageEmbed } = require("discord.js");
 const Guild = require("../../database/schemas/Guild");
 const User = require("../../database/schemas/User");
 const Nickname = require("../../database/schemas/nicknames");
-
 const Usernames = require("../../database/schemas/usernames");
 const moment = require("moment");
 const emojis = require("../../assets/emojis.json");
@@ -45,17 +44,13 @@ module.exports = class extends Command {
 
     const language = require(`../../data/language/${guildDB.language}.json`);
 
-    let member = message.mentions.members.last() || message.member;
+    const member =
+      message.mentions.members.first() ||
+      message.guild.members.cache.get(args[0]) ||
+      message.member;
 
-    if (!member) {
-      try {
-        member = await message.guild.members.fetch(args[0]);
-      } catch {
-        member = message.member;
-      }
-    }
-
-    if (!member.user) return message.channel.sendCustom(language.userinfo.no_user);
+    if (!member.user)
+      return message.channel.sendCustom(language.userinfo.no_user);
 
     let userFind = await User.findOne({
       discordId: member.id,
@@ -144,9 +139,7 @@ module.exports = class extends Command {
       .setTimestamp()
       .setColor(member.displayHexColor)
       .setDescription(
-        `**• ${language.userh}** \`${member.user.username}\` | \`#${
-          member.user.discriminator
-        }\`\n** • ID:** \`${member.id}\`\n**• ${
+        `**• ${language.userh}** \`${member.user.username}\`\n** • ID:** \`${member.id}\`\n**• ${
           language.joinedDiscord
         }** \`${moment(member.user.createdAt).format(
           "MMMM Do YYYY, h:mm:ss a",

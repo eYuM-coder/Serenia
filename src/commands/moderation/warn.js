@@ -18,6 +18,7 @@ module.exports = class extends Command {
       usage: "<user> [reason]",
       examples: ["warn @user Please do not swear."],
       guildOnly: true,
+      userPermission: ["MANAGE_MESSAGES"],
     });
   }
 
@@ -29,6 +30,10 @@ module.exports = class extends Command {
       guildId: message.guild.id,
     });
     let language = require(`../../data/language/${guildDB.language}.json`);
+
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
 
     const mentionedMember =
       message.mentions.members.last() ||
@@ -208,10 +213,6 @@ module.exports = class extends Command {
       }
     }
     if (logging) {
-      if (logging.moderation.delete_after_executed === "true") {
-        message.delete().catch(() => {});
-      }
-
       const role = message.guild.roles.cache.get(
         logging.moderation.ignore_role,
       );
@@ -258,10 +259,19 @@ module.exports = class extends Command {
                   .setTimestamp()
                   .setColor(color);
 
-                send(channel, {
-                  username: `${this.client.user.username}`,
-                  embeds: [logEmbed],
-                }).catch((e) => {
+                send(
+                  channel,
+                  {
+                    embeds: [logEmbed],
+                  },
+                  {
+                    name: `${this.client.user.username}`,
+                    username: `${this.client.user.username}`,
+                    icon: this.client.user.displayAvatarURL({
+                      dynamic: true,
+                    }),
+                  },
+                ).catch((e) => {
                   console.log(e);
                 });
 

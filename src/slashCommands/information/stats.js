@@ -125,12 +125,8 @@ module.exports = {
     const devs = stripIndent`
     -------
     ${language.sereniaOwners}
-    • the4004whelen
+    • the_eyum_yall
     ${language.sereniaDevelopers}
-    • Peter_#4444
-    • Jano#6969
-    • the4004whelen
-    and
     serenia.eyum.dev/team
     -------
     `;

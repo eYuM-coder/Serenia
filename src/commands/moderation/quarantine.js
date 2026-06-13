@@ -1,5 +1,6 @@
 const Command = require("../../structures/Command");
 const { MessageEmbed } = require("discord.js");
+const Logging = require("../../database/schemas/logging.js");
 module.exports = class RemoveRolesCommand extends Command {
   constructor(...args) {
     super(...args, {
@@ -16,6 +17,12 @@ module.exports = class RemoveRolesCommand extends Command {
   }
 
   async run(message, args) {
+    const logging = await Logging.findOne({ guildId: message.guild.id });
+
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
+
     try {
       const missingRolesMessage =
         "You don't have the Administrator permission.";
@@ -80,7 +87,13 @@ module.exports = class RemoveRolesCommand extends Command {
           name: message.author.username,
           iconURL: message.author.displayAvatarURL({ dynamic: true }),
         });
-      message.channel.sendCustom({ embeds: [workingbed] });
+      message.channel.sendCustom({ embeds: [workingbed] }).then(async (s) => {
+        if (logging && logging.moderation.delete_reply === "true") {
+          setTimeout(() => {
+            s.delete().catch(() => {});
+          }, 5000);
+        }
+      });
     } catch (error) {
       console.error("Error in the removeroles command:", error);
       message.channel.sendCustom({ embeds: [errorMessageEmbed] });

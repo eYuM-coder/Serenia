@@ -25,6 +25,10 @@ module.exports = class extends Command {
 
     const logging = await Logging.findOne({ guildId: message.guild.id });
 
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
+
     let member =
       message.mentions.members.last() ||
       message.guild.members.cache.get(args[0]);
@@ -37,11 +41,11 @@ module.exports = class extends Command {
               name: `${message.author.tag}`,
               iconURL: message.author.displayAvatarURL({ dynamic: true }),
             })
-            .setTitle(`${fail} Remove Role Error`)
+            .setTitle(`${fail} | Remove Role Error`)
             .setDescription("Please provide a valid role")
             .setTimestamp()
             .setFooter({ text: `${process.env.AUTH_DOMAIN}` })
-            .setColor(message.guild.members.me.displayHexColor),
+            .setColor(client.color.red),
         ],
       });
 
@@ -64,11 +68,11 @@ module.exports = class extends Command {
               name: `${message.author.tag}`,
               iconURL: message.author.displayAvatarURL({ dynamic: true }),
             })
-            .setTitle(`${fail} Remove Role Error`)
+            .setTitle(`${fail} | Remove Role Error`)
             .setDescription("Please provide a valid role")
             .setTimestamp()
             .setFooter({ text: `${process.env.AUTH_DOMAIN}` })
-            .setColor(message.guild.members.me.displayHexColor),
+            .setColor(client.color.red),
         ],
       });
     else if (!member.roles.cache.has(role.id))
@@ -79,11 +83,11 @@ module.exports = class extends Command {
               name: `${message.author.tag}`,
               iconURL: message.author.displayAvatarURL({ dynamic: true }),
             })
-            .setTitle(`${fail} Remove Role Error`)
+            .setTitle(`${fail} | Remove Role Error`)
             .setDescription(`The provided user does not have the role.`)
             .setTimestamp()
             .setFooter({ text: `${process.env.AUTH_DOMAIN}` })
-            .setColor(message.guild.members.me.displayHexColor),
+            .setColor(client.color.red),
         ],
       });
     else {
@@ -96,7 +100,7 @@ module.exports = class extends Command {
           .setDescription(
             ` ${success} | Removed **${role.name}** from **${member.user.tag}**`,
           )
-          .setColor(message.guild.members.me.displayHexColor);
+          .setColor(client.color.green);
         message.channel
           .sendCustom({ embeds: [embed] })
           .then(async (s) => {
@@ -108,67 +112,51 @@ module.exports = class extends Command {
           })
           .catch(() => {});
 
-        if (logging) {
-          if (logging.moderation.delete_after_executed === "true") {
-            message.delete().catch(() => {});
-          }
-
-          const role = message.guild.roles.cache.get(
-            logging.moderation.ignore_role,
-          );
-          const channel = message.guild.channels.cache.get(
+        if (logging && logging.moderation.role === "true") {
+          const logChannel = message.guild.channels.cache.get(
             logging.moderation.channel,
           );
+          if (logChannel) {
+            let color = logging.moderation.color;
+            if (color == "#000000") color = message.client.color.red;
 
-          if (logging.moderation.toggle == "true") {
-            if (channel) {
-              if (message.channel.id !== logging.moderation.ignore_channel) {
-                if (
-                  !role ||
-                  (role &&
-                    !message.member.roles.cache.find(
-                      (r) => r.name.toLowerCase() === role.name,
-                    ))
-                ) {
-                  if (logging.moderation.role == "true") {
-                    let color = logging.moderation.color;
-                    if (color == "#000000") color = message.client.c;
+            let logcase = logging.moderation.caseN || 1;
+            const logEmbed = new MessageEmbed()
+              .setAuthor({
+                name: `Action: \`Remove Role\` | ${member.user.tag} | Case #${logcase}`,
+                iconURL: member.user.displayAvatarURL({
+                  format: "png",
+                }),
+              })
+              .addFields(
+                { name: "User", value: `${member}`, inline: true },
+                {
+                  name: "Moderator",
+                  value: `${message.member}`,
+                  inline: true,
+                },
+              )
+              .setFooter({ text: `ID: ${member.id}` })
+              .setTimestamp()
+              .setColor(color);
 
-                    let logcase = logging.moderation.caseN;
-                    if (!logcase) logcase = `1`;
+            send(
+              logChannel,
+              {
+                embeds: [logEmbed],
+              },
+              {
+                name: `${this.client.user.username}`,
+                username: `${this.client.user.username}`,
+                icon: this.client.user.displayAvatarURL({
+                  dynamic: true,
+                  format: "png",
+                }),
+              },
+            ).catch((e) => console.log(e));
 
-                    const logEmbed = new MessageEmbed()
-                      .setAuthor({
-                        name: `Action: \`Remove Role\` | ${member.user.tag} | Case #${logcase}`,
-                        iconURL: member.user.displayAvatarURL({
-                          format: "png",
-                        }),
-                      })
-                      .addFields(
-                        { name: "User", value: `${member}`, inline: true },
-                        {
-                          name: "Moderator",
-                          value: `${message.member}`,
-                          inline: true,
-                        },
-                      )
-                      .setFooter({ text: `ID: ${member.id}` })
-                      .setTimestamp()
-                      .setColor(color);
-
-                    send(channel, {
-                      username: `${this.client.user.username}`,
-                      embeds: [logEmbed],
-                    }).catch((e) => {
-                      console.log(e);
-                    });
-
-                    logging.moderation.caseN = logcase + 1;
-                    await logging.save().catch(() => {});
-                  }
-                }
-              }
-            }
+            logging.moderation.caseN = logcase + 1;
+            await logging.save().catch(() => {});
           }
         }
       } catch (err) {
@@ -181,7 +169,7 @@ module.exports = class extends Command {
               })
               .setTitle(`${fail} Remove Role Error`)
               .setDescription(
-                `Unable to remove the User's Role, please check the role hiarchy and make sure My role is above the provided user.`,
+                `Unable to remove the user's role, please check the role hiarchy and make sure my role is above the provided user.`,
               )
               .setTimestamp()
               .setFooter({ text: `${process.env.AUTH_DOMAIN}` })

@@ -31,7 +31,7 @@ let ticketSchema = mongoose.Schema({
     type: String,
     default: `Please react with 🎫 to open a ticket!`,
   },
-  ticketFooter: { type: String, default: `Powered by Serenia.xyz` },
+  ticketFooter: { type: String, default: `Powered by serenia.eyum.dev` },
   ticketReaction: { type: String, default: `🎫` },
   ticketWelcomeColor: { type: String, default: `#000000` },
   requireReason: { type: String, default: true },

@@ -28,6 +28,10 @@ module.exports = class extends Command {
     });
     const language = require(`../../data/language/${guildDB.language}.json`);
 
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
+
     let member =
       message.mentions.members.last() ||
       message.guild.members.cache.get(args[0]);
@@ -126,10 +130,6 @@ module.exports = class extends Command {
     }
 
     if (logging) {
-      if (logging.moderation.delete_after_executed === "true") {
-        message.delete().catch(() => {});
-      }
-
       const role = message.guild.roles.cache.get(
         logging.moderation.ignore_role,
       );

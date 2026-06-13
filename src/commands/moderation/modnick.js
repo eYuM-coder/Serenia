@@ -44,7 +44,7 @@ module.exports = class extends Command {
 
     if (!args[0]) {
       let validmention = new MessageEmbed()
-        .setColor("RED")
+        .setColor(client.color.red)
         .setDescription(
           `${client.emoji.fail} | Please mention a valid member!`,
         );
@@ -53,14 +53,14 @@ module.exports = class extends Command {
 
     if (!member) {
       let usernotfound = new MessageEmbed()
-        .setColor("RED")
+        .setColor(client.color.red)
         .setDescription(`${client.emoji.fail} | I can't find that member`);
       return message.channel.sendCustom({ embeds: [usernotfound] });
     }
 
     if (member.id === message.author.id) {
       let modnickerror = new MessageEmbed()
-        .setColor("RED")
+        .setColor(client.color.red)
         .setDescription(
           `${client.emoji.fail} | You can't moderate your own nickname!`,
         );
@@ -78,7 +78,13 @@ module.exports = class extends Command {
           }>'s nickname for \`${reason || "No Reason Provided"}\``,
         );
 
-      message.channel.sendCustom({ embeds: [embed] });
+      message.channel.sendCustom({ embeds: [embed] }).then(async (s) => {
+        if (logging && logging.moderation.delete_reply === "true") {
+          setTimeout(() => {
+            s.delete().catch(() => {});
+          }, 5000);
+        }
+      });
     } else {
       return message.reply(
         `I can't moderate their nickname, make sure that my role is above theirs`,

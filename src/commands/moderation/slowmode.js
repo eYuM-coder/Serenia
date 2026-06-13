@@ -14,7 +14,7 @@ module.exports = class extends Command {
       usage: "slowmode [channel mention/ID] <rate> [reason]",
       examples: ["slowmode #general 10"],
       guildOnly: true,
-      botPermission: ["SEND_MESSAGES", "EMBED_LINKS", "MANAGE_CHANNELS"],
+      botPermission: ["MANAGE_CHANNELS"],
       userPermission: ["MANAGE_CHANNELS"],
     });
   }
@@ -29,6 +29,10 @@ module.exports = class extends Command {
       guildId: message.guild.id,
     });
     const language = require(`../../data/language/${guildDB.language}.json`);
+
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
 
     let index = 1;
     let channel =
@@ -169,10 +173,6 @@ module.exports = class extends Command {
     }
 
     if (logging) {
-      if (logging.moderation.delete_after_executed === "true") {
-        message.delete().catch(() => {});
-      }
-
       const role = message.guild.roles.cache.get(
         logging.moderation.ignore_role,
       );

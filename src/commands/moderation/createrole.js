@@ -1,4 +1,5 @@
 const Command = require("../../structures/Command");
+const Logging = require("../../database/schemas/logging.js");
 
 module.exports = class CreateRoleCommand extends Command {
   constructor(...args) {
@@ -16,6 +17,12 @@ module.exports = class CreateRoleCommand extends Command {
   }
 
   async run(message, args) {
+    const logging = await Logging.findOne({ guildId: message.guild.id });
+
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
+
     try {
       if (args.length === 0) {
         return message.reply("Please provide a role name!");
@@ -102,7 +109,13 @@ module.exports = class CreateRoleCommand extends Command {
         reason: `Role created by ${message.author.tag}`,
       });
 
-      message.reply(`Successfully created role "${roleName}"!`);
+      message.reply(`Successfully created role "${roleName}"!`).then(async (s) => {
+        if (logging && logging.moderation.delete_reply === "true") {
+          setTimeout(() => {
+            s.delete().catch(() => {});
+          }, 5000);
+        }
+      });
     } catch (error) {
       console.error("Error in the createrole command:", error);
       message.reply(

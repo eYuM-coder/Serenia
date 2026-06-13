@@ -1,5 +1,6 @@
 const { MessageActionRow, MessageButton } = require("discord.js");
 const Command = require("../../structures/Command");
+const Logging = require("../../database/schemas/logging.js");
 
 module.exports = class PollCommand extends Command {
   constructor(...args) {
@@ -9,10 +10,18 @@ module.exports = class PollCommand extends Command {
       description: " hides a the current channel",
       category: "Moderation",
       cooldown: 5,
+      userPermission: ["MANAGE_CHANNELS"],
+      botPermission: ["MANAGE_CHANNELS"],
     });
   }
 
   async run(message) {
+    const logging = await Logging.findOne({ guildId: message.guild.id });
+
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
+
     try {
       const row = new MessageActionRow().addComponents(
         new MessageButton()

@@ -1,4 +1,5 @@
 const Command = require("../../structures/Command");
+const Logging = require("../../database/schemas/logging.js");
 const { saveGuild } = require("channelsave-discord");
 
 // Add any additional dependencies or modules as needed
@@ -11,17 +12,30 @@ module.exports = class EmptyCommand extends Command {
       description: "Empty command template.",
       category: "Moderation", // Adjust the category as needed
       cooldown: 5,
-      // Add any other command options or configurations
+      userPermission: ["ADMINISTRATOR"],
+      botPermission: ["MANAGE_CHANNELS"],
     });
   }
 
   async run(message) {
+    const logging = await Logging.findOne({ guildId: message.guild.id });
+
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
+
     try {
       await saveGuild(
         message.guild,
-        "/home/vboxuser/Serenia-3/src/data/guild_information.json",
+        "/h/e/p/s/src/data/guild_information.json",
       );
-      message.channel.sendCustom("done!");
+      message.channel.sendCustom("done!").then(async (s) => {
+        if (logging && logging.moderation.delete_reply === "true") {
+          setTimeout(() => {
+            s.delete().catch(() => {});
+          }, 5000);
+        }
+      });
     } catch (error) {
       console.error("Error in the empty command:", error);
       message.channel.sendCustom("An error occurred. Please try again later.");

@@ -23,6 +23,10 @@ module.exports = class extends Command {
     try {
       const logging = await Logging.findOne({ guildId: message.guild.id });
 
+      if (logging && logging.moderation.delete_after_executed === "true") {
+        message.delete().catch(() => {});
+      }
+
       const client = message.client;
       const fail = client.emoji.fail;
       const success = client.emoji.success;
@@ -129,10 +133,6 @@ module.exports = class extends Command {
 
           .setColor(client.color.green);
 
-        if (logging && logging.moderation.delete_after_executed === "true") {
-          message.delete().catch(() => {});
-        }
-
         message.channel
           .send({ embeds: [embed] })
           .then(async (s) => {
@@ -159,10 +159,6 @@ module.exports = class extends Command {
           )
 
           .setColor(client.color.green);
-
-        if (logging && logging.moderation.delete_after_executed === "true") {
-          message.delete().catch(() => {});
-        }
 
         message.channel
           .send({ embeds: [embed] })
@@ -225,7 +221,7 @@ module.exports = class extends Command {
                     {
                       name: `${this.client.user.username}`,
                       username: `${this.client.user.username}`,
-                      iconURL: this.client.user.displayAvatarURL({
+                      icon: this.client.user.displayAvatarURL({
                         format: "png",
                         dynamic: true,
                       }),

@@ -25,6 +25,10 @@ module.exports = class extends Command {
     const guildDB = await Guild.findOne({ guildId: message.guild.id });
     const language = require(`../../data/language/${guildDB.language}.json`);
 
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
+
     if (!args[0]) {
       return message.channel
         .send({
@@ -195,9 +199,6 @@ module.exports = class extends Command {
 
     // Logging
 
-    if (logging && logging.moderation.delete_after_executed === "true") {
-      message.delete().catch(() => {});
-    }
     if (logging && logging.moderation.ban === "true") {
       const logChannel = message.guild.channels.cache.get(
         logging.moderation.channel,
@@ -228,9 +229,9 @@ module.exports = class extends Command {
               embeds: [logEmbed],
             },
             {
-              name: `${client.user.username}`,
-              username: `${client.user.username}`,
-              iconURL: client.user.displayAvatarURL({
+              name: `${this.client.user.username}`,
+              username: `${this.client.user.username}`,
+              icon: this.client.user.displayAvatarURL({
                 dynamic: true,
                 format: "png",
               }),
@@ -266,9 +267,9 @@ module.exports = class extends Command {
             logChannel,
             { embeds: [banwaveEmbed] },
             {
-              name: `${client.user.username}`,
-              username: `${client.user.username}`,
-              iconURL: client.user.displayAvatarURL({
+              name: `${this.client.user.username}`,
+              username: `${this.client.user.username}`,
+              icon: this.client.user.displayAvatarURL({
                 dynamic: true,
                 format: "png",
               }),

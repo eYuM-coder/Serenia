@@ -41,7 +41,7 @@ module.exports = class extends Event {
         message.channel.sendCustom({
           embeds: [
             new MessageEmbed().setDescription(
-              `<:info:1511125787225358420> Are you DMing me for help?\nI would recommend contacting the owner of ${config.botName}, the_eyum_yall, for assistance.\n\nIf you are unable to contact eYuM's Discord account, [use this contact form.](https://eyum.dev/contact)\n\nIf you use the contact form provided, you may expect a response within 1-2 business days.`,
+              `<:info:1511125787225358420> Are you DMing me for help?\nI would recommend contacting the owner of ${config.botName}, the_eyum_yall, for assistance.\n\nIf you are unable to contact eYuM's Discord account, or eYuM is currently not online in Discord, [use this contact form.](https://eyum.dev/contact)\n\nIf you use the contact form provided, you may expect a response within 1-2 business days.\n\neYuM typically reads his emails every week, so not all emails will be responded to in a timely manner.`,
             ),
           ],
         });

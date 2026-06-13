@@ -15,16 +15,13 @@ module.exports = class extends Command {
       usage: "<user>",
       guildOnly: true,
       botPermission: ["ADD_REACTIONS"],
+      userPermission: ["MANAGE_MESSAGES"],
     });
   }
 
   async run(message, args) {
     try {
       let client = message.client;
-
-      if (!message.member.permissions.has("MANAGE_MESSAGES")) {
-        return message.reply("You do not have permission to use this command.");
-      }
 
       const guildDB = await Guild.findOne({
         guildId: message.guild.id,

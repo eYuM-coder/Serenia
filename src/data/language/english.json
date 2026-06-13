@@ -9,7 +9,7 @@
   "setPrefixLongLength": "The prefix length can't be more than 5",
   "setPrefixChange": "Prefix has been changed to {prefix}",
 
-  "helpInvalidCommand": "Invalid Command",
+  "helpInvalidCommand": "Invalid command",
   "helpInvalidListCommand": "Do `{prefix}help` for the list of the commands.",
   "helpCommand": "Command",
   "helpDescription": "Description",
@@ -22,8 +22,8 @@
   "workJobTitle": "Available Jobs",
   "workJobPage": "Page",
   "workJobArtist": "{emoji} | **Artist** - {prefix}work job artist",
-  "workJobChef": "{emoji} | **Chef** - {prefix}work job Chef",
-  "workJobFirefighter": "{emoji} | **FireFighter** - {prefix}work job firefighter",
+  "workJobChef": "{emoji} | **Chef** - {prefix}work job chef",
+  "workJobFirefighter": "{emoji} | **Firefighter** - {prefix}work job firefighter",
   "workJobDoctor": "{emoji} | **Doctor** - {prefix}work job doctor",
   "workJobTeacher": "{emoji} | **Teacher** - {prefix}work job teacher",
   "workJobLifeguard": "{emoji} | **Lifeguard** - {prefix}work job lifeguard",
@@ -33,7 +33,7 @@
   "workJobLawyer": "{emoji} | **Lawyer** - {prefix}work job lawyer",
   "workInvalidArg0": "You did not specify between {array}",
   "workJobInvalidArg0": "Invalid job choice, check {prefix}work info for more information",
-  "workHasJob": "You already have a job, use {prefix}work quit t quit your job",
+  "workHasJob": "You already have a job, use {prefix}work quit to quit your job",
   "workHasNoJob": "You do not have a job to quit",
   "workJobNotEnoughSucceed": "You did not unlock the job {userJob} yet",
   "workJobSuccessQuit": "You have successfully quit your job",
@@ -67,7 +67,7 @@
     "home"
   ],
   "searchTime": "You already searched recently\nTry again in: {timeMinute}m {timeSecond}s",
-  "searchToChoose": "Please choose where you would like to search beween: `{place1}`, `{place2}`, `{place3}`",
+  "searchToChoose": "Please choose where you would like to search between: `{place1}`, `{place2}`, `{place3}`",
   "searchSucceed": "You have searched in {place} and found {money}{emoji}",
   "searchInvalidChoice": "This is not a valid place to search in",
 
@@ -99,24 +99,24 @@
   "warnLogTitle": "New Warning!",
   "warnLogDescription": "**Staff**: {author}\n**Member**: {user}\n**Reason**: {reason}",
 
-  "birdError": "An error has occured in the bird command, if this keeps happening please contact the owner!",
+  "birdError": "An error has occurred in the bird command, if this keeps happening please contact the owner!",
 
-  "catError": "An error has occured in the cat command, if this keeps happening please contact the owner!",
+  "catError": "An error has occurred in the cat command, if this keeps happening please contact the owner!",
 
-  "changeError": "An error has occured in the change my mind command, if this keeps happening please contact the owner!",
-  "changeErrorValid": "Please Provide me with a text",
-  "changeErrorCharacter": "Please Provide a text of 85 characters or less",
+  "changeError": "An error has occurred in the change my mind command, if this keeps happening please contact the owner!",
+  "changeErrorValid": "Please provide me with a text",
+  "changeErrorCharacter": "Please provide a text of 85 characters or less",
 
-  "clydeError": "An error has occured in the clyde command, if this keeps happening please contact the owner!",
-  "clydeErrorCharacter": "Please Provide a text of 60 characters or less",
+  "clydeError": "An error has occurred in the clyde command, if this keeps happening please contact the owner!",
+  "clydeErrorCharacter": "Please provide a text of 60 characters or less",
 
   "generating": "Generating...",
 
-  "magikError": "An error has occured in the magik command, if this keeps happening please contact the owner!",
+  "magikError": "An error has occurred in the magik command, if this keeps happening please contact the owner!",
 
-  "mcErrorCharacter": "Please Provide a text of 25 characters or less",
+  "mcErrorCharacter": "Please provide a text of 25 characters or less",
 
-  "phubErrorCharacter": "Please Provide a text of 50 characters or less",
+  "phubErrorCharacter": "Please provide a text of 50 characters or less",
 
   "cmdHandlerNoPerms": "You need the {permission} to use this command",
 
@@ -132,7 +132,7 @@
 
   "slapError": "Please provide me with a valid user",
 
-  "trumpError": "An error has occured in the trump command, if this keeps happening please contact the owner!",
+  "trumpError": "An error has occurred in the trump command, if this keeps happening please contact the owner!",
 
   "urlshortnerMissingArg": "The link specified is not valid",
   "urlshortnerSuccessful": "Successfully created the link, click here: https://url.serenia.eyum.dev/{shortUrl}",
@@ -142,7 +142,7 @@
   "banYourselfError": "You can't ban yourself",
   "banHigherRole": "The provided user has an equal or higher role than you.",
   "banBannable": "This user is a mod/admin, I can't do that.",
-  "noReasonProvided": "No Reason Provided",
+  "noReasonProvided": "No reason provided",
   "banBan": "was successfully banned.",
 
   "kickMissingPermission": "You need the Kick Members permission to use this command",
@@ -160,7 +160,7 @@
   "muteLength": "Length",
 
   "rmPermission": "You don't have permission to `unwarn members`.",
-  "rmPosition": " You can't unwarn this member as there role is higher than yours.",
+  "rmPosition": "You can't unwarn this member as their role is higher than yours.",
   "rmNoWarning": "This member doesn't have any warnings.",
   "rmWarnInvalid": "This is an invalid warning id.",
 
@@ -203,13 +203,13 @@
   "softbanSelfUser": "You cannot softban yourself",
   "softbanEqualRole": "The provided user either has an equal or higher role than you",
   "softbanNotBannable": "This user is not bannable",
-  "softbanNoReason": "No Reason Provided",
+  "softbanNoReason": "No reason provided",
   "softbanResponsible": "Responsible user",
   "softbanSuccess": "I have successfully softbanned",
 
   "unbanNoPerm": "You do not have permission to use this command.",
   "unbanInvalidID": "The specified user is not banned, or the input is invalid.",
-  "unbanNoReason": "No Reason Provided.",
+  "unbanNoReason": "No reason provided.",
   "unbanResponsible": "Responsible User",
   "unbanSuccess": "has been unbanned.",
 
@@ -278,7 +278,7 @@
   "youtubeUnable": "Unable to find, try something else..",
   "zalgolize": "..What should I zagolize? Try again with some text",
 
-  "buyInvalidItem": "This is not a valid item, please check {prefix}shop for more informations",
+  "buyInvalidItem": "This is not a valid item, please check {prefix}shop for more information",
   "buyAlreadyHaveCompany": "You already have this company, why do you need another one",
   "buyNotEnoughMoney": "You do not have enough to purchase this item",
   "buySuccessful": "You have successfully purchased {baughtAmount} {boughtItem} for {baughtPrice}",
@@ -286,7 +286,7 @@
   "shortUrlError": "Provide me with a valid link",
   "urlCreated": "Your link has been created!",
   "shorturlCooldown": "Slow down, you can only create 1 link each 5 minutes",
-  "youtubeCooldown": "Slow down, you can only search 1 video a minute ",
+  "youtubeCooldown": "Slow down, you can only search 1 video a minute",
 
   "afk1": "Please make sure not to include mentions.",
   "afk2": "you may not use the everyone ping",
@@ -297,10 +297,10 @@
   "afk7": "It seems like you've came back! I removed your AFK.\n\n**AFK reason:**",
 
   "antiinvites1": "You have to type `enable` or `disable` in order to enable/disable the module.",
-  "antiinvites3": "Succesfully disabled the anti-invite module",
-  "antiinvites4": "Succesfully enabled the anti-invite module",
-  "antilinks3": "Succesfully disabled the anti-link module",
-  "antilinks4": "Succesfully enabled the anti-link module",
+  "antiinvites3": "Successfully disabled the anti-invite module",
+  "antiinvites4": "Successfully enabled the anti-invite module",
+  "antilinks3": "Successfully disabled the anti-link module",
+  "antilinks4": "Successfully enabled the anti-link module",
   "moduleEnabled": "The module is already enabled",
   "moduleDisabled": "The module is already disabled",
   "serversettings1": "Server Settings",
@@ -373,7 +373,7 @@
   "pfpAvatar": "{user}'s avatar",
   "report1": "Hey, what would you like to report?",
   "report2": "Please provide us with more information about the bug!",
-  "report3": "Hey, the owner recieved the bug, make sure to let him know, kindly join the",
+  "report3": "Hey, the owner received the bug, make sure to let him know, kindly join the",
   "discrim1": "Please provide me with a valid user discriminator",
   "none": "None",
   "discrim3": "Found",
@@ -384,7 +384,7 @@
   "isitup3": "The provided website is down!",
   "suggest1": "What would you like to suggest!",
   "suggest2": "Please provide us with more information for your suggestion",
-  "suggest3": "Hey, the owner recieved the suggestion, make sure to let him know, kindly join the",
+  "suggest3": "Hey, the owner received the suggestion, make sure to let him know, kindly join the",
   "support": "Join the Support Server [here]",
   "uptime1": "has been up for",
   "vote1": "Hey! You can vote for",
@@ -398,7 +398,7 @@
   "isitup0": "This website is up!",
 
   "useNoArgs0": "You did not specify an item to use",
-  "useNotUseableItem": "THis item is not useable",
+  "useNotUseableItem": "This item is not useable",
   "useInvalidItem": "This is not a valid item, valid items: {list}",
   "useNoHaveItem": "You do not have a {item}",
   "useNoHaveThatMuch": "You do not have {amount} {item} to use",
@@ -413,7 +413,7 @@
   "remind6": "Reminder Set!",
   "remind7": "I have set a reminder!\n\n**Reminder:** `${reminder}`\n**Time:** `${reminderTime}`\n\nNote that by setting reminders you **agree** of being dmed",
   "remind8": "A Reminder",
-  "remind9": "I was told to remind you , so here is your reminder!",
+  "remind9": "I was told to remind you, so here is your reminder!",
   "remind10": "Guild Name:",
   "remind11": "Time:",
   "remind12": "Reminder:",
@@ -515,9 +515,9 @@
   "report12": "Why would you like to report?",
   "report13": "Your report reason is too short",
   "report14": "Your report description is too Long!",
-  "report15": "Your report has been recieved!",
+  "report15": "Your report has been received!",
   "report16": "Server Reports",
-  "report17": "A New report has been recieved!",
+  "report17": "A New report has been received!",
   "report18": "User",
   "report19": "User ID",
   "report20": "User Tag",
@@ -573,7 +573,7 @@
 
   "ticketTicketWord": "Server Tickets",
   "ticketHowToCreate": "Please react with 🎫 to open a ticket!",
-  "ticketPromptseggs": "Succesfully Cancelled Prompt",
+  "ticketPromptseggs": "Successfully Cancelled Prompt",
   "ticketAlreadyOpen": "You already have an open ticket builder!",
 
   "claimNotValidChannel": "The ticket you are trying to claim is not a valid ticket",
@@ -597,7 +597,7 @@
   "addNotSpecifyUser": "You did not specify a user",
 
   "setdaysInvalidArg": "Please specify a valid day, it also must be a number",
-  "setdaysSuccess": "Successfully changed the alternative axcounts age restriction",
+  "setdaysSuccess": "Successfully changed the alternative accounts age restriction",
 
   "abypassNotPremium10": "You cannot have more than 10 IDs since this guild is not premium",
   "abypassSuccess": "I have successfully added {userID} to the users who can bypass the system",
@@ -615,8 +615,8 @@
   "atoggleSuccess": "The alt detector is now {toggle}",
 
   "addquestionMoreThanLength": "You cannot add more than {amountLength} questions",
-  "addquestionSuccess": "I have succesfully added all the questions",
-  "addquestionMissingArg": "You need to specify question(s)\n\nTip: Use the | symbol to seperate each question",
+  "addquestionSuccess": "I have successfully added all the questions",
+  "addquestionMissingArg": "You need to specify question(s)\n\nTip: Use the | symbol to separate each question",
 
   "remquestion": "Please specify the valid ID of the questions",
   "remquestionSuccess": "I have successfully removed this question",

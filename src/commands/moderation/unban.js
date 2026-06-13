@@ -25,6 +25,10 @@ module.exports = class extends Command {
     const guildDB = await Guild.findOne({ guildId: message.guild.id });
     const language = require(`../../data/language/${guildDB.language}.json`);
 
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
+
     const id = args[0];
     if (!id) {
       return message.channel.sendCustom({
@@ -35,7 +39,7 @@ module.exports = class extends Command {
               iconURL: message.author.displayAvatarURL(),
             })
             .setDescription(
-              `**Proper Usage:**\n\n\`1-\` unban peter_#4444 appealed\n\`2-\` unban 710465231779790849 appealed\n\`3-\` unban all`,
+              `**Proper Usage:**\n\n\`1-\` unban peter appealed\n\`2-\` unban 710465231779790849 appealed\n\`3-\` unban all`,
             )
             .setColor(client.color.red)
             .setFooter({ text: `${process.env.AUTH_DOMAIN}` }),
@@ -85,9 +89,6 @@ module.exports = class extends Command {
         }
       });
 
-      if (logging && logging.moderation.delete_after_executed === "true") {
-        message.delete().catch(() => {});
-      }
       if (logging?.moderation?.toggle === "true") {
         const logChannel = message.guild.channels.cache.get(
           logging.moderation.channel,
@@ -105,9 +106,9 @@ module.exports = class extends Command {
             logChannel,
             { embeds: [logEmbed] },
             {
-              name: `${client.user.username}`,
-              username: `${client.user.username}`,
-              icon: client.user.displayAvatarURL({
+              name: `${this.client.user.username}`,
+              username: `${this.client.user.username}`,
+              icon: this.client.user.displayAvatarURL({
                 dynamic: true,
                 format: "png",
               }),
@@ -169,10 +170,6 @@ module.exports = class extends Command {
         }
       });
 
-    if (logging && logging.moderation.delete_reply === "true") {
-      message.delete().catch(() => {});
-    }
-
     if (logging?.moderation?.toggle === "true") {
       const logChannel = message.guild.channels.cache.get(
         logging.moderation.channel,
@@ -195,9 +192,9 @@ module.exports = class extends Command {
           logChannel,
           { embeds: [logEmbed] },
           {
-            name: `${client.user.username}`,
-            username: `${client.user.username}`,
-            icon: client.user.displayAvatarURL({
+            name: `${this.client.user.username}`,
+            username: `${this.client.user.username}`,
+            icon: this.client.user.displayAvatarURL({
               dynamic: true,
               format: "png",
             }),

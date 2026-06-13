@@ -24,6 +24,10 @@ module.exports = class extends Command {
 
     const logging = await Logging.findOne({ guildId: message.guild.id });
 
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
+
     const guildDB = await Guild.findOne({
       guildId: message.guild.id,
     });
@@ -103,10 +107,6 @@ module.exports = class extends Command {
 
     // Update mod log
     if (logging) {
-      if (logging.moderation.delete_after_executed === "true") {
-        message.delete().catch(() => {});
-      }
-
       const role = message.guild.roles.cache.get(
         logging.moderation.ignore_role,
       );

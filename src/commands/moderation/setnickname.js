@@ -16,7 +16,7 @@ module.exports = class extends Command {
         'setnickname @peter "this is a nickname" ',
       ],
       guildOnly: true,
-      botPermission: ["SEND_MESSAGES", "EMBED_LINKS", "MANAGE_NICKNAMES"],
+      botPermission: ["MANAGE_NICKNAMES"],
       userPermission: ["MANAGE_NICKNAMES"],
     });
   }
@@ -26,6 +26,10 @@ module.exports = class extends Command {
     const fail = client.emoji.fail;
     const success = client.emoji.success;
     const logging = await Logging.findOne({ guildId: message.guild.id });
+
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
 
     const member =
       getMemberFromMention(message, args[0]) ||
@@ -154,10 +158,6 @@ module.exports = class extends Command {
           .catch(() => {});
 
         if (logging) {
-          if (logging.moderation.delete_after_executed === "true") {
-            message.delete().catch(() => {});
-          }
-
           const role = message.guild.roles.cache.get(
             logging.moderation.ignore_role,
           );

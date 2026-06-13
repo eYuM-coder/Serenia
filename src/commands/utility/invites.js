@@ -44,7 +44,7 @@ module.exports = class extends Command {
     const embed = new MessageEmbed()
       .setColor(message.guild.members.me.displayHexColor)
       .setAuthor({
-        name: `Serenia.xyz`,
+        name: `serenia.eyum.dev`,
         iconURL: this.client.user.displayAvatarURL({ dynamic: true }),
       })
       .setDescription(`${member.user.tag} has: **${totalInvites}** invites`)

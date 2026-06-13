@@ -32,6 +32,10 @@ module.exports = class LockdownCommand extends Command {
     const guildDB = await Guild.findOne({ guildId: message.guild.id });
     const language = require(`../../data/language/${guildDB.language}.json`);
 
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
+
     const option = args[0];
     const reason = args.slice(1).join(" ") || "none"; // Fixed how reason is handled
 
@@ -40,7 +44,13 @@ module.exports = class LockdownCommand extends Command {
       const embed = new MessageEmbed()
         .setDescription(`${fail} | Invalid option. Use \`start\` or \`end\`.`)
         .setColor(client.color.red);
-      return message.channel.sendCustom({ embeds: [embed] });
+      return message.channel.sendCustom({ embeds: [embed] }).then(async (s) => {
+        if (logging && logging.moderation.delete_reply === "true") {
+          setTimeout(() => {
+            s.delete().catch(() => {});
+          }, 5000);
+        }
+      });
     }
 
     // Handle lockdown start
@@ -59,7 +69,15 @@ module.exports = class LockdownCommand extends Command {
               : ""),
         )
         .setColor(client.color.green);
-      return message.channel.sendCustom({ embeds: [embed] });
+      message.channel.sendCustom({ embeds: [embed] }).then(async (s) => {
+        if (logging && logging.moderation.delete_reply === "true") {
+          setTimeout(() => {
+            s.delete().catch(() => {});
+          }, 5000);
+        }
+      });
+
+      return;
 
       // Handle lockdown end
     } else if (option === "end") {
@@ -77,7 +95,13 @@ module.exports = class LockdownCommand extends Command {
               : ""),
         )
         .setColor(client.color.green);
-      return message.channel.sendCustom({ embeds: [embed] });
+      message.channel.sendCustom({ embeds: [embed] }).then(async (s) => {
+        if (logging && logging.moderation.delete_reply === "true") {
+          setTimeout(() => {
+            s.delete().catch(() => {});
+          }, 5000);
+        }
+      });
     }
   }
 

@@ -70,14 +70,10 @@ module.exports = class extends Command {
       Aliases -- ${message.client.aliases.size}
     `;
     const devs = stripIndent`
-     -------
+    -------
      ${language.sereniaOwners}
-    • Peter_#4444
-    • Jano#6969
+    • the_eyum_yall
      ${language.sereniaDevelopers}
-    • Peter_#4444
-    • Jano#6969
-    and
     serenia.eyum.dev/team
     -------
     `;

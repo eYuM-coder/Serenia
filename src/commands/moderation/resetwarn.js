@@ -15,6 +15,8 @@ module.exports = class extends Command {
       usage: "<user> [reason]",
       examples: ["resetwarns @Peter Warnings have been reset"],
       guildOnly: true,
+      userPermission: ["MANAGE_MESSAGES"],
+      botPermission: ["MANAGE_MESSAGES"],
     });
   }
 
@@ -26,6 +28,10 @@ module.exports = class extends Command {
     });
     const language = require(`../../data/language/${guildDB.language}.json`);
     const logging = await Logging.findOne({ guildId: message.guild.id });
+
+    if (logging && logging.moderation.delete_after_executed === "true") {
+      message.delete().catch(() => {});
+    }
 
     const mentionedMember =
       message.mentions.members.last() ||
@@ -103,10 +109,6 @@ module.exports = class extends Command {
       .catch(() => {});
 
     if (logging) {
-      if (logging.moderation.delete_after_executed === "true") {
-        message.delete().catch(() => {});
-      }
-
       const role = message.guild.roles.cache.get(
         logging.moderation.ignore_role,
       );
