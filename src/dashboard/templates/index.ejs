@@ -1,0 +1,947 @@
+<%- include("partials/head", {bot, user, path, description, title: `${botName} - Home` , url, image }) %>
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous">
+<div class="page-content">
+
+  <input style="display: none" type="text" value="<%=  bot.guilds.cache.reduce((a, g) => a + g.memberCount, 0) %>" id="size">
+  <input style="display: none" type="text" value="<%= bot.guilds.cache.size %>" id="size2">
+  <% if (user) { %>
+
+  <script>
+    const colorThemes = [{
+        background: 'linear-gradient(to right, #0a0a0a, #0d1b2a)',
+        color: '#d1d9e6'
+      },
+      {
+        background: 'linear-gradient(to right, #0b0c10, #1f2833)',
+        color: '#c5c6c7'
+      },
+    ];
+
+    let themeIndex = 0;
+    let isTransitioning = false;
+
+    function toggleTheme() {
+      if (isTransitioning) return;
+
+      isTransitioning = true;
+      const body = document.body;
+      const button = document.querySelector('.theme-toggle-button');
+      const icon = button.querySelector('i');
+
+      icon.classList.remove('fa-adjust');
+      icon.classList.add('fa-spinner');
+      icon.style.animation = 'spin 1s linear infinite';
+
+      const overlay = document.createElement('div');
+      overlay.style.position = 'absolute';
+      overlay.style.top = 0;
+      overlay.style.left = 0;
+      overlay.style.width = '100%';
+      overlay.style.height = `${document.documentElement.scrollHeight}px`;
+      overlay.style.zIndex = '-1';
+      overlay.style.background = colorThemes[(themeIndex + 1) % colorThemes.length].background;
+      overlay.style.opacity = 0;
+      overlay.style.transition = 'opacity 1s';
+
+      body.appendChild(overlay);
+
+      setTimeout(() => {
+        overlay.style.opacity = 1;
+        body.style.color = colorThemes[(themeIndex + 1) % colorThemes.length].color;
+      }, 0);
+
+      setTimeout(() => {
+        themeIndex = (themeIndex + 1) % colorThemes.length;
+        body.style.background = colorThemes[themeIndex].background;
+        body.removeChild(overlay);
+
+        icon.classList.remove('fa-spinner');
+        icon.classList.add('fa-adjust');
+        icon.style.animation = '';
+
+        isTransitioning = false;
+      }, 1000);
+    }
+  </script>
+
+  <style>
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
+
+  <body>
+
+    <div class="full-height">
+      <div class="section-title-wrap">
+        <div class="container">
+          <div class="row">
+            <div class="col-12 text-center parallax-fade-top">
+              <p>Serenia</p>
+
+              <h1>The handcrafted <br>Discord bot</h1>
+              <p style="font-size: 13px">Proudly serving <b id="odometer" class="odometer">
+                  <%= bot.guilds.cache.reduce((a, g)=> a + g.memberCount, 0) %>
+                </b> members in <b id="odometer2" class="odometer">
+                  <%= bot.guilds.cache.size %> guilds
+                </b> servers!</p>
+              <div class='buttons flex'>
+                <a class='button btn btn-blurple' href='/invite'><span><i class="fab fa-discord fa-2x"></i> Add
+                    to Discord</span></a>
+                <a class='button btn btn-default' href='/dashboard'><span><i class="fa fa-bar-chart" aria-hidden="true"></i> Dashboard</span></a>
+                <a class="button btn btn-default theme-toggle-button" onclick="toggleTheme()" style="cursor: pointer;">
+                  <span><i class="fa fa-adjust" aria-hidden="true"></i> Change Theme</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    <div class="content-container">
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+
+
+      <div id="os2" class="product-row">
+        <div class="product-image"><img src="<%= domain %>/cards/logging.png"></div>
+        <div class="product-text">
+          <h2 class="product-title">Advanced Logging</h2>
+          <p>With Serenia, you can make your logging experience truly your own! Whether it’s tracking member activity or customizing commands and voice logs, you have complete control. It’s logging, the way you like it!</p>
+        </div>
+      </div>
+
+      <div class="product-row">
+        <div class="product-image"><img src="<%= domain %>/cards/embeds.png"></div>
+        <div class="product-text">
+          <h2 class="product-title">Custom Embeds</h2>
+          <p>Serenia makes it super easy to create and send lovely, personalized embeds to any channel! You can even send them as your very own webhook or save them as custom commands. Let your creativity shine!</p>
+        </div>
+      </div>
+
+      <div class="product-row">
+        <div class="product-image"><img src="<%= domain %>/cards/application.png"></div>
+        <div class="product-text">
+          <h2 class="product-title">Server Applications</h2>
+          <p>Managing your server applications has never been this simple and fun! With Serenia, you can keep everything running smoothly and effortlessly. We’ve got your back!</p>
+        </div>
+      </div>
+
+      <div class="product-row">
+        <div class="product-image"><img src="<%= domain %>/cards/rr.png"></div>
+        <div class="product-text">
+          <h2 class="product-title">Reaction Roles</h2>
+          <p>Set up your very own reaction roles directly from Serenia’s dashboard! It’s an easy, fun way to interact with your community and make them feel right at home.</p>
+        </div>
+      </div>
+
+      <div style="padding-top: 100px"></div>
+
+    </div>
+
+
+    </section>
+
+
+  </body>
+
+
+  <% } else { %>
+
+
+
+  <body>
+
+    <section>
+
+      <div class="full-height">
+        <div class="section-title-wrap">
+          <div class="container">
+            <div class="row">
+              <div class="col-12 text-center parallax-fade-top">
+                <p>Serenia</p>
+                <h1>The handcrafted <br>Discord Bot</h1>
+                <p style="font-size: 13px">Proudly serving <b id="odometer" class="odometer">
+                    <%= bot.guilds.cache.reduce((a, g)=> a + g.memberCount, 0) %>
+                  </b> members in <b id="odometer2" class="odometer">
+                    <%= bot.guilds.cache.size %>
+                  </b> servers!</p>
+                <div class='buttons flex'>
+                  <a class='button btn btn-blurple' href='/invite'><span><i class="fab fa-discord fa-2x"></i> Add
+                      to Discord</span></a>
+                  <a class='button btn btn-default' href='/dashboard'><span><i class="fa fa-bar-chart" aria-hidden="true"></i> Dashboard</span></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+
+
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+
+      <div class="glow"></div>
+      <style>
+        .glow {
+          width: 80%;
+          height: 60px;
+          background: linear-gradient(to right, #0a0a0a, #0d1b2a);
+          position: absolute;
+          margin: 0 auto;
+          left: 0;
+          right: 0;
+          border-radius: 50%;
+          transform: translateY(-20%);
+          filter: blur(160px);
+        }
+      </style>
+
+
+      <div class="content-container">
+        <div id="os2" class="product-row">
+          <div class="product-image"><img src="<%= domain %>/cards/logging.png"></div>
+          <div class="product-text">
+            <h2 class="product-title">Advanced Logging</h2>
+            <p>With Serenia, you can make your logging experience truly your own! Whether it’s tracking member activity or customizing commands and voice logs, you have complete control. It’s logging, the way you like it!</p>
+          </div>
+        </div>
+
+        <div class="product-row">
+          <div class="product-image"><img src="<%= domain %>/cards/embeds.png"></div>
+          <div class="product-text">
+            <h2 class="product-title">Custom Embeds</h2>
+            <p>Serenia makes it super easy to create and send lovely, personalized embeds to any channel! You can even send them as your very own webhook or save them as custom commands. Let your creativity shine!</p>
+          </div>
+        </div>
+
+        <div class="product-row">
+          <div class="product-image"><img src="<%= domain %>/cards/application.png"></div>
+          <div class="product-text">
+            <h2 class="product-title">Server Applications</h2>
+            <p>Managing your server applications has never been this simple and fun! With Serenia, you can keep everything running smoothly and effortlessly. We’ve got your back!</p>
+          </div>
+        </div>
+
+        <div class="product-row">
+          <div class="product-image"><img src="<%= domain %>/cards/rr.png"></div>
+          <div class="product-text">
+            <h2 class="product-title">Reaction Roles</h2>
+            <p>Set up your very own reaction roles directly from Serenia’s dashboard! It’s an easy, fun way to interact with your community and make them feel right at home.</p>
+          </div>
+        </div>
+      </div>
+
+
+
+
+    </section>
+
+
+
+  </body>
+
+
+
+
+  <% } %>
+</div>
+<style>
+  .button {
+    padding: 13px 30px;
+    font-size: 13px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #7289da, #5e78d5);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(114, 137, 218, 0.5);
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+  }
+
+  .button:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 16px rgba(114, 137, 218, 0.5);
+  }
+
+  #myBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    box-shadow: 0 8px 32px rgba(20, 20, 20, 0.8);
+    display: none;
+    text-align: center;
+    line-height: 50px;
+    transition: all 0.3s ease;
+  }
+
+  #myBtn:hover {
+    background: rgba(20, 20, 20, 0.9);
+    transform: scale(1.1);
+  }
+
+  #myBtn i {
+    font-size: 19px;
+    color: #ffffff;
+    vertical-align: middle;
+    position: relative;
+    top: 1px;
+    transition: all 0.3s ease;
+  }
+
+  #myBtn:hover i {
+    top: 3px;
+  }
+
+  .btn {
+    margin: 10px;
+    padding: 12px 36px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    background: linear-gradient(135deg, #7289da, #5e78d5);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(114, 137, 218, 0.5);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 16px rgba(114, 137, 218, 0.5);
+  }
+
+  .btn-default {
+    background: rgba(30, 30, 30, 0.95);
+    box-shadow: 0 4px 12px rgba(30, 30, 30, 0.5);
+  }
+
+  .btn-default:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 16px rgba(30, 30, 30, 0.5);
+  }
+
+  .btn-blurple {
+    padding: 12px 36px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(99, 126, 223, 0.5);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+
+  .btn-blurple:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 16px rgba(99, 126, 223, 0.5);
+  }
+
+  .btn i {
+    vertical-align: middle;
+    position: relative;
+    top: 1px;
+    margin-right: 8px;
+  }
+
+  .btn-blurple i.fa-2x {
+    font-size: 1.2em !important;
+    position: relative;
+    top: 2px;
+  }
+
+
+
+  /* #images
+================================================== */
+
+
+  img {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    border-radius: 0.6em;
+  }
+
+  @keyframes hover {
+    0% {
+      top: 0px;
+    }
+
+    50% {
+      top: 50px;
+    }
+
+    100% {
+      top: 0px;
+    }
+  }
+
+  .content-container {
+    width: 100%;
+    max-width: 1150px;
+    padding: 0 20px;
+    margin: 0 auto;
+  }
+
+  .product-row {
+    padding: 120px 0 0;
+    height: 60vh;
+    -webkit-box-align: center;
+    align-items: center;
+  }
+
+  .product-row .product-image {
+    width: 70%;
+    margin: 0 auto;
+  }
+
+  body {
+    transition: background 0.3s ease, color 0.3s ease;
+    background: linear-gradient(to right, #0a0a0a, #0d1b2a);
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+  }
+
+  @keyframes goUpandDown {
+    0% {
+      -webkit-transform: translatey(+60px);
+      transform: translatey(+60px);
+    }
+
+    50% {
+      -webkit-transform: translatey(+80px);
+      transform: translatey(+80px);
+    }
+
+    100% {
+      -webkit-transform: translatey(+60px);
+      transform: translatey(+60px);
+    }
+  }
+
+
+  .product-row .product-text {
+
+    background: transparent;
+    width: 90%;
+    margin: 10px auto;
+    text-align: center;
+  }
+
+  .product-row .product-title {
+    font-size: 2em;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .product-row p {
+    line-height: 1.5;
+    font-size: 1.2em;
+  }
+
+  .product-row {
+    margin: 1em 0;
+  }
+
+  .product-row::after {
+    content: "";
+    display: block;
+    clear: both;
+    float: none;
+  }
+
+  .product-row:nth-child(odd) {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: reverse;
+    flex-direction: row-reverse;
+  }
+
+  @media only screen and (min-width: 800px) {
+
+    .product-row:nth-child(odd) .product-image {
+      padding-left: 5%;
+      padding-right: 0;
+    }
+
+    .product-row {
+      display: -webkit-box;
+      display: flex;
+      margin-bottom: 0;
+      min-height: 380px;
+      -webkit-box-align: center;
+      align-items: center;
+    }
+
+    .product-row .product-image {
+      width: 55%;
+      float: left;
+      -webkit-box-flex: 1;
+      flex: 1 1 55%;
+      padding-right: 5%;
+      max-width: 55% !important;
+      min-width: 320px;
+    }
+
+    .product-row .product-text {
+      position: relative;
+      width: 45%;
+      text-align: left;
+      float: right;
+      -webkit-box-flex: 1;
+      flex: 1 1 45%;
+      max-width: 45%;
+    }
+
+    .product-row .product-text {
+      margin-right: 1em;
+    }
+  }
+
+
+
+
+  .odometer {
+    font-size: 13px;
+  }
+
+  .odometer.odometer-auto-theme,
+  .odometer.odometer-theme-default {
+    display: inline-block;
+    vertical-align: middle;
+    *vertical-align: auto;
+    *zoom: 1;
+    *display: inline;
+    position: relative;
+    font-size: 13px;
+  }
+
+  .odometer.odometer-auto-theme .odometer-digit,
+  .odometer.odometer-theme-default .odometer-digit {
+    display: inline-block;
+    vertical-align: middle;
+    *vertical-align: auto;
+    *zoom: 1;
+    *display: inline;
+    position: relative;
+    font-size: 13px;
+  }
+
+  .odometer.odometer-auto-theme .odometer-digit .odometer-digit-spacer,
+  .odometer.odometer-theme-default .odometer-digit .odometer-digit-spacer {
+    display: inline-block;
+    vertical-align: middle;
+    *vertical-align: auto;
+    *zoom: 1;
+    *display: inline;
+    visibility: hidden;
+    font-size: 13px;
+  }
+
+  .odometer.odometer-auto-theme .odometer-digit .odometer-digit-inner,
+  .odometer.odometer-theme-default .odometer-digit .odometer-digit-inner {
+    text-align: left;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    font-size: 13px;
+  }
+
+  .odometer.odometer-auto-theme .odometer-digit .odometer-ribbon,
+  .odometer.odometer-theme-default .odometer-digit .odometer-ribbon {
+    display: block;
+  }
+
+  .odometer.odometer-auto-theme .odometer-digit .odometer-ribbon-inner,
+  .odometer.odometer-theme-default .odometer-digit .odometer-ribbon-inner {
+    display: block;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .odometer.odometer-auto-theme .odometer-digit .odometer-value,
+  .odometer.odometer-theme-default .odometer-digit .odometer-value {
+    display: block;
+    -webkit-transform: translateZ(0);
+  }
+
+  .odometer.odometer-auto-theme .odometer-digit .odometer-value.odometer-last-value,
+  .odometer.odometer-theme-default .odometer-digit .odometer-value.odometer-last-value {
+    position: absolute;
+  }
+
+  .odometer.odometer-auto-theme.odometer-animating-up .odometer-ribbon-inner,
+  .odometer.odometer-theme-default.odometer-animating-up .odometer-ribbon-inner {
+    -webkit-transition: -webkit-transform 2s;
+    -moz-transition: -moz-transform 2s;
+    -ms-transition: -ms-transform 2s;
+    -o-transition: -o-transform 2s;
+    transition: transform 2s;
+  }
+
+  .odometer.odometer-auto-theme.odometer-animating-up.odometer-animating .odometer-ribbon-inner,
+  .odometer.odometer-theme-default.odometer-animating-up.odometer-animating .odometer-ribbon-inner {
+    -webkit-transform: translateY(-100%);
+    -moz-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+    -o-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+
+  .odometer.odometer-auto-theme.odometer-animating-down .odometer-ribbon-inner,
+  .odometer.odometer-theme-default.odometer-animating-down .odometer-ribbon-inner {
+    -webkit-transform: translateY(-100%);
+    -moz-transform: translateY(-100%);
+    -ms-transform: translateY(-100%);
+    -o-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+
+  .odometer.odometer-auto-theme.odometer-animating-down.odometer-animating .odometer-ribbon-inner,
+  .odometer.odometer-theme-default.odometer-animating-down.odometer-animating .odometer-ribbon-inner {
+    -webkit-transition: -webkit-transform 2s;
+    -moz-transition: -moz-transform 2s;
+    -ms-transition: -ms-transform 2s;
+    -o-transition: -o-transform 2s;
+    transition: transform 2s;
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -ms-transform: translateY(0);
+    -o-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  .odometer.odometer-auto-theme,
+  .odometer.odometer-theme-default {
+    font-family: sans-serif;
+    line-height: 1.1em;
+  }
+
+  .odometer.odometer-auto-theme .odometer-value,
+  .odometer.odometer-theme-default .odometer-value {
+    text-align: center;
+  }
+
+  .fourth {
+    height: 45px;
+    width: 250px;
+    border: 2px solid #ffffff;
+    color: #fff;
+    background-image: linear-gradient(45deg, #ffffff 50%, transparent 50%);
+    background-position: 100%;
+    background-size: 400%;
+    -webkit-transition: background 300ms ease-in-out;
+    transition: background 300ms ease-in-out;
+  }
+
+  .fourth:hover {
+    background-position: 0;
+  }
+
+  .section {
+    position: relative;
+    width: 100%;
+    display: block;
+  }
+
+  .over-hide {
+    overflow: hidden;
+  }
+
+  .full-height {
+    height: 100vh;
+  }
+
+  .login-button {
+    position: relative;
+    display: inline-block;
+    float: right;
+    margin-top: 37px;
+    margin-right: 10px;
+  }
+
+  .shadow-title {
+    position: fixed;
+    top: 0;
+    margin-top: 30px;
+    left: 20px;
+    width: 100%;
+    height: 300%;
+    text-align: left;
+    font-family: "Muli", sans-serif;
+    -webkit-writing-mode: vertical-lr;
+    writing-mode: vertical-lr;
+    font-size: 18vw;
+    line-height: 1;
+    color: rgba(200, 200, 200, 0.1);
+    background: linear-gradient(90deg,
+        rgba(200, 200, 200, 0),
+        rgba(200, 200, 200, 0.35));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+    z-index: -1;
+  }
+
+  @keyframes comeUp {
+    from {
+      opacity: 0;
+      bottom: -50px;
+    }
+  }
+
+  .section-parallax {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    z-index: -2;
+  }
+
+  button:focus {
+    outline: none;
+  }
+
+  .section.z-bigger {
+    z-index: 100;
+  }
+
+  .button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: 0.5s;
+  }
+
+  .button span:after {
+    font-size: 25px;
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: -3px;
+    right: -20px;
+    transition: 0.5s;
+  }
+
+  .button:hover span {
+    padding-right: 25px;
+  }
+
+  .button:hover span:after {
+    opacity: 1;
+    right: 0;
+  }
+
+  .section.z-bigger-2 {
+    z-index: 200;
+  }
+
+  .section-title-wrap {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    z-index: 3;
+  }
+
+  .section-title-wrap p {
+    letter-spacing: 2px;
+    font-size: 1.7em;
+    font-weight: 700;
+    padding: 0;
+    color: #ffffff;
+  }
+
+  .section-title-wrap h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 3.5vw;
+    letter-spacing: 8px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .padding-top-bottom {
+    padding-top: 100px;
+    padding-bottom: 100px;
+  }
+
+  .background-dark {
+    background-color: #ffffff;
+  }
+</style>
+<br>
+<br>
+
+<script>
+  // ===== Scroll to Top ====
+  $(window).scroll(function() {
+    if ($(this).scrollTop() >= 50) { // If page is scrolled more than 50px
+      $('#return-to-top').fadeIn(200); // Fade in the arrow
+    } else {
+      $('#return-to-top').fadeOut(200); // Else fade out the arrow
+    }
+  });
+  $('#return-to-top').click(function() { // When arrow is clicked
+    $('body,html').animate({
+      scrollTop: 0 // Scroll to top of body
+    }, 500);
+  });
+</script>
+
+<script>
+  function randomNum(min, max, fluctuationFactor) {
+    return Math.floor(Math.random() * (max - min) * fluctuationFactor) + min;
+  }
+
+  var myInt = setInterval(function() {
+    var size = document.getElementById("size").value || `180000`;
+    var max2 = parseInt(size) + (parseInt(size) * 0.01);
+    var fluctuationFactor = Math.max(0.01, 0.05 + Math.log10(parseInt(size)) * 0.05);
+    var random2 = randomNum(parseInt(size), parseInt(max2), fluctuationFactor);
+
+    odometer.innerHTML = random2
+  }, 2000);
+</script>
+
+<script>
+  function randomNum(min, max, fluctuationFactor) {
+    return Math.floor(Math.random() * (max - min) * fluctuationFactor) + min;
+  }
+
+  var myInt = setInterval(function() {
+    var size2 = document.getElementById("size2").value;
+    var max = parseInt(size2) + 10;
+    var fluctuationFactor = Math.max(0.01, 0.05 + Math.log10(parseInt(size2)) * 0.05);
+    var random = randomNum(parseInt(size2), parseInt(max), fluctuationFactor);
+    odometer2.innerHTML = random;
+  }, 2000);
+</script>
+
+<script src='https://github.hubspot.com/odometer/odometer.js'></script>
+<%- include("partials/mainfooter") %>
+<%- include("partials/footer") %>
+<div class="glow"></div>
+<style>
+  .glow {
+    width: 100vw;
+    /* Use 100% of the viewport width */
+    height: 60px;
+    background: linear-gradient(to right, #0a0a0a, #0d1b2a);
+    position: fixed;
+    /* Use fixed positioning to make it cover the entire viewport */
+    top: 0;
+    left: 0;
+    right: 0;
+    border-radius: 50%;
+    transform: translateY(-20%);
+    filter: blur(160px);
+    z-index: -1;
+    /* Put it behind other content */
+  }
+</style>

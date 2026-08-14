@@ -1,0 +1,100 @@
+<div class="dash-sidebar-backdrop" id="sidebarBackdrop"></div>
+
+<aside class="dash-sidebar" id="dashSidebar">
+  <div class="dash-sidebar-header">
+    <span class="dash-sidebar-title">Navigation</span>
+    <button class="dash-sidebar-close" id="sidebarClose"><i class="ph ph-x"></i></button>
+  </div>
+
+  <div class="dash-sidebar-label">Overview</div>
+  <a href="/dashboard/<%= guild.id %>" class="<%= path === '/dashboard/' + guild.id ? 'active' : '' %>">
+    <i class="ph ph-gauge"></i> Overview
+  </a>
+  <div class="dash-sidebar-label">Configuration</div>
+  <a href="/dashboard/<%= guild.id %>/welcome" class="<%= path.includes('/welcome') ? 'active' : '' %>">
+    <i class="ph ph-hand-waving"></i> Welcome
+  </a>
+  <a href="/dashboard/<%= guild.id %>/logging" class="<%= path.includes('/logging') ? 'active' : '' %>">
+    <i class="ph ph-scroll"></i> Logging
+  </a>
+  <a href="/dashboard/<%= guild.id %>/moderation" class="<%= path.includes('/moderation') ? 'active' : '' %>">
+    <i class="ph ph-shield-check"></i> Moderation
+  </a>
+  <a href="/dashboard/<%= guild.id %>/automod" class="<%= path.includes('/automod') ? 'active' : '' %>">
+    <i class="ph ph-robot"></i> Auto-Mod
+  </a>
+  <a href="/dashboard/<%= guild.id %>/autorole" class="<%= path.includes('/autorole') ? 'active' : '' %>">
+    <i class="ph ph-user-plus"></i> Autorole
+  </a>
+  <a href="/dashboard/<%= guild.id %>/reactionroles" class="<%= path.includes('/reactionroles') ? 'active' : '' %>">
+    <i class="ph ph-star"></i> Reaction Roles
+  </a>
+  <a href="/dashboard/<%= guild.id %>/levels" class="<%= path.includes('/levels') ? 'active' : '' %>">
+    <i class="ph ph-trend-up"></i> Levels
+  </a>
+
+  <div class="dash-sidebar-label">Systems</div>
+  <a href="/dashboard/<%= guild.id %>/tickets" class="<%= path.includes('/tickets') ? 'active' : '' %>">
+    <i class="ph ph-ticket"></i> Tickets
+  </a>
+  <a href="/dashboard/<%= guild.id %>/suggestions" class="<%= path.includes('/suggestions') ? 'active' : '' %>">
+    <i class="ph ph-lightbulb"></i> Suggestions
+  </a>
+  <a href="/dashboard/<%= guild.id %>/reports" class="<%= path.includes('/reports') ? 'active' : '' %>">
+    <i class="ph ph-flag"></i> Reports
+  </a>
+  <a href="/dashboard/<%= guild.id %>/applications" class="<%= path.includes('/applications') ? 'active' : '' %>">
+    <i class="ph ph-clipboard-text"></i> Applications
+  </a>
+  <a href="/dashboard/<%= guild.id %>/altdetector" class="<%= path.includes('/altdetector') ? 'active' : '' %>">
+    <i class="ph ph-detective"></i> Alt Detector
+  </a>
+
+  <div class="dash-sidebar-label">Tools</div>
+  <a href="/dashboard/<%= guild.id %>/embeds" class="<%= path.includes('/embeds') ? 'active' : '' %>">
+    <i class="ph ph-file-plus"></i> Embeds
+  </a>
+  <a href="/dashboard/<%= guild.id %>/commands" class="<%= path.includes('/commands') ? 'active' : '' %>">
+    <i class="ph ph-terminal"></i> Commands
+  </a>
+  <a href="/dashboard/<%= guild.id %>/members" class="<%= path.includes('/members') ? 'active' : '' %>">
+    <i class="ph ph-users"></i> Members
+  </a>
+
+  <div class="dash-sidebar-footer">
+    <a href="/dashboard">
+      <i class="ph ph-arrow-left"></i> Back to Servers
+    </a>
+  </div>
+</aside>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var sidebar = document.getElementById('dashSidebar');
+    var backdrop = document.getElementById('sidebarBackdrop');
+    var toggle = document.getElementById('sidebarToggle');
+    var close = document.getElementById('sidebarClose');
+
+    function open() {
+      sidebar.classList.add('mobile-show');
+      backdrop.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('mobile-show');
+      backdrop.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    if (toggle) {
+      toggle.addEventListener('click', open);
+    }
+    if (close) {
+      close.addEventListener('click', closeSidebar);
+    }
+    if (backdrop) {
+      backdrop.addEventListener('click', closeSidebar);
+    }
+  })
+</script>
